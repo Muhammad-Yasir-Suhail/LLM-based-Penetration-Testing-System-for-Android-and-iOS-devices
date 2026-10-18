@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import {
@@ -17,30 +17,300 @@ import {
   Bot,
   CheckCircle2,
   ExternalLink,
-  ChevronRight
+  ChevronRight,
+  ChevronDown,
+  ChevronUp,
+  Clock,
+  Terminal,
+  Download
 } from 'lucide-react';
 import { useAppState } from '@/context/AppStateContext';
-import { formatSeverityColor } from '@/lib/utils';
+import { AnalysisSession } from '@/types/agent';
 
 export default function AnalysisDetailPage() {
   const params = useParams();
   const runId = params.id as string;
   const { analyses, findings } = useAppState();
 
-  const [activeTab, setActiveTab] = useState<string>('overview');
-  const run = analyses.find(a => a.id === runId) || analyses[0];
-  const runFindings = findings.filter(f => f.applicationId === run.applicationId);
+  const [realSession, setRealSession] = useState<AnalysisSession | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [expandedSteps, setExpandedSteps] = useState<Record<number, boolean>>({});
 
-  const tabs = [
-    { id: 'overview', label: 'Overview', icon: Activity },
-    { id: 'static', label: 'Static Analysis', icon: FileCode },
-    { id: 'manifest', label: 'Manifest & IPC', icon: Layers },
-    { id: 'dependencies', label: 'Dependencies & CVEs', icon: Layers },
-    { id: 'network', label: 'Network & TLS', icon: Radio },
-    { id: 'secrets', label: 'Hardcoded Secrets', icon: Lock },
-    { id: 'privacy', label: 'Privacy & Permissions', icon: Eye },
-    { id: 'ai', label: 'AI Security Copilot Analysis', icon: Bot },
-  ];
+  // Check if runId is a real session from API
+  useEffect(() => {
+    async function fetchSession() {
+      try {
+        const res = await fetch(`/api/analysis/${runId}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.session) {
+            setRealSession(data.session);
+          }
+        }
+      } catch {
+        // Not a real session or network error
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchSession();
+  }, [runId]);
+
+  const toggleStep = (stepNumber: number) => {
+    setExpandedSteps((prev) => ({
+      ...prev,
+      [stepNumber]: !prev[stepNumber]
+    }));
+  };
+
+  const downloadSessionJson = () => {
+    if (!realSession) return;
+    const blob = new Blob([JSON.stringify(realSession, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `vulncope_${realSession.sessionId}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // If this is a real session, render the Real Agentic Audit Trail View
+  if (realSession) {
+    return (
+      <div className="space-y-6 max-w-5xl mx-auto">
+        {/* Back Link */}
+        <Link
+          href="/analysis"
+          className="inline-flex items-center gap-1.5 text-xs font-mono text-slate-400 hover:text-white transition-colors"
+        >
+          <ArrowLeft className="w-3.5 h-3.5" />
+          <span>Back to Analysis Runs</span>
+        </Link>
+
+        {/* Real Session Header */}
+        <div className="p-6 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-xl space-y-4">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2.5">
+                <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                  REAL AGENTIC RUN
+                </span>
+                <h1 className="text-xl sm:text-2xl font-bold text-white font-mono">{realSession.sessionId}</h1>
+                <span className="px-2 py-0.5 rounded text-xs font-mono font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                  {realSession.status}
+                </span>
+              </div>
+              <p className="text-xs font-mono text-slate-400 mt-1">
+                Target: <span className="text-white font-bold">{realSession.targetApk.fileName}</span> ({realSession.targetApk.packageName || 'com.android.app'}) • Duration: <span className="text-white">{realSession.durationSeconds}s</span> • Planner: <span className="text-emerald-400">{realSession.agentMode}</span>
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                onClick={downloadSessionJson}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-mono transition-colors"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>Export Session JSON</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Quick Metrics */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3 border-t border-slate-800 font-mono text-xs">
+            <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
+              <span className="text-slate-400 text-[10px] block">Actions Executed</span>
+              <span className="text-base font-bold text-white">{realSession.totalActionsExecuted} steps</span>
+            </div>
+            <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
+              <span className="text-slate-400 text-[10px] block">File Size</span>
+              <span className="text-base font-bold text-white">{realSession.targetApk.fileSizeFormatted}</span>
+            </div>
+            <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
+              <span className="text-slate-400 text-[10px] block">SHA-256 Digest</span>
+              <span className="text-[11px] font-bold text-slate-300 truncate block select-all">
+                {realSession.targetApk.sha256.substring(0, 16)}...
+              </span>
+            </div>
+            <div
+              className={`p-3 rounded-xl border ${
+                realSession.summary.securityPostureRating === 'A'
+                  ? 'bg-emerald-500/10 border-emerald-500/30'
+                  : 'bg-rose-500/10 border-rose-500/30'
+              }`}
+            >
+              <span className="text-[10px] text-slate-400 block font-bold">Posture Rating</span>
+              <span
+                className={`text-base font-extrabold ${
+                  realSession.summary.securityPostureRating === 'A' ? 'text-emerald-400' : 'text-rose-400'
+                }`}
+              >
+                Grade {realSession.summary.securityPostureRating}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Execution Trace Timeline */}
+        <div className="rounded-2xl bg-slate-900/90 border border-slate-800 p-6 space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div className="flex items-center gap-2">
+              <Terminal className="w-4 h-4 text-emerald-400" />
+              <h2 className="text-sm font-bold uppercase tracking-wider text-white font-mono">
+                Agent Decision History & Action Execution Trace
+              </h2>
+            </div>
+            <span className="text-[11px] font-mono text-slate-400">
+              {realSession.executionTrace.length} Allowlisted Steps
+            </span>
+          </div>
+
+          <div className="space-y-3 font-mono text-xs">
+            {realSession.executionTrace.map((record) => {
+              const isExpanded = !!expandedSteps[record.stepNumber];
+              return (
+                <div
+                  key={record.stepNumber}
+                  className="rounded-xl border border-slate-800 bg-slate-950/70 overflow-hidden"
+                >
+                  <div
+                    onClick={() => toggleStep(record.stepNumber)}
+                    className="p-3.5 flex items-center justify-between gap-3 cursor-pointer hover:bg-slate-900/50 transition-colors"
+                  >
+                    <div className="flex items-center gap-3 overflow-hidden">
+                      <span className="w-5 h-5 rounded-full bg-slate-800 flex items-center justify-center text-[10px] font-bold text-slate-300 shrink-0">
+                        {record.stepNumber}
+                      </span>
+                      <div className="truncate">
+                        <span className="font-bold text-white truncate">{record.actionName}</span>
+                        <span className="text-[10px] text-slate-400 ml-2">({record.actionId})</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3 shrink-0">
+                      <span className="text-[11px] text-slate-400">{record.durationMs}ms</span>
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                        {record.status}
+                      </span>
+                      {isExpanded ? (
+                        <ChevronUp className="w-4 h-4 text-slate-400" />
+                      ) : (
+                        <ChevronDown className="w-4 h-4 text-slate-400" />
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="px-4 pb-3.5 pt-1 space-y-2 border-t border-slate-800/40 text-[11px]">
+                    <div className="p-2.5 rounded-lg bg-slate-900/90 border border-slate-800 space-y-1">
+                      <span className="text-[9px] uppercase font-bold text-emerald-400 block tracking-wider">
+                        Observed Tool Evidence
+                      </span>
+                      <p className="text-slate-200 leading-relaxed font-sans">{record.observation}</p>
+                    </div>
+
+                    <div className="p-2.5 rounded-lg bg-indigo-950/20 border border-indigo-500/30 space-y-1">
+                      <span className="text-[9px] uppercase font-bold text-indigo-400 block tracking-wider">
+                        Agent Decision Rationale
+                      </span>
+                      <p className="text-indigo-200 leading-relaxed font-sans">{record.decisionRationale}</p>
+                    </div>
+
+                    {isExpanded && record.output && (
+                      <div className="pt-1">
+                        <span className="text-[9px] uppercase font-bold text-slate-400 block tracking-wider mb-1">
+                          Action Output Data
+                        </span>
+                        <pre className="p-2.5 rounded-lg bg-[#07090e] border border-slate-800 text-[10px] text-slate-300 overflow-x-auto max-h-48">
+                          {JSON.stringify(record.output, null, 2)}
+                        </pre>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Evidence-Backed Findings */}
+        <div className="rounded-2xl bg-slate-900/90 border border-slate-800 p-6 space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div>
+              <h2 className="text-sm font-bold uppercase tracking-wider text-white font-mono">
+                Discovered Verified Security Findings ({realSession.findings.length})
+              </h2>
+              <p className="text-xs text-slate-400 font-sans mt-0.5">
+                Every finding retains traceable evidence from verified AndroidManifest and classes.dex deconstructions.
+              </p>
+            </div>
+          </div>
+
+          {realSession.findings.length === 0 ? (
+            <div className="p-8 text-center rounded-xl bg-slate-950/40 border border-slate-800 space-y-2">
+              <CheckCircle2 className="w-8 h-8 text-emerald-400 mx-auto" />
+              <p className="text-sm font-bold text-white font-mono">Clean Security Baseline</p>
+              <p className="text-xs text-slate-400 font-sans">
+                No high-risk vulnerabilities or policy violations detected in this package.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {realSession.findings.map((f) => (
+                <div key={f.stableId} className="p-4 rounded-xl bg-slate-950/60 border border-slate-800 space-y-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div className="flex items-center gap-2.5">
+                      <span
+                        className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold ${
+                          f.severity === 'Critical'
+                            ? 'bg-rose-500/15 text-rose-400 border border-rose-500/30'
+                            : f.severity === 'High'
+                            ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
+                            : 'bg-sky-500/15 text-sky-400 border border-sky-500/30'
+                        }`}
+                      >
+                        {f.severity}
+                      </span>
+                      <span className="text-xs font-mono font-bold text-slate-300">{f.stableId}</span>
+                      <span className="text-sm font-bold text-white">{f.title}</span>
+                    </div>
+
+                    <div className="flex items-center gap-2 text-[10px] font-mono">
+                      <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 font-semibold">
+                        {f.verificationStatus}
+                      </span>
+                      <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300">{f.cwe}</span>
+                      <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300">{f.owaspCategory}</span>
+                    </div>
+                  </div>
+
+                  <p className="text-xs text-slate-300 leading-relaxed font-sans">{f.description}</p>
+
+                  <div className="p-3 rounded-lg bg-[#07090e] border border-slate-800 space-y-1 font-mono text-xs">
+                    <div className="flex items-center justify-between text-[10px] text-slate-400">
+                      <span>EVIDENCE ({f.sourceTool})</span>
+                      <span className="text-slate-500">{f.location}</span>
+                    </div>
+                    <pre className="text-emerald-300 overflow-x-auto whitespace-pre-wrap select-all text-[11px] bg-slate-900/50 p-2 rounded">
+                      {f.evidence}
+                    </pre>
+                  </div>
+
+                  <div className="text-xs text-slate-400 font-sans">
+                    <span className="font-bold text-slate-200">Recommended Remediation: </span>
+                    {f.remediation}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // FALLBACK: Legacy mock exploratory run view (honestly badged)
+  const run = analyses.find((a) => a.id === runId) || analyses[0];
+  const runFindings = findings.filter((f) => f.applicationId === run?.applicationId);
 
   return (
     <div className="space-y-6">
@@ -54,204 +324,82 @@ export default function AnalysisDetailPage() {
       </Link>
 
       {/* Analysis Header Card */}
-      <div className="p-6 rounded-3xl bg-[#0d121c] border border-slate-800/80 shadow-xl space-y-5">
+      <div className="p-6 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-xl space-y-5">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2.5">
-              <h1 className="text-xl sm:text-2xl font-bold text-white font-mono">{run.runNumber}</h1>
+              <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-slate-800 text-slate-400 border border-slate-700">
+                SAMPLE DEMO RUN (Simulated)
+              </span>
+              <h1 className="text-xl sm:text-2xl font-bold text-white font-mono">{run?.runNumber}</h1>
               <span className="px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
-                {run.status}
+                {run?.status}
               </span>
               <span className="px-2 py-0.5 rounded bg-slate-800 text-xs font-mono text-slate-300 border border-slate-700">
-                {run.duration}
+                {run?.duration}
               </span>
             </div>
             <p className="text-xs font-mono text-slate-400 mt-1">
-              Target: <span className="text-slate-200">{run.applicationName}</span> ({run.version}) • Started: <span className="text-slate-200">{run.startedAt}</span>
+              Target: <span className="text-slate-200">{run?.applicationName}</span> ({run?.version}) • Started: <span className="text-slate-200">{run?.startedAt}</span>
             </p>
           </div>
 
           <div className="flex items-center gap-3">
             <Link
-              href="/static-analysis"
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-cyan/20 text-brand-cyan hover:bg-brand-cyan/30 border border-brand-cyan/40 text-xs font-mono font-bold transition-all"
+              href="/analysis/run"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500 text-slate-950 font-mono font-bold text-xs shadow-lg shadow-emerald-500/20 hover:bg-emerald-400 transition-all"
             >
-              <FileCode className="w-4 h-4" />
-              <span>Launch Code Viewer</span>
+              <Activity className="w-4 h-4" />
+              <span>Launch Live Agent Run</span>
             </Link>
           </div>
         </div>
 
         {/* Top Summary Metrics */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3 border-t border-slate-800 font-mono text-xs">
-          <div className="p-3 rounded-xl bg-slate-900 border border-slate-800">
-            <span className="text-slate-400 text-[10px] block">Checks Executed</span>
-            <span className="text-lg font-bold text-white">{run.checksExecuted}</span>
+          <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
+            <span className="text-slate-400 text-[10px] block">Checks Evaluated</span>
+            <span className="text-lg font-bold text-white">{run?.checksExecuted}</span>
           </div>
-          <div className="p-3 rounded-xl bg-slate-900 border border-slate-800">
+          <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
             <span className="text-slate-400 text-[10px] block">Files Analyzed</span>
-            <span className="text-lg font-bold text-white">{run.filesAnalyzed}</span>
+            <span className="text-lg font-bold text-white">{run?.filesAnalyzed}</span>
           </div>
-          <div className="p-3 rounded-xl bg-slate-900 border border-slate-800">
+          <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
             <span className="text-slate-400 text-[10px] block">Rules Executed</span>
-            <span className="text-lg font-bold text-white">{run.rulesExecuted}</span>
+            <span className="text-lg font-bold text-white">{run?.rulesExecuted}</span>
           </div>
           <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30">
             <span className="text-rose-400 text-[10px] block font-bold">Findings Discovered</span>
-            <span className="text-lg font-bold text-white">{run.findingsFound}</span>
+            <span className="text-lg font-bold text-rose-400">
+              {run?.findingsBreakdown.critical + run?.findingsBreakdown.high + run?.findingsBreakdown.medium}
+            </span>
           </div>
-        </div>
-
-        {/* Tab Navigation */}
-        <div className="flex items-center gap-1.5 border-t border-slate-800 pt-3 overflow-x-auto text-xs font-mono">
-          {tabs.map((tab) => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl whitespace-nowrap transition-all ${
-                  isActive
-                    ? 'bg-brand-cyan/20 text-brand-cyan border border-brand-cyan/40 font-bold'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
-                }`}
-              >
-                <Icon className="w-3.5 h-3.5" />
-                <span>{tab.label}</span>
-              </button>
-            );
-          })}
         </div>
       </div>
 
-      {/* Tab Contents */}
-      {activeTab === 'overview' && (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-8 space-y-4">
-            <div className="p-6 rounded-3xl bg-[#0d121c] border border-slate-800/80 shadow-xl space-y-4">
-              <h3 className="text-sm font-bold text-white font-mono uppercase">
-                Analysis Summary & Findings Detected
-              </h3>
-
-              <div className="space-y-2.5">
-                {runFindings.map((f) => {
-                  const sColor = formatSeverityColor(f.severity);
-                  return (
-                    <Link
-                      key={f.id}
-                      href={`/findings/${f.id}`}
-                      className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 flex items-center justify-between gap-4 group transition-all"
-                    >
-                      <div className="flex items-center gap-3 overflow-hidden">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase border shrink-0 ${sColor.badge}`}>
-                          {f.severity}
-                        </span>
-                        <div className="truncate">
-                          <p className="text-xs font-semibold text-slate-100 group-hover:text-brand-cyan transition-colors truncate">
-                            {f.findingNumber}: {f.title}
-                          </p>
-                          <p className="text-[10px] font-mono text-slate-400 truncate">
-                            {f.affectedComponent} • {f.cwe}
-                          </p>
-                        </div>
-                      </div>
-                      <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-brand-cyan shrink-0" />
-                    </Link>
-                  );
-                })}
+      {/* Simulated Findings Preview */}
+      <div className="rounded-2xl bg-slate-900/90 border border-slate-800 p-6 space-y-4">
+        <h2 className="text-sm font-bold uppercase tracking-wider text-slate-300 font-mono">
+          Sample Findings ({runFindings.length})
+        </h2>
+        <div className="space-y-3 font-mono text-xs">
+          {runFindings.map((finding) => (
+            <div key={finding.id} className="p-4 rounded-xl bg-slate-950/60 border border-slate-800 space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="px-2 py-0.5 rounded text-[10px] bg-rose-500/15 text-rose-400 border border-rose-500/30 font-bold">
+                    {finding.severity}
+                  </span>
+                  <span className="font-bold text-white">{finding.title}</span>
+                </div>
+                <span className="text-slate-400 text-[11px]">{finding.cwe}</span>
               </div>
+              <p className="text-slate-300 text-xs font-sans leading-relaxed">{finding.description}</p>
             </div>
-          </div>
-
-          <div className="lg:col-span-4 space-y-4">
-            <div className="p-6 rounded-3xl bg-[#0d121c] border border-slate-800/80 shadow-xl space-y-4 text-xs font-mono">
-              <h3 className="text-sm font-bold text-white uppercase">Engines Orchestrated</h3>
-              <div className="space-y-2">
-                {run.enginesUsed.map((eng, idx) => (
-                  <div key={idx} className="p-3 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between">
-                    <span className="text-slate-200 font-semibold">{eng}</span>
-                    <span className="text-emerald-400">✓ Completed</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
-      )}
-
-      {activeTab === 'static' && (
-        <div className="p-6 rounded-3xl bg-[#0d121c] border border-slate-800 shadow-xl space-y-4 text-xs font-mono">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold text-white uppercase">Static Decompiler Output (JADX / AST)</h3>
-            <Link href="/static-analysis" className="text-brand-cyan hover:underline">
-              Open Interactive Code Viewer →
-            </Link>
-          </div>
-          <p className="text-slate-300">
-            1,428 Dalvik classes deconstructed into Java/Kotlin AST. 9 static vulnerabilities flagged with source code reachability mappings.
-          </p>
-        </div>
-      )}
-
-      {activeTab === 'manifest' && (
-        <div className="p-6 rounded-3xl bg-[#0d121c] border border-slate-800 shadow-xl space-y-4 text-xs font-mono">
-          <h3 className="text-sm font-bold text-white uppercase">AndroidManifest.xml & IPC Security</h3>
-          <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300">
-            ⚠ Alert: TransactionConfirmationActivity declared with android:exported=&quot;true&quot; without permission guard.
-          </div>
-        </div>
-      )}
-
-      {activeTab === 'dependencies' && (
-        <div className="p-6 rounded-3xl bg-[#0d121c] border border-slate-800 shadow-xl space-y-4 text-xs font-mono">
-          <h3 className="text-sm font-bold text-white uppercase">Third-Party Dependency Vulnerabilities</h3>
-          <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300">
-            OkHttp 3.12.0 flagged with CVE-2021-0341 (Hostname validation bypass).
-          </div>
-        </div>
-      )}
-
-      {activeTab === 'network' && (
-        <div className="p-6 rounded-3xl bg-[#0d121c] border border-slate-800 shadow-xl space-y-4 text-xs font-mono">
-          <h3 className="text-sm font-bold text-white uppercase">Network Security Configuration</h3>
-          <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300">
-            Cleartext HTTP allowed on staging-api.acme-banking.com and telemetry.internal.net.
-          </div>
-        </div>
-      )}
-
-      {activeTab === 'secrets' && (
-        <div className="p-6 rounded-3xl bg-[#0d121c] border border-slate-800 shadow-xl space-y-4 text-xs font-mono">
-          <h3 className="text-sm font-bold text-white uppercase">Hardcoded Secrets & High Entropy Scanning</h3>
-          <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300">
-            Critical: Hardcoded AES 256-bit key `4c7865396d3238613437623930313233` discovered in AuthManager.kt.
-          </div>
-        </div>
-      )}
-
-      {activeTab === 'privacy' && (
-        <div className="p-6 rounded-3xl bg-[#0d121c] border border-slate-800 shadow-xl space-y-4 text-xs font-mono">
-          <h3 className="text-sm font-bold text-white uppercase">Privacy & Permission Extraction</h3>
-          <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 text-slate-300">
-            5 permissions requested: INTERNET, ACCESS_NETWORK_STATE, USE_BIOMETRIC, READ_EXTERNAL_STORAGE, POST_NOTIFICATIONS.
-          </div>
-        </div>
-      )}
-
-      {activeTab === 'ai' && (
-        <div className="p-6 rounded-3xl bg-[#0d121c] border border-slate-800 shadow-xl space-y-4 text-xs font-mono">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold text-white uppercase">Security Copilot AI Assessment</h3>
-            <Link href="/copilot" className="text-brand-cyan hover:underline">
-              Launch Interactive Copilot →
-            </Link>
-          </div>
-          <div className="p-4 rounded-2xl bg-purple-500/10 border border-purple-500/30 text-purple-200 leading-relaxed">
-            AI synthesized 12 raw scan outputs into 2 primary attack vectors: Local cryptographic token extraction and unauthenticated IPC intent hijacking. Immediate remediation of AuthManager.kt recommended.
-          </div>
-        </div>
-      )}
+      </div>
     </div>
   );
 }

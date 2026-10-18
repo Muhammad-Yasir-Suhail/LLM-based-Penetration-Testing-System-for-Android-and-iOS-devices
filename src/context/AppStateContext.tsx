@@ -165,7 +165,7 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         timestamp: 'Just now',
         user: {
           name: 'Alex Vance',
-          email: 'alex.vance@sentinelx.security',
+          email: 'alex.vance@vulncope.security',
           avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80'
         },
         metadata: {
@@ -234,7 +234,7 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           highFindings: 1,
           totalFindings: 4,
           fileSize: appData.fileSize,
-          changesSummary: 'Initial application build uploaded to SentinelX.',
+          changesSummary: 'Initial application build uploaded to VulnCope.',
           events: [
             {
               type: 'score_change',
@@ -257,7 +257,7 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         timestamp: 'Just now',
         user: {
           name: 'Alex Vance',
-          email: 'alex.vance@sentinelx.security',
+          email: 'alex.vance@vulncope.security',
           avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80'
         },
         metadata: {
@@ -289,7 +289,7 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         timestamp: 'Just now',
         user: {
           name: 'Alex Vance',
-          email: 'alex.vance@sentinelx.security',
+          email: 'alex.vance@vulncope.security',
           avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80'
         },
         metadata: {

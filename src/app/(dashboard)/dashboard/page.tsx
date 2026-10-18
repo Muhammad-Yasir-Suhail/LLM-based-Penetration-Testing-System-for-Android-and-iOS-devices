@@ -103,12 +103,12 @@ export default function DashboardPage() {
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white font-sans">
               Security Overview
             </h1>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-mono bg-brand-cyan/10 text-brand-cyan border border-brand-cyan/30">
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
               {activeWorkspace}
             </span>
           </div>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Real-time cross-platform mobile security posture, correlation streams, and remediation tracking.
+            Real-time mobile security posture, autonomous agent analysis pipeline, and evidence-backed remediation tracking.
           </p>
         </div>
 
@@ -121,15 +121,36 @@ export default function DashboardPage() {
           </Link>
           <Link
             href="/analysis/run"
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-brand-cyan to-brand-indigo text-slate-950 text-xs font-mono font-bold shadow-lg shadow-cyan-500/20 hover:opacity-95 transition-all"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-mono font-bold shadow-lg shadow-emerald-500/20 transition-all"
           >
-            <Activity className="w-4 h-4 animate-pulse" />
-            <span>Run Analysis</span>
+            <Activity className="w-4 h-4" />
+            <span>Launch Agent Run</span>
           </Link>
         </div>
       </div>
 
-      {/* SentinelX 7-Stage Intelligence Pipeline Banner */}
+      {/* Live Agent Engine Quick Callout */}
+      <div className="p-4 rounded-xl bg-gradient-to-r from-emerald-950/40 via-slate-900 to-slate-900 border border-emerald-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono">
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+            <Zap className="w-4 h-4" />
+          </div>
+          <div>
+            <span className="font-bold text-white block">Autonomous Security Core Active</span>
+            <span className="text-slate-400 text-[11px]">
+              Ingest authorized APKs, evaluate binary manifests, scan Dalvik bytecode for secrets, and view verified audit traces.
+            </span>
+          </div>
+        </div>
+        <Link
+          href="/analysis/run"
+          className="px-3.5 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold transition-all text-center shrink-0"
+        >
+          Execute Analysis
+        </Link>
+      </div>
+
+      {/* VulnCope Lifecycle Banner */}
       <PipelineBanner activeStep="correlate" />
 
       {/* Top KPI Cards */}

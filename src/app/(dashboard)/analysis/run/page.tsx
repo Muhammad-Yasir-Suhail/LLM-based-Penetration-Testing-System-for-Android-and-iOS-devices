@@ -5,232 +5,700 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
   Activity,
-  ShieldCheck,
   ShieldAlert,
-  CheckCircle2,
+  ShieldCheck,
+  AlertTriangle,
+  Upload,
+  FileCode,
+  Layers,
   Cpu,
+  CheckCircle2,
+  XCircle,
+  Clock,
   Terminal,
   ArrowRight,
-  AlertTriangle,
-  Layers,
-  Sparkles,
+  RotateCw,
+  Lock,
+  ChevronDown,
+  ChevronUp,
+  Download,
   Bot,
-  RotateCw
+  Zap,
+  Info,
+  Check
 } from 'lucide-react';
-import { useAppState } from '@/context/AppStateContext';
-
-const analysisStages = [
-  { id: 1, name: 'Upload validation', tool: 'SentinelX Core', duration: '0.3s' },
-  { id: 2, name: 'Application fingerprinting (SHA-256 & Cert)', tool: 'Apktool', duration: '0.5s' },
-  { id: 3, name: 'Manifest & IPC attack surface extraction', tool: 'Apktool / MobSF', duration: '0.8s' },
-  { id: 4, name: 'Static bytecode & Smali AST deconstruction', tool: 'JADX Engine', duration: '1.2s' },
-  { id: 5, name: 'Third-party dependency CVE lookup', tool: 'SentinelX Core', duration: '0.6s' },
-  { id: 6, name: 'Network security config & TLS rules', tool: 'Burp / MobSF', duration: '0.7s' },
-  { id: 7, name: 'OWASP MASVS security rule evaluation', tool: 'MobSF Analyzer', duration: '1.0s' },
-  { id: 8, name: 'Cross-engine finding deduplication & correlation', tool: 'SentinelX AI Correlator', duration: '0.9s' },
-  { id: 9, name: 'AI security exploitability & context generation', tool: 'Security Copilot', duration: '1.1s' },
-  { id: 10, name: 'Executive security assessment compilation', tool: 'Reporting Engine', duration: '0.5s' },
-];
+import { AnalysisSession, ActionExecutionRecord, SecurityFinding } from '@/types/agent';
 
 export default function RunAnalysisPage() {
   const router = useRouter();
-  const { selectedApplication, applications } = useAppState();
-  const targetApp = selectedApplication || applications[0] || { name: 'Acme Banking Mobile', currentVersion: '4.2.1' };
-  const [currentStage, setCurrentStage] = useState<number>(1);
-  const [isCompleted, setIsCompleted] = useState<boolean>(false);
-  const [logs, setLogs] = useState<string[]>([
-    '[00:00.120] Ingesting package: com.acme.banking.mobile (v4.2.1)',
-    '[00:00.340] Initializing multi-engine orchestration sandbox...'
-  ]);
+  const [activeTab, setActiveTab] = useState<'benchmarks' | 'upload'>('benchmarks');
+  const [selectedFixture, setSelectedFixture] = useState<string>('vulnerable_bank');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [fileError, setFileError] = useState<string | null>(null);
+  
+  const [isRunning, setIsRunning] = useState<boolean>(false);
+  const [session, setSession] = useState<AnalysisSession | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [expandedSteps, setExpandedSteps] = useState<Record<number, boolean>>({});
+  const [activeFindingFilter, setActiveFindingFilter] = useState<'all' | 'Critical' | 'High' | 'Medium'>('all');
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentStage((prev) => {
-        if (prev < analysisStages.length) {
-          const next = prev + 1;
-          const stageInfo = analysisStages[next - 1];
-          setLogs((l) => [
-            ...l,
-            `[00:0${next}.${Math.floor(Math.random() * 800 + 100)}] Stage ${next}: ${stageInfo.name} completed via ${stageInfo.tool}`
-          ]);
-          return next;
-        } else {
-          setIsCompleted(true);
-          clearInterval(timer);
-          return prev;
-        }
-      });
-    }, 700);
+  const toggleStep = (stepNumber: number) => {
+    setExpandedSteps((prev) => ({
+      ...prev,
+      [stepNumber]: !prev[stepNumber]
+    }));
+  };
 
-    return () => clearInterval(timer);
-  }, []);
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFileError(null);
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-  const progressPercent = Math.round((currentStage / analysisStages.length) * 100);
+    if (!file.name.toLowerCase().endsWith('.apk')) {
+      setFileError('Invalid file format. Please select an Android .apk package.');
+      setSelectedFile(null);
+      return;
+    }
+
+    if (file.size > 100 * 1024 * 1024) {
+      setFileError('File exceeds authorized maximum limit of 100MB.');
+      setSelectedFile(null);
+      return;
+    }
+
+    setSelectedFile(file);
+  };
+
+  const runAnalysis = async (fixtureId?: string) => {
+    setIsRunning(true);
+    setError(null);
+    setSession(null);
+
+    try {
+      let res: Response;
+
+      if (fixtureId) {
+        res = await fetch('/api/analysis/run', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fixtureId })
+        });
+      } else if (selectedFile) {
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+        res = await fetch('/api/analysis/run', {
+          method: 'POST',
+          body: formData
+        });
+      } else {
+        throw new Error('No target package selected for analysis.');
+      }
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Security analysis execution failed.');
+      }
+
+      setSession(data.session);
+      // Auto-expand last step
+      if (data.session.executionTrace?.length) {
+        setExpandedSteps({ [data.session.executionTrace.length]: true });
+      }
+    } catch (err: any) {
+      setError(err.message || 'An unexpected execution error occurred.');
+    } finally {
+      setIsRunning(false);
+    }
+  };
+
+  const downloadSessionJson = () => {
+    if (!session) return;
+    const blob = new Blob([JSON.stringify(session, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `vulncope_${session.sessionId}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const filteredFindings = session?.findings.filter((f) => {
+    if (activeFindingFilter === 'all') return true;
+    return f.severity === activeFindingFilter;
+  }) || [];
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      {/* Header */}
-      <div className="p-6 rounded-3xl bg-[#0d121c] border border-slate-800/80 shadow-xl space-y-4">
+    <div className="max-w-5xl mx-auto space-y-6">
+      {/* Header Banner */}
+      <div className="p-6 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-xl space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3.5">
-            <div className="p-3 rounded-2xl bg-brand-500/20 text-brand-cyan border border-brand-cyan/40">
-              <Activity className="w-6 h-6 animate-pulse" />
+            <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              <Activity className={`w-6 h-6 ${isRunning ? 'animate-pulse text-emerald-300' : ''}`} />
             </div>
             <div>
-              <span className="text-[10px] font-mono uppercase font-bold text-brand-cyan tracking-wider">
-                {isCompleted ? 'PIPELINE RUN COMPLETED' : 'ORCHESTRATED SCAN IN PROGRESS'}
-              </span>
-              <h1 className="text-xl sm:text-2xl font-bold text-white mt-0.5">
-                Security Analysis Pipeline
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-mono uppercase font-bold text-emerald-400 tracking-wider">
+                  VulnCope Agent Core
+                </span>
+                <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-slate-800 text-slate-300 border border-slate-700">
+                  Android Static & Bytecode Sandbox
+                </span>
+              </div>
+              <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight mt-0.5">
+                Agentic Security Analysis Pipeline
               </h1>
-              <p className="text-xs font-mono text-slate-400 mt-1">
-                Target: <span className="text-slate-200">{targetApp.name}</span> (v{targetApp.currentVersion})
+              <p className="text-xs text-slate-400 mt-0.5">
+                Evidence-grounded autonomous security testing loop: observe real tool outputs, adapt subsequent actions, and record traceable findings.
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <span className="text-2xl font-extrabold font-mono text-brand-cyan">{progressPercent}%</span>
-          </div>
-        </div>
-
-        {/* Progress Bar */}
-        <div className="space-y-1.5 font-mono text-xs">
-          <div className="h-2 w-full bg-slate-900 rounded-full overflow-hidden border border-slate-800">
-            <div
-              className="h-full bg-gradient-to-r from-brand-cyan via-sky-400 to-brand-indigo transition-all duration-300"
-              style={{ width: `${progressPercent}%` }}
-            />
-          </div>
+          {session && (
+            <div className="flex items-center gap-2">
+              <button
+                onClick={downloadSessionJson}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-xs font-mono transition-colors"
+                title="Download complete session audit JSON"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>Export Audit JSON</span>
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Completion Summary Card (Shows when done) */}
-      {isCompleted ? (
-        <div className="p-6 rounded-3xl bg-gradient-to-br from-emerald-500/15 via-[#0d121c] to-brand-cyan/15 border border-emerald-500/40 shadow-2xl space-y-6 animate-in zoom-in-95 duration-300">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center">
-                <CheckCircle2 className="w-6 h-6" />
-              </div>
-              <div>
-                <h3 className="text-lg font-bold text-white">Analysis Complete</h3>
-                <p className="text-xs font-mono text-emerald-300">
-                  142 checks evaluated • 12 security findings discovered
-                </p>
-              </div>
-            </div>
-            <span className="text-xs font-mono px-3 py-1 rounded-full bg-slate-900 border border-slate-700 text-slate-300">
-              Duration: 2m 41s
-            </span>
-          </div>
-
-          {/* Finding Breakdown */}
-          <div className="grid grid-cols-4 gap-3 text-center font-mono">
-            <div className="p-3 rounded-2xl bg-rose-500/15 border border-rose-500/30">
-              <p className="text-xs text-rose-400 font-bold uppercase">Critical</p>
-              <p className="text-2xl font-extrabold text-white">2</p>
-            </div>
-            <div className="p-3 rounded-2xl bg-amber-500/15 border border-amber-500/30">
-              <p className="text-xs text-amber-400 font-bold uppercase">High</p>
-              <p className="text-2xl font-extrabold text-white">4</p>
-            </div>
-            <div className="p-3 rounded-2xl bg-yellow-500/15 border border-yellow-500/30">
-              <p className="text-xs text-yellow-400 font-bold uppercase">Medium</p>
-              <p className="text-2xl font-extrabold text-white">5</p>
-            </div>
-            <div className="p-3 rounded-2xl bg-sky-500/15 border border-sky-500/30">
-              <p className="text-xs text-sky-400 font-bold uppercase">Low</p>
-              <p className="text-2xl font-extrabold text-white">1</p>
-            </div>
-          </div>
-
-          {/* Action CTAs */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
-            <Link
-              href="/static-analysis"
-              className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs font-mono font-bold transition-all text-center"
-            >
-              Inspect Decompiled Code & AST
-            </Link>
-
-            <Link
-              href="/findings"
-              className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-brand-cyan to-brand-indigo text-slate-950 text-xs font-mono font-bold shadow-lg shadow-cyan-500/25 hover:opacity-95 transition-all"
-            >
-              <span>View Findings</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-        </div>
-      ) : null}
-
-      {/* 10-Stage Pipeline Checklist */}
-      <div className="p-6 rounded-3xl bg-[#0d121c] border border-slate-800/80 shadow-xl space-y-3">
-        <h3 className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider mb-2">
-          Orchestration Stages (10 Steps)
-        </h3>
-
-        <div className="space-y-2">
-          {analysisStages.map((stage) => {
-            const isPassed = currentStage > stage.id || isCompleted;
-            const isCurrent = currentStage === stage.id && !isCompleted;
-
-            return (
-              <div
-                key={stage.id}
-                className={`p-3 rounded-xl border flex items-center justify-between text-xs font-mono transition-all ${
-                  isPassed
-                    ? 'bg-slate-900/60 border-slate-800 text-slate-200'
-                    : isCurrent
-                    ? 'bg-brand-500/15 border-brand-cyan text-white shadow-lg ring-1 ring-brand-cyan/40'
-                    : 'bg-slate-950/40 border-slate-900 text-slate-400'
+      {/* Intake Control Panel (when not running or can select new target) */}
+      {!session && !isRunning && (
+        <div className="rounded-2xl bg-slate-900/90 border border-slate-800 p-6 space-y-5">
+          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+            <h2 className="text-sm font-bold uppercase tracking-wider text-slate-200 font-mono">
+              Select Target Application
+            </h2>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setActiveTab('benchmarks')}
+                className={`px-3 py-1 rounded-lg text-xs font-mono transition-all ${
+                  activeTab === 'benchmarks'
+                    ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold'
+                    : 'bg-slate-800/60 text-slate-400 hover:text-slate-200'
                 }`}
               >
-                <div className="flex items-center gap-3">
-                  {isPassed ? (
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                  ) : isCurrent ? (
-                    <RotateCw className="w-4 h-4 text-brand-cyan animate-spin shrink-0" />
-                  ) : (
-                    <span className="w-4 h-4 rounded-full border border-slate-700 flex items-center justify-center text-[10px] text-slate-400">
-                      {stage.id}
-                    </span>
-                  )}
-                  <span className="font-semibold">{stage.name}</span>
+                Authorized Benchmarks (1-Click)
+              </button>
+              <button
+                onClick={() => setActiveTab('upload')}
+                className={`px-3 py-1 rounded-lg text-xs font-mono transition-all ${
+                  activeTab === 'upload'
+                    ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold'
+                    : 'bg-slate-800/60 text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                Upload Authorized APK
+              </button>
+            </div>
+          </div>
+
+          {/* TAB 1: 1-Click Evaluation Benchmarks */}
+          {activeTab === 'benchmarks' && (
+            <div className="space-y-4">
+              <p className="text-xs text-slate-400">
+                Authorized benchmark test APK fixtures packaged for immediate university evaluation and reproducible defense demonstrations.
+              </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Vulnerable Bank Benchmark */}
+                <div
+                  onClick={() => setSelectedFixture('vulnerable_bank')}
+                  className={`p-4 rounded-xl border transition-all cursor-pointer space-y-3 ${
+                    selectedFixture === 'vulnerable_bank'
+                      ? 'bg-rose-950/20 border-rose-500/50 ring-1 ring-rose-500/30'
+                      : 'bg-slate-950/60 border-slate-800 hover:border-slate-700'
+                  }`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-white text-sm">Insecure Bank Benchmark</span>
+                        <span className="px-1.5 py-0.2 rounded text-[10px] font-mono bg-rose-500/20 text-rose-300 border border-rose-500/40 font-semibold">
+                          Deliberate Vulns
+                        </span>
+                      </div>
+                      <p className="text-[11px] font-mono text-slate-400 mt-0.5">
+                        com.vulncope.insecurebank (v1.0.1) • 1.1 KB
+                      </p>
+                    </div>
+                    <div
+                      className={`w-4 h-4 rounded-full border flex items-center justify-center ${
+                        selectedFixture === 'vulnerable_bank'
+                          ? 'border-rose-400 bg-rose-500 text-white'
+                          : 'border-slate-700'
+                      }`}
+                    >
+                      {selectedFixture === 'vulnerable_bank' && <Check className="w-2.5 h-2.5" />}
+                    </div>
+                  </div>
+
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    Test package with verified security flaws: debuggable=true, cleartext traffic permitted, unprotected exported IPC services, and embedded Google Cloud/AWS credentials in classes.dex.
+                  </p>
+
+                  <div className="flex flex-wrap gap-1.5 text-[10px] font-mono">
+                    <span className="px-2 py-0.5 rounded bg-slate-800 text-rose-300">CWE-798 (Secrets)</span>
+                    <span className="px-2 py-0.5 rounded bg-slate-800 text-rose-300">CWE-215 (Debug)</span>
+                    <span className="px-2 py-0.5 rounded bg-slate-800 text-rose-300">CWE-319 (Cleartext)</span>
+                    <span className="px-2 py-0.5 rounded bg-slate-800 text-rose-300">CWE-926 (Exported IPC)</span>
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-3 text-[11px] text-slate-400">
-                  <span className="px-2 py-0.5 rounded bg-slate-800 border border-slate-700">
-                    {stage.tool}
-                  </span>
-                  <span>{isPassed ? '✓ Complete' : isCurrent ? 'In Progress...' : 'Waiting'}</span>
+                {/* Hardened Benchmark */}
+                <div
+                  onClick={() => setSelectedFixture('hardened_app')}
+                  className={`p-4 rounded-xl border transition-all cursor-pointer space-y-3 ${
+                    selectedFixture === 'hardened_app'
+                      ? 'bg-emerald-950/20 border-emerald-500/50 ring-1 ring-emerald-500/30'
+                      : 'bg-slate-950/60 border-slate-800 hover:border-slate-700'
+                  }`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-white text-sm">Hardened Vault Benchmark</span>
+                        <span className="px-1.5 py-0.2 rounded text-[10px] font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-semibold">
+                          Secure Baseline
+                        </span>
+                      </div>
+                      <p className="text-[11px] font-mono text-slate-400 mt-0.5">
+                        com.vulncope.securevault (v2.4.0) • 0.8 KB
+                      </p>
+                    </div>
+                    <div
+                      className={`w-4 h-4 rounded-full border flex items-center justify-center ${
+                        selectedFixture === 'hardened_app'
+                          ? 'border-emerald-400 bg-emerald-500 text-white'
+                          : 'border-slate-700'
+                      }`}
+                    >
+                      {selectedFixture === 'hardened_app' && <Check className="w-2.5 h-2.5" />}
+                    </div>
+                  </div>
+
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    Hardened Android application adhering to MASVS baseline: debuggable disabled, backup false, TLS enforced, no unprotected IPC components, clean bytecode.
+                  </p>
+
+                  <div className="flex flex-wrap gap-1.5 text-[10px] font-mono">
+                    <span className="px-2 py-0.5 rounded bg-slate-800 text-emerald-300">0 Critical / High</span>
+                    <span className="px-2 py-0.5 rounded bg-slate-800 text-emerald-300">Posture Rating A</span>
+                    <span className="px-2 py-0.5 rounded bg-slate-800 text-emerald-300">MASVS Clean</span>
+                  </div>
                 </div>
               </div>
-            );
-          })}
-        </div>
-      </div>
 
-      {/* Live Terminal Log Stream */}
-      <div className="p-5 rounded-3xl bg-black/90 border border-slate-800 shadow-xl space-y-2 font-mono text-xs">
-        <div className="flex items-center justify-between text-slate-400 pb-2 border-b border-slate-800">
-          <div className="flex items-center gap-2">
-            <Terminal className="w-4 h-4 text-brand-cyan" />
-            <span className="text-[11px] uppercase">SentinelX Orchestrator Console</span>
+              <div className="pt-2 flex justify-end">
+                <button
+                  onClick={() => runAnalysis(selectedFixture)}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-mono font-bold text-xs shadow-lg shadow-emerald-500/20 transition-all"
+                >
+                  <Activity className="w-4 h-4" />
+                  <span>Execute Benchmark Analysis</span>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 2: Upload Authorized APK */}
+          {activeTab === 'upload' && (
+            <div className="space-y-4">
+              <p className="text-xs text-slate-400">
+                Upload an authorized Android package (.apk) from local disk for automated intake validation and static security deconstruction.
+              </p>
+
+              <div className="border-2 border-dashed border-slate-700 hover:border-slate-600 rounded-xl p-8 text-center space-y-3 bg-slate-950/40">
+                <Upload className="w-8 h-8 text-slate-400 mx-auto" />
+                <div className="text-xs text-slate-300">
+                  <label htmlFor="apk-file" className="text-emerald-400 font-bold hover:underline cursor-pointer">
+                    Browse files
+                  </label>{' '}
+                  or drag & drop your authorized Android .apk file
+                </div>
+                <p className="text-[11px] font-mono text-slate-500">
+                  Maximum file size: 100 MB • Cryptographic SHA-256 computed on intake
+                </p>
+                <input
+                  id="apk-file"
+                  type="file"
+                  accept=".apk"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+
+                {selectedFile && (
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 font-mono text-xs mt-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                    <span>{selectedFile.name} ({(selectedFile.size / 1024).toFixed(1)} KB)</span>
+                  </div>
+                )}
+
+                {fileError && (
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-300 font-mono text-xs mt-2">
+                    <XCircle className="w-4 h-4 text-rose-400" />
+                    <span>{fileError}</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex justify-end pt-2">
+                <button
+                  disabled={!selectedFile}
+                  onClick={() => runAnalysis()}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 disabled:bg-slate-800 disabled:text-slate-500 hover:bg-emerald-400 text-slate-950 font-mono font-bold text-xs shadow-lg shadow-emerald-500/20 transition-all"
+                >
+                  <Activity className="w-4 h-4" />
+                  <span>Upload & Run Security Pipeline</span>
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Loading State during analysis execution */}
+      {isRunning && (
+        <div className="p-8 rounded-2xl bg-slate-900/90 border border-slate-800 text-center space-y-4">
+          <div className="inline-flex p-4 rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 animate-pulse">
+            <RotateCw className="w-8 h-8 animate-spin" />
           </div>
-          <span className="text-[10px] text-slate-400">STDOUT Stream</span>
-        </div>
-
-        <div className="max-h-48 overflow-y-auto space-y-1 text-[11px] text-slate-300 pr-1">
-          {logs.map((line, idx) => (
-            <p key={idx} className="leading-relaxed">
-              <span className="text-brand-cyan">{line.substring(0, 11)}</span>
-              <span className="text-slate-200">{line.substring(11)}</span>
+          <div>
+            <h3 className="text-base font-bold text-white font-mono">
+              Autonomous Agent Execution Loop in Progress...
+            </h3>
+            <p className="text-xs text-slate-400 mt-1 max-w-md mx-auto">
+              Extracting ZIP layout, inspecting AndroidManifest.xml, validating component permissions, checking cleartext TLS policy, and scanning Dalvik bytecode string pool.
             </p>
-          ))}
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* Error Card */}
+      {error && (
+        <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 font-mono text-xs flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <XCircle className="w-4 h-4 text-rose-400 shrink-0" />
+            <span>{error}</span>
+          </div>
+          <button
+            onClick={() => setError(null)}
+            className="text-xs text-slate-400 hover:text-white"
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
+
+      {/* LIVE ANALYSIS RESULTS VIEW */}
+      {session && (
+        <div className="space-y-6">
+          {/* Session Overview Stats */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 font-mono text-xs">
+            <div className="p-3.5 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
+              <span className="text-[10px] text-slate-400 uppercase block font-semibold">Session Identifier</span>
+              <span className="text-xs font-bold text-white truncate block">{session.sessionId}</span>
+            </div>
+            <div className="p-3.5 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
+              <span className="text-[10px] text-slate-400 uppercase block font-semibold">Execution Duration</span>
+              <span className="text-xs font-bold text-white flex items-center gap-1">
+                <Clock className="w-3.5 h-3.5 text-slate-400" />
+                {session.durationSeconds}s ({session.totalActionsExecuted} steps)
+              </span>
+            </div>
+            <div className="p-3.5 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
+              <span className="text-[10px] text-slate-400 uppercase block font-semibold">Planner Mode</span>
+              <span className="text-xs font-bold text-emerald-400 truncate block">
+                {session.agentMode === 'LLMAgent' ? session.llmProvider || 'LLM Agent' : 'Deterministic Engine'}
+              </span>
+            </div>
+            <div
+              className={`p-3.5 rounded-xl border space-y-1 ${
+                session.summary.securityPostureRating === 'A'
+                  ? 'bg-emerald-500/10 border-emerald-500/30'
+                  : session.summary.securityPostureRating === 'F'
+                  ? 'bg-rose-500/10 border-rose-500/30'
+                  : 'bg-amber-500/10 border-amber-500/30'
+              }`}
+            >
+              <span className="text-[10px] text-slate-400 uppercase block font-semibold">Posture Rating</span>
+              <div className="flex items-center justify-between">
+                <span
+                  className={`text-base font-extrabold ${
+                    session.summary.securityPostureRating === 'A'
+                      ? 'text-emerald-400'
+                      : session.summary.securityPostureRating === 'F'
+                      ? 'text-rose-400'
+                      : 'text-amber-400'
+                  }`}
+                >
+                  Grade {session.summary.securityPostureRating}
+                </span>
+                <span className="text-[11px] text-slate-300">
+                  {session.findings.length} findings
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Target APK Metadata Strip */}
+          <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4 font-mono text-xs">
+            <div className="space-y-1">
+              <span className="text-[10px] text-slate-400 uppercase font-semibold">Analyzed Package</span>
+              <div className="flex items-center gap-2">
+                <span className="text-white font-bold">{session.targetApk.fileName}</span>
+                {session.targetApk.packageName && (
+                  <span className="text-slate-400">({session.targetApk.packageName})</span>
+                )}
+                <span className="px-1.5 py-0.2 rounded bg-slate-800 text-slate-300 text-[10px]">
+                  {session.targetApk.fileSizeFormatted}
+                </span>
+              </div>
+            </div>
+
+            <div className="space-y-1 text-slate-400 text-[11px]">
+              <span className="text-[10px] uppercase font-semibold block">SHA-256 Fingerprint</span>
+              <span className="text-slate-300 font-mono select-all truncate block max-w-sm">
+                {session.targetApk.sha256}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setSession(null)}
+                className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-mono transition-colors"
+              >
+                Analyze Another APK
+              </button>
+            </div>
+          </div>
+
+          {/* AGENTIC EXECUTION TRACE (Step-by-step adaptive decisions) */}
+          <div className="rounded-2xl bg-slate-900/90 border border-slate-800 p-6 space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div className="flex items-center gap-2">
+                <Terminal className="w-4 h-4 text-emerald-400" />
+                <h3 className="text-sm font-bold uppercase tracking-wider text-white font-mono">
+                  Agent Execution Trace & Adaptive Decisions
+                </h3>
+              </div>
+              <span className="text-[11px] font-mono text-slate-400">
+                {session.executionTrace.length} Allowlisted Actions Executed
+              </span>
+            </div>
+
+            <div className="space-y-3 font-mono text-xs">
+              {session.executionTrace.map((record) => {
+                const isExpanded = !!expandedSteps[record.stepNumber];
+                return (
+                  <div
+                    key={record.stepNumber}
+                    className="rounded-xl border border-slate-800/80 bg-slate-950/70 overflow-hidden"
+                  >
+                    <div
+                      onClick={() => toggleStep(record.stepNumber)}
+                      className="p-3.5 flex items-center justify-between gap-3 cursor-pointer hover:bg-slate-900/50 transition-colors"
+                    >
+                      <div className="flex items-center gap-3 overflow-hidden">
+                        <span className="w-5 h-5 rounded-full bg-slate-800 flex items-center justify-center text-[10px] font-bold text-slate-300 shrink-0">
+                          {record.stepNumber}
+                        </span>
+                        <div className="flex items-center gap-2 truncate">
+                          <span className="font-bold text-white truncate">{record.actionName}</span>
+                          <span className="text-[10px] text-slate-400 hidden sm:inline truncate">
+                            ({record.actionId})
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3 shrink-0">
+                        <span className="text-[11px] text-slate-400 hidden sm:inline">
+                          {record.durationMs}ms
+                        </span>
+                        <span
+                          className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                            record.status === 'SUCCESS'
+                              ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                              : 'bg-rose-500/15 text-rose-400 border border-rose-500/30'
+                          }`}
+                        >
+                          {record.status}
+                        </span>
+                        {isExpanded ? (
+                          <ChevronUp className="w-4 h-4 text-slate-400" />
+                        ) : (
+                          <ChevronDown className="w-4 h-4 text-slate-400" />
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Step Details & Rationale */}
+                    <div className="px-4 pb-3.5 pt-1 space-y-2.5 border-t border-slate-800/40 text-[11px]">
+                      {/* Observation */}
+                      <div className="p-2.5 rounded-lg bg-slate-900/90 border border-slate-800 space-y-1">
+                        <span className="text-[9px] uppercase font-bold text-emerald-400 block tracking-wider">
+                          Observed Tool Evidence
+                        </span>
+                        <p className="text-slate-200 leading-relaxed font-sans">{record.observation}</p>
+                      </div>
+
+                      {/* Decision Rationale */}
+                      <div className="p-2.5 rounded-lg bg-indigo-950/20 border border-indigo-500/30 space-y-1">
+                        <span className="text-[9px] uppercase font-bold text-indigo-400 block tracking-wider">
+                          Agent Decision Rationale (Why this action was selected)
+                        </span>
+                        <p className="text-indigo-200 leading-relaxed font-sans">{record.decisionRationale}</p>
+                      </div>
+
+                      {/* Collapsible raw JSON */}
+                      {isExpanded && record.output && (
+                        <div className="pt-1">
+                          <span className="text-[9px] uppercase font-bold text-slate-400 block tracking-wider mb-1">
+                            Structured Action Output JSON
+                          </span>
+                          <pre className="p-2.5 rounded-lg bg-[#07090e] border border-slate-800 text-[10px] text-slate-300 overflow-x-auto max-h-48">
+                            {JSON.stringify(record.output, null, 2)}
+                          </pre>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* DISCOVERED EVIDENCE-BACKED FINDINGS */}
+          <div className="rounded-2xl bg-slate-900/90 border border-slate-800 p-6 space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
+              <div>
+                <h3 className="text-sm font-bold uppercase tracking-wider text-white font-mono">
+                  Evidence-Backed Security Findings ({session.findings.length})
+                </h3>
+                <p className="text-xs text-slate-400 font-sans mt-0.5">
+                  Traceable security findings mapped to OWASP MASVS and Common Weakness Enumeration (CWE).
+                </p>
+              </div>
+
+              {/* Severity filter pills */}
+              <div className="flex gap-1.5 font-mono text-[11px]">
+                <button
+                  onClick={() => setActiveFindingFilter('all')}
+                  className={`px-2.5 py-1 rounded-lg ${
+                    activeFindingFilter === 'all'
+                      ? 'bg-slate-700 text-white font-bold'
+                      : 'bg-slate-800/60 text-slate-400 hover:text-white'
+                  }`}
+                >
+                  All ({session.findings.length})
+                </button>
+                <button
+                  onClick={() => setActiveFindingFilter('Critical')}
+                  className={`px-2.5 py-1 rounded-lg ${
+                    activeFindingFilter === 'Critical'
+                      ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40 font-bold'
+                      : 'bg-slate-800/60 text-slate-400 hover:text-white'
+                  }`}
+                >
+                  Critical ({session.summary.criticalCount})
+                </button>
+                <button
+                  onClick={() => setActiveFindingFilter('High')}
+                  className={`px-2.5 py-1 rounded-lg ${
+                    activeFindingFilter === 'High'
+                      ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold'
+                      : 'bg-slate-800/60 text-slate-400 hover:text-white'
+                  }`}
+                >
+                  High ({session.summary.highCount})
+                </button>
+                <button
+                  onClick={() => setActiveFindingFilter('Medium')}
+                  className={`px-2.5 py-1 rounded-lg ${
+                    activeFindingFilter === 'Medium'
+                      ? 'bg-sky-500/20 text-sky-300 border border-sky-500/40 font-bold'
+                      : 'bg-slate-800/60 text-slate-400 hover:text-white'
+                  }`}
+                >
+                  Medium ({session.summary.mediumCount})
+                </button>
+              </div>
+            </div>
+
+            {/* Finding Cards */}
+            {filteredFindings.length === 0 ? (
+              <div className="p-8 text-center rounded-xl bg-slate-950/40 border border-slate-800 space-y-2">
+                <CheckCircle2 className="w-8 h-8 text-emerald-400 mx-auto" />
+                <p className="text-sm font-bold text-white font-mono">No findings detected for this filter</p>
+                <p className="text-xs text-slate-400 font-sans">
+                  The application passed the evaluated checks cleanly.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {filteredFindings.map((finding) => (
+                  <div
+                    key={finding.stableId}
+                    className="p-4 rounded-xl bg-slate-950/60 border border-slate-800 space-y-3"
+                  >
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                      <div className="flex items-center gap-2.5">
+                        <span
+                          className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold ${
+                            finding.severity === 'Critical'
+                              ? 'bg-rose-500/15 text-rose-400 border border-rose-500/30'
+                              : finding.severity === 'High'
+                              ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
+                              : 'bg-sky-500/15 text-sky-400 border border-sky-500/30'
+                          }`}
+                        >
+                          {finding.severity}
+                        </span>
+                        <span className="text-xs font-mono font-bold text-slate-300">{finding.stableId}</span>
+                        <span className="text-sm font-bold text-white">{finding.title}</span>
+                      </div>
+
+                      <div className="flex items-center gap-2 text-[10px] font-mono">
+                        <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 font-semibold">
+                          Verified
+                        </span>
+                        <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300">{finding.cwe}</span>
+                        <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300">{finding.owaspCategory}</span>
+                      </div>
+                    </div>
+
+                    <p className="text-xs text-slate-300 leading-relaxed font-sans">{finding.description}</p>
+
+                    {/* Exact Technical Evidence */}
+                    <div className="p-3 rounded-lg bg-[#07090e] border border-slate-800 space-y-1 font-mono text-xs">
+                      <div className="flex items-center justify-between text-[10px] text-slate-400">
+                        <span>TECHNICAL EVIDENCE ({finding.sourceTool})</span>
+                        <span className="text-slate-500">{finding.location}</span>
+                      </div>
+                      <pre className="text-emerald-300 overflow-x-auto whitespace-pre-wrap select-all text-[11px] bg-slate-900/50 p-2 rounded">
+                        {finding.evidence}
+                      </pre>
+                    </div>
+
+                    {/* Remediation */}
+                    <div className="text-xs text-slate-400 font-sans">
+                      <span className="font-bold text-slate-200">Recommended Remediation: </span>
+                      {finding.remediation}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

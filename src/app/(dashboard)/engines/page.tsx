@@ -40,21 +40,80 @@ export default function SecurityEnginesPage() {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white font-sans">
-              Security Engines & Integrations
+              Security Engines & Tool Registry
             </h1>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-mono bg-amber-500/10 text-amber-300 border border-amber-500/30">
-              Simulation Mode
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+              Core Active
             </span>
           </div>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Underlying mobile security analysis analyzers orchestrated by the SentinelX intelligence layer.
+            Allowlisted security analysis actions orchestrated by the VulnCope autonomous agent decision loop.
           </p>
         </div>
 
         <div className="text-xs font-mono text-slate-400 p-2.5 rounded-xl bg-slate-900 border border-slate-800 flex items-center gap-2">
-          <Info className="w-4 h-4 text-amber-400 shrink-0" />
-          <span>Engines executed in deterministic simulation for FYP prototype.</span>
+          <Info className="w-4 h-4 text-emerald-400 shrink-0" />
+          <span>Real static/DEX core active; external scanner stubs labeled.</span>
         </div>
+      </div>
+
+      {/* Real Core Registry Highlight */}
+      <div className="p-6 rounded-3xl bg-slate-900/90 border border-emerald-500/40 shadow-xl space-y-4">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="p-3 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+              <Zap className="w-6 h-6" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="text-lg font-bold text-white font-mono">VulnCope Real Agentic Security Core</h2>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                  VERIFIED OPERATIONAL
+                </span>
+              </div>
+              <p className="text-xs text-slate-400 mt-0.5">
+                In-process Android APK deconstruction, binary AXML decoding, and Dalvik bytecode (classes.dex) analysis.
+              </p>
+            </div>
+          </div>
+          <span className="text-xs font-mono text-slate-400 hidden sm:inline">Version: 1.2.0 • In-Process</span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 pt-2 border-t border-slate-800 text-xs font-mono">
+          <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800 space-y-1">
+            <span className="text-emerald-400 font-bold block">ACTION_VALIDATE_PACKAGE</span>
+            <span className="text-slate-400 text-[11px] block">PKZIP verification & SHA-256 digests</span>
+          </div>
+          <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800 space-y-1">
+            <span className="text-emerald-400 font-bold block">ACTION_INSPECT_MANIFEST</span>
+            <span className="text-slate-400 text-[11px] block">AXML binary decoder & security flags</span>
+          </div>
+          <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800 space-y-1">
+            <span className="text-emerald-400 font-bold block">ACTION_ANALYZE_PERMISSIONS</span>
+            <span className="text-slate-400 text-[11px] block">Dangerous privileges & MASVS audit</span>
+          </div>
+          <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800 space-y-1">
+            <span className="text-emerald-400 font-bold block">ACTION_SCAN_EXPORTED_COMPONENTS</span>
+            <span className="text-slate-400 text-[11px] block">Unprotected IPC Activity/Service vectors</span>
+          </div>
+          <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800 space-y-1">
+            <span className="text-emerald-400 font-bold block">ACTION_INSPECT_NETWORK_CONFIG</span>
+            <span className="text-slate-400 text-[11px] block">Cleartext traffic & TLS policy validation</span>
+          </div>
+          <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800 space-y-1">
+            <span className="text-emerald-400 font-bold block">ACTION_SCAN_DEX_SECRETS</span>
+            <span className="text-slate-400 text-[11px] block">Dalvik StringPool secrets & cipher audit</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between pt-2">
+        <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-400">
+          External Tool Integrations & Simulated Testbed
+        </h3>
+        <span className="text-[11px] font-mono text-amber-400/90">
+          Planned for later evaluation milestones
+        </span>
       </div>
 
       {/* Engines Grid */}

@@ -31,7 +31,7 @@ export default function ReportsPage() {
       securityScore: 82,
       findingsCount: 12,
       downloadSize: '2.6 MB PDF',
-      executiveSummary: `Automated assessment of ${selectedApp} conducted via SentinelX. Overall security score: 82/100.`
+      executiveSummary: `Automated assessment of ${selectedApp} conducted via VulnCope. Overall security score: 82/100.`
     });
   };
 

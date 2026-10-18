@@ -118,7 +118,7 @@ export default function ReportPreviewPage() {
             1. Executive Summary
           </h2>
           <p className="text-xs sm:text-sm text-slate-300 print:text-gray-700 leading-relaxed">
-            {report.executiveSummary} SentinelX performed automated static bytecode deconstruction, manifest exposure audits, dynamic API intercept mapping, and third-party dependency vulnerability analysis.
+            {report.executiveSummary} VulnCope performed automated static bytecode deconstruction, manifest exposure audits, dynamic API intercept mapping, and third-party dependency vulnerability analysis.
           </p>
         </div>
 
@@ -194,7 +194,7 @@ export default function ReportPreviewPage() {
 
         {/* Footer Sign-off */}
         <div className="pt-6 border-t border-slate-800 flex items-center justify-between text-[11px] font-mono text-slate-400 print:text-gray-500">
-          <span>SentinelX Security Platform • Confidential Assessment</span>
+          <span>VulnCope Security Platform • Confidential Assessment</span>
           <span>Approved by Alex Vance (Lead SecOps)</span>
         </div>
       </div>

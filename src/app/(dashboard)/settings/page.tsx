@@ -47,7 +47,7 @@ export default function SettingsPage() {
             Workspace Settings
           </h1>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Configure SentinelX policies, notification webhooks, AI Copilot parameters, and integration credentials.
+            Configure VulnCope policies, notification webhooks, AI Copilot parameters, and integration credentials.
           </p>
         </div>
 
@@ -95,7 +95,7 @@ export default function SettingsPage() {
                   <label className="block text-slate-400 mb-1">PLATFORM DISPLAY NAME</label>
                   <input
                     type="text"
-                    defaultValue="SentinelX Enterprise Edition"
+                    defaultValue="VulnCope Framework v1.2.0"
                     className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-slate-100"
                   />
                 </div>
@@ -168,7 +168,7 @@ export default function SettingsPage() {
             <div className="space-y-4">
               <h3 className="text-sm font-bold text-white uppercase">AI Security Copilot Engine</h3>
               <p className="text-slate-300">
-                SentinelX Copilot uses deterministic context synthesis to explain vulnerabilities and suggest code patches without external API keys.
+                VulnCope Copilot uses deterministic context synthesis to explain vulnerabilities and suggest code patches without external API keys.
               </p>
               <div className="p-3 rounded-xl bg-purple-500/10 border border-purple-500/30 text-purple-300">
                 AI Copilot is operational in Local Simulation Mode.
@@ -187,10 +187,10 @@ export default function SettingsPage() {
 
           {activeTab === 'api' && (
             <div className="space-y-4">
-              <h3 className="text-sm font-bold text-white uppercase">SentinelX REST API Keys</h3>
+              <h3 className="text-sm font-bold text-white uppercase">VulnCope REST API Keys</h3>
               <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 flex justify-between items-center">
                 <span className="text-slate-400">CI/CD Pipeline Key</span>
-                <span className="text-brand-cyan">sx_live_84f938a1928374619b</span>
+                <span className="text-emerald-400">vc_live_84f938a1928374619b</span>
               </div>
             </div>
           )}

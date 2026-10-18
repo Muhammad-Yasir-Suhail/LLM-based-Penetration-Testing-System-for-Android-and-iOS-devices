@@ -31,16 +31,16 @@ export const Topbar: React.FC = () => {
     if (path === '/dashboard') return 'Security Overview';
     if (path.startsWith('/projects')) return 'Projects Management';
     if (path.startsWith('/applications')) return 'Applications Inventory';
-    if (path.startsWith('/attack-surface')) return 'Attack Surface Visualizer';
-    if (path.startsWith('/correlation')) return 'Multi-Engine Finding Correlation';
-    if (path.startsWith('/analysis/run')) return 'Simulated Security Analysis Pipeline';
+    if (path.startsWith('/attack-surface')) return 'Attack Surface Visualizer (Demo)';
+    if (path.startsWith('/correlation')) return 'Multi-Engine Finding Correlation (Demo)';
+    if (path.startsWith('/analysis/run')) return 'Agentic Security Analysis Pipeline';
     if (path.startsWith('/analysis')) return 'Security Analysis Runs';
     if (path.startsWith('/static-analysis')) return 'Static Analysis & Code Viewer';
     if (path.startsWith('/findings')) return 'Security Findings Management';
     if (path.startsWith('/copilot')) return 'Security Copilot (AI Assistant)';
     if (path.startsWith('/reports')) return 'Security Reports & Assessments';
     if (path.startsWith('/posture')) return 'Security Posture Analytics';
-    if (path.startsWith('/engines')) return 'Security Engines & Integrations';
+    if (path.startsWith('/engines')) return 'Security Engines & Tool Registry';
     if (path.startsWith('/activity')) return 'Activity & Audit Trail';
     if (path.startsWith('/team')) return 'Team & Access Management';
     if (path.startsWith('/settings')) return 'Workspace Settings';
@@ -53,7 +53,7 @@ export const Topbar: React.FC = () => {
     <header className="sticky top-0 z-30 h-16 bg-[#080c14]/85 backdrop-blur-md border-b border-slate-800/80 px-4 sm:px-6 flex items-center justify-between gap-4">
       {/* Left: Breadcrumbs */}
       <div className="flex items-center gap-2 text-xs font-mono">
-        <span className="text-slate-400">SentinelX</span>
+        <span className="text-emerald-400 font-bold">VulnCope</span>
         <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
         <span className="text-slate-200 font-semibold">{getBreadcrumbTitle(pathname)}</span>
       </div>
@@ -79,10 +79,10 @@ export const Topbar: React.FC = () => {
         {/* Quick Scan Action */}
         <Link
           href="/analysis/run"
-          className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-500/20 text-brand-cyan hover:bg-brand-500/30 border border-brand-cyan/40 text-xs font-semibold font-mono transition-all shadow-sm shadow-cyan-950/40"
+          className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 border border-emerald-500/40 text-xs font-semibold font-mono transition-all shadow-sm"
         >
-          <Activity className="w-3.5 h-3.5 text-brand-cyan animate-pulse" />
-          <span>Simulate Scan</span>
+          <Activity className="w-3.5 h-3.5 text-emerald-400" />
+          <span>New Analysis Run</span>
         </Link>
 
         {/* Security Score Badge */}

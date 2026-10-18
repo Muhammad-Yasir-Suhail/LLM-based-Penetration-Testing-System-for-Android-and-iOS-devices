@@ -62,12 +62,9 @@ export const Sidebar: React.FC = () => {
       ]
     },
     {
-      groupName: 'Intelligence & Correlation',
+      groupName: 'Agentic Analysis & Core',
       items: [
-        { name: 'Attack Surface', href: '/attack-surface', icon: Network, isNew: true, badge: 'Topology' },
-        { name: 'Finding Correlation', href: '/correlation', icon: GitFork, isNew: true, badge: 'AI Dedupe' },
-        { name: 'Security Analysis', href: '/analysis', icon: Activity },
-        { name: 'Static Code Viewer', href: '/static-analysis', icon: Code2 },
+        { name: 'Security Analysis', href: '/analysis', icon: Activity, badge: 'Agent Core', badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' },
         {
           name: 'Security Findings',
           href: '/findings',
@@ -75,14 +72,17 @@ export const Sidebar: React.FC = () => {
           badge: openCriticals > 0 ? `${openCriticals} Crit` : undefined,
           badgeColor: 'bg-rose-500/20 text-rose-300 border-rose-500/40'
         },
+        { name: 'Attack Surface', href: '/attack-surface', icon: Network, badge: 'Demo Data' },
+        { name: 'Finding Correlation', href: '/correlation', icon: GitFork, badge: 'Demo Data' },
+        { name: 'Static Code Viewer', href: '/static-analysis', icon: Code2 },
       ]
     },
     {
       groupName: 'AI & Reporting',
       items: [
-        { name: 'Security Copilot', href: '/copilot', icon: Bot, isNew: true, badge: 'AI' },
+        { name: 'Security Copilot', href: '/copilot', icon: Bot, badge: 'AI Assistant' },
         { name: 'Security Reports', href: '/reports', icon: FileText },
-        { name: 'Security Engines', href: '/engines', icon: Cpu, badge: 'Simulated' },
+        { name: 'Security Engines', href: '/engines', icon: Cpu, badge: 'Tool Registry' },
       ]
     },
     {
@@ -104,22 +104,22 @@ export const Sidebar: React.FC = () => {
       {/* Header / Logo */}
       <div className="h-16 flex items-center justify-between px-4 border-b border-slate-800/80">
         <Link href="/dashboard" className="flex items-center gap-3 overflow-hidden">
-          <div className="relative flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-brand-cyan/20 via-brand-indigo/30 to-brand-500/10 border border-brand-cyan/40 shadow-lg shadow-cyan-500/10 shrink-0">
-            <Shield className="w-5 h-5 text-brand-cyan" />
-            <div className="absolute inset-0 rounded-xl bg-brand-cyan/10 animate-pulse-slow pointer-events-none" />
+          <div className="relative flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500/20 via-cyan-500/30 to-blue-500/10 border border-emerald-500/40 shadow-lg shadow-emerald-500/10 shrink-0">
+            <Shield className="w-5 h-5 text-emerald-400" />
+            <div className="absolute inset-0 rounded-xl bg-emerald-400/10 animate-pulse-slow pointer-events-none" />
           </div>
           {!collapsed && (
             <div className="flex flex-col">
               <div className="flex items-center gap-1.5">
                 <span className="text-base font-bold tracking-tight text-white font-mono">
-                  Sentinel<span className="text-brand-cyan">X</span>
+                  Vuln<span className="text-emerald-400">Cope</span>
                 </span>
-                <span className="text-[10px] uppercase font-mono px-1.5 py-0.2 rounded bg-brand-cyan/15 text-brand-cyan border border-brand-cyan/30">
-                  Enterprise
+                <span className="text-[10px] uppercase font-mono px-1.5 py-0.2 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                  FYP Core
                 </span>
               </div>
               <span className="text-[10px] text-slate-400 font-mono tracking-tight">
-                Mobile SecOps Platform
+                Agentic Mobile SecOps
               </span>
             </div>
           )}
@@ -218,21 +218,21 @@ export const Sidebar: React.FC = () => {
         {/* Simulation Mode Pill */}
         <button
           onClick={() => setDemoModalOpen(true)}
-          className={`w-full flex items-center justify-between p-2 rounded-lg bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/15 transition-all text-left ${
+          className={`w-full flex items-center justify-between p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30 hover:bg-emerald-500/15 transition-all text-left ${
             collapsed ? 'justify-center p-2' : ''
           }`}
-          title="SentinelX Prototype Simulation Notice"
+          title="VulnCope Real Agentic Core & Demo Status"
         >
           <div className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-amber-400 animate-ping shrink-0" />
+            <span className="h-2 w-2 rounded-full bg-emerald-400 shrink-0" />
             {!collapsed && (
               <div className="flex flex-col">
-                <span className="text-[11px] font-mono font-bold text-amber-300">DEMO / PROTOTYPE</span>
-                <span className="text-[9px] text-amber-400/80">Security engines simulated</span>
+                <span className="text-[11px] font-mono font-bold text-emerald-300">REAL AGENT ACTIVE</span>
+                <span className="text-[9px] text-emerald-400/80">Bounded tool registry running</span>
               </div>
             )}
           </div>
-          {!collapsed && <Info className="w-3.5 h-3.5 text-amber-400" />}
+          {!collapsed && <Info className="w-3.5 h-3.5 text-emerald-400" />}
         </button>
 
         {/* User Card */}
