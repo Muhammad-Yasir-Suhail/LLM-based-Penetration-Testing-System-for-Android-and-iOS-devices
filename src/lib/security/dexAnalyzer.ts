@@ -203,41 +203,41 @@ export function analyzeDexBuffer(
     }
   }
 
-  // Generate finding for plain HTTP endpoints if found
+  // Generate finding for plain HTTP endpoints if found (static indicator)
   if (insecureEndpoints.length > 0) {
     findings.push({
       stableId: genId(),
-      title: `Hardcoded Cleartext HTTP Endpoints in Application Bytecode (${insecureEndpoints.length} identified)`,
-      description: `Discovered plain unencrypted HTTP endpoint URLs compiled into classes.dex. Communication over plain HTTP exposes data to eavesdropping and manipulation. Examples: ${insecureEndpoints.slice(0, 3).join(', ')}`,
+      title: `Static Indicator: Cleartext HTTP Endpoints in Application Bytecode (${insecureEndpoints.length} identified)`,
+      description: `Discovered plain unencrypted HTTP endpoint URLs compiled into classes.dex string pool. Communication over plain HTTP exposes data to eavesdropping and manipulation. Examples: ${insecureEndpoints.slice(0, 3).join(', ')}`,
       category: 'Insecure Network Transmission',
       owaspCategory: 'MASVS-NETWORK',
       cwe: 'CWE-319',
       severity: 'Medium',
-      confidence: 'Confirmed',
-      verificationStatus: 'Verified',
+      confidence: 'Suspected',
+      verificationStatus: 'Detected',
       evidence: `HTTP endpoints identified in DEX string pool:\n${insecureEndpoints.slice(0, 5).map((u) => ` - ${u}`).join('\n')}`,
       location: 'classes.dex:StringPool',
       sourceTool: 'VulnCope DEX String Analyzer v1.0',
-      remediation: 'Upgrade all API endpoints to HTTPS/TLS v1.3. Enforce strict transport security.',
+      remediation: 'Upgrade all API endpoints to HTTPS/TLS v1.3. Enforce strict transport security and Network Security Config.',
       sessionId,
       timestamp
     });
   }
 
-  // Generate finding for broken cryptographic algorithm
+  // Generate finding for broken cryptographic algorithm (static indicator)
   if (cryptoWeaknesses.length > 0) {
     const algos = Array.from(new Set(cryptoWeaknesses.map((c) => c.algorithm))).join(', ');
     findings.push({
       stableId: genId(),
-      title: `Broken / Insecure Cryptographic Cipher Primitive: ${algos}`,
-      description: `Application references obsolete or insecure encryption algorithms (${algos}). Ciphers such as DES, RC4, or AES in ECB mode are vulnerable to cryptanalysis and pattern leakage.`,
+      title: `Static Indicator: Obsolete Cryptographic Cipher Reference (${algos}) in Bytecode`,
+      description: `Application bytecode string pool references obsolete or weak encryption algorithm names (${algos}). Ciphers such as DES, RC4, or AES in ECB mode are vulnerable to cryptanalysis. Dynamic call verification recommended to confirm active usage.`,
       category: 'Insecure Cryptography',
       owaspCategory: 'MASVS-CRYPTO',
       cwe: 'CWE-327',
       severity: 'High',
-      confidence: 'Confirmed',
-      verificationStatus: 'Verified',
-      evidence: `Cipher suite references detected: ${algos}`,
+      confidence: 'Suspected',
+      verificationStatus: 'Detected',
+      evidence: `Cipher suite references detected in string pool: ${algos}`,
       location: 'classes.dex:CryptoReferences',
       sourceTool: 'VulnCope DEX String Analyzer v1.0',
       remediation: 'Migrate to AES/GCM/NoPadding (authenticated encryption) with 256-bit keys or standard AndroidX Security Crypto primitives.',
@@ -246,19 +246,19 @@ export function analyzeDexBuffer(
     });
   }
 
-  // Generate finding for disabled TLS / TrustAll
+  // Generate finding for disabled TLS / TrustAll (suspected static indicator)
   if (insecureTrustManagers.length > 0) {
     findings.push({
       stableId: genId(),
-      title: 'Disabled Certificate Verification / Permissive TrustManager in Bytecode',
-      description: `Application bytecode contains references to insecure TLS trust managers (${insecureTrustManagers.join(', ')}). This explicitly disables certificate chain verification, leaving connections vulnerable to SSL MITM attacks.`,
+      title: `Static Indicator: Permissive TrustManager Signature Detected in Bytecode`,
+      description: `Application bytecode contains references to permissive TLS trust managers (${insecureTrustManagers.join(', ')}). This indicator suggests certificate chain validation may be bypassed. Dynamic hook verification recommended to verify active network stack registration.`,
       category: 'Improper Certificate Validation',
       owaspCategory: 'MASVS-NETWORK',
       cwe: 'CWE-295',
-      severity: 'Critical',
-      confidence: 'Confirmed',
-      verificationStatus: 'Verified',
-      evidence: `Detected TrustManager signatures: ${insecureTrustManagers.join(', ')}`,
+      severity: 'High',
+      confidence: 'Suspected',
+      verificationStatus: 'Suspected',
+      evidence: `Detected TrustManager signatures in bytecode: ${insecureTrustManagers.join(', ')}`,
       location: 'classes.dex:NetworkStack',
       sourceTool: 'VulnCope DEX String Analyzer v1.0',
       remediation: 'Remove custom permissive TrustManagers. Use default Android system trust store with standard certificate pinning.',

@@ -162,7 +162,7 @@ export function analyzeManifestBuffer(
 
   // Generate verified findings based on real manifest values
 
-  // 1. Debuggable check
+  // 1. Debuggable check: Confirmed dangerous build configuration
   if (debuggable) {
     findings.push({
       stableId: genId(),
@@ -185,19 +185,19 @@ export function analyzeManifestBuffer(
     });
   }
 
-  // 2. AllowBackup check
+  // 2. AllowBackup check: Static configuration indicator
   if (allowBackup) {
     findings.push({
       stableId: genId(),
-      title: 'Application Enables Unrestricted Data Backup (android:allowBackup=true)',
+      title: 'Static Configuration: Application Enables Data Backup (android:allowBackup=true)',
       description:
-        'Application data can be backed up via adb backup, allowing an adversary with physical or USB debugging access to copy private databases, shared preferences, and session tokens to a workstation.',
+        'Application data backup is enabled (default Android configuration). If an adversary gains physical or adb debugging access, sandbox databases and shared preferences can be copied using adb backup.',
       category: 'Insecure Data Storage',
       owaspCategory: 'MASVS-STORAGE',
       cwe: 'CWE-312',
-      severity: 'Medium',
-      confidence: 'Confirmed',
-      verificationStatus: 'Verified',
+      severity: 'Low',
+      confidence: 'Suspected',
+      verificationStatus: 'Detected',
       evidence: '<application android:allowBackup="true" ...>',
       location: 'AndroidManifest.xml:<application>',
       sourceTool: 'VulnCope Manifest Inspector v1.0',
@@ -208,13 +208,13 @@ export function analyzeManifestBuffer(
     });
   }
 
-  // 3. Cleartext Traffic check
+  // 3. Cleartext Traffic check: Confirmed insecure network permission setting
   if (usesCleartextTraffic) {
     findings.push({
       stableId: genId(),
       title: 'Cleartext HTTP Network Traffic Explicitly Permitted',
       description:
-        'The manifest sets android:usesCleartextTraffic="true", allowing unencrypted HTTP connections. Cleartext traffic enables Man-In-The-Middle (MITM) inspection, session hijacking, and credential eavesdropping.',
+        'The manifest sets android:usesCleartextTraffic="true", explicitly disabling modern Android TLS enforcement. Cleartext traffic enables Man-In-The-Middle (MITM) inspection, session hijacking, and credential eavesdropping.',
       category: 'Insecure Network Transmission',
       owaspCategory: 'MASVS-NETWORK',
       cwe: 'CWE-319',
@@ -231,46 +231,64 @@ export function analyzeManifestBuffer(
     });
   }
 
-  // 4. Exported components without permission
+  // 4. Exported components without permission: Evaluated in context
   for (const comp of exportedWithoutPermission) {
     const isServiceOrProvider = comp.type === 'service' || comp.type === 'provider';
+    const isReceiver = comp.type === 'receiver';
+    const isActivity = comp.type === 'activity';
+
+    // Contextual evaluation: Check if component is standard OS launcher activity
+    const isLauncherActivity =
+      isActivity &&
+      (comp.name.toLowerCase().includes('main') || comp.name.toLowerCase().includes('launcher')) &&
+      comp.intentFiltersCount > 0;
+
+    if (isLauncherActivity) {
+      // Standard Android requirement: Main launcher activity must be exported for OS launcher icon
+      // Do not report standard launcher activity as a vulnerability
+      continue;
+    }
+
+    const verificationStatus = isServiceOrProvider || isReceiver ? 'Suspected' : 'Detected';
+    const severity = isServiceOrProvider ? 'High' : isReceiver ? 'Medium' : 'Low';
+
     findings.push({
       stableId: genId(),
       title: `Exported ${comp.type.toUpperCase()} Component Accessible Without Permission: ${comp.name.split('.').pop()}`,
-      description: `The ${comp.type} component "${comp.name}" is declared as exported="true" but lacks an android:permission attribute. Any other third-party application on the device can invoke or query this component.`,
+      description: `The ${comp.type} component "${comp.name}" is declared as exported="true" without an android:permission restriction. Any third-party application on the device may interact with this component.`,
       category: 'Improper Component Exposure',
       owaspCategory: 'MASVS-PLATFORM',
       cwe: 'CWE-926',
-      severity: isServiceOrProvider ? 'High' : 'Medium',
-      confidence: 'Confirmed',
-      verificationStatus: 'Verified',
+      severity,
+      confidence: 'Suspected',
+      verificationStatus,
       evidence: `<${comp.type} android:name="${comp.name}" android:exported="true" (missing android:permission) />`,
       location: `AndroidManifest.xml:<${comp.type} name="${comp.name}">`,
       sourceTool: 'VulnCope Manifest Inspector v1.0',
-      remediation: `Set android:exported="false" if third-party invocation is not needed, or declare a signature-level permission to restrict caller access.`,
+      remediation: `Set android:exported="false" if external invocation is not required, or define custom permission with protectionLevel="signature".`,
       sessionId,
       timestamp
     });
   }
 
-  // 5. Dangerous permissions
+  // 5. Dangerous permissions: Static privilege indicators, not confirmed vulnerabilities
   for (const perm of dangerousPermissions) {
     const meta = DANGEROUS_PERMISSIONS[perm];
     if (meta) {
       findings.push({
         stableId: genId(),
-        title: `Excessive Sensitive Permission Declared: ${perm.replace('android.permission.', '')}`,
-        description: `Application requests high-privilege permission "${perm}" (${meta.label}). If breached, this grants access to sensitive user privacy data.`,
-        category: 'Excessive Privilege',
+        title: `Static Indicator: Sensitive Permission Declared (${perm.replace('android.permission.', '')})`,
+        description: `Application statically requests high-privilege permission "${perm}" (${meta.label}) in its manifest. Declared permissions expand the attack surface if components are subverted, but do not constitute an exploitable vulnerability in isolation.`,
+        category: 'Privilege Declaration',
         owaspCategory: meta.masvs,
         cwe: 'CWE-250',
-        severity: meta.severity,
-        confidence: 'Confirmed',
-        verificationStatus: 'Verified',
+        severity: meta.severity === 'High' ? 'Medium' : 'Low',
+        confidence: 'Suspected',
+        verificationStatus: 'Detected',
         evidence: `<uses-permission android:name="${perm}" />`,
         location: `AndroidManifest.xml:<uses-permission name="${perm}">`,
         sourceTool: 'VulnCope Manifest Inspector v1.0',
-        remediation: `Audit permission requirement. Implement principle of least privilege; request runtime permission only when strictly necessary.`,
+        remediation: `Review whether this permission is strictly necessary for core functionality and verify runtime permission request guards.`,
         sessionId,
         timestamp
       });

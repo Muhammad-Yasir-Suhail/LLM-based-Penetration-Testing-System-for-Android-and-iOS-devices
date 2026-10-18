@@ -77,94 +77,170 @@ function planDeterministicAction(context: PlannerContext): PlannerDecision {
     };
   }
 
-  // Check if validate package failed
+  // Check if validate package failed: terminate immediately
   const validateRecord = trace.find((t) => t.actionId === 'ACTION_VALIDATE_PACKAGE');
   if (validateRecord && validateRecord.status === 'FAILURE') {
     return {
       actionId: 'ACTION_FINISH_ANALYSIS',
-      rationale:
-        'Package intake validation failed; aborting subsequent analysis to prevent unsafe execution.',
+      rationale: `Observation: Package intake validation failed (${validateRecord.output?.errorCode || 'INVALID_FORMAT'}). Halting subsequent analysis to prevent unsafe execution on corrupt archive.`,
       input: { summaryNote: 'Package intake validation failed.' },
       isTerminal: true,
       plannerType: 'DeterministicFallback'
     };
   }
 
-  // Step 2: Manifest Inspection
+  // Step 2: Handle Missing Manifest Profile
+  if (!targetApk.hasManifest) {
+    if (targetApk.hasDex && !executedActionIds.has('ACTION_SCAN_DEX_SECRETS')) {
+      return {
+        actionId: 'ACTION_SCAN_DEX_SECRETS',
+        rationale:
+          'Observation: APK does not contain AndroidManifest.xml. Bypassing manifest-dependent checks; proceeding directly to Dalvik bytecode string analysis.',
+        input: { scanDepth: 'standard' },
+        isTerminal: false,
+        plannerType: 'DeterministicFallback'
+      };
+    }
+    return {
+      actionId: 'ACTION_FINISH_ANALYSIS',
+      rationale:
+        'Observation: APK lacks AndroidManifest.xml and all feasible bytecode checks have concluded. Concluding analysis safely.',
+      input: { summaryNote: 'Analysis concluded on archive without manifest.' },
+      isTerminal: true,
+      plannerType: 'DeterministicFallback'
+    };
+  }
+
+  // Step 3: Manifest Inspection
   if (!executedActionIds.has('ACTION_INSPECT_MANIFEST')) {
     return {
       actionId: 'ACTION_INSPECT_MANIFEST',
       rationale:
-        'APK integrity verified. Inspecting compiled AndroidManifest.xml to extract package identity, SDK levels, and evaluate core security flags (debuggable, allowBackup, cleartext).',
+        'Observation: APK integrity verified. Inspecting compiled AndroidManifest.xml to decode package identity, SDK levels, and evaluate core security flags.',
       input: { includeRawSummary: true },
       isTerminal: false,
       plannerType: 'DeterministicFallback'
     };
   }
 
-  // Step 3: Adaptive branching based on Manifest Observations
+  // Step 4: Evaluate Manifest Inspection Observations
   const manifestRecord = trace.find((t) => t.actionId === 'ACTION_INSPECT_MANIFEST');
+  if (manifestRecord && manifestRecord.status === 'FAILURE') {
+    if (targetApk.hasDex && !executedActionIds.has('ACTION_SCAN_DEX_SECRETS')) {
+      return {
+        actionId: 'ACTION_SCAN_DEX_SECRETS',
+        rationale:
+          'Observation: Manifest parsing failed. Bypassing component/permission inspections and proceeding to Dalvik DEX bytecode analysis.',
+        input: { scanDepth: 'standard' },
+        isTerminal: false,
+        plannerType: 'DeterministicFallback'
+      };
+    }
+    return {
+      actionId: 'ACTION_FINISH_ANALYSIS',
+      rationale: 'Observation: Manifest parsing failed and no further actions can execute. Finalizing session.',
+      input: { summaryNote: 'Manifest parsing failed.' },
+      isTerminal: true,
+      plannerType: 'DeterministicFallback'
+    };
+  }
+
   const manifestOutput = manifestRecord?.output || {};
+  const hasInternet =
+    Array.isArray(manifestOutput.declaredPermissions) &&
+    manifestOutput.declaredPermissions.includes('android.permission.INTERNET');
+  const isCleartext = manifestOutput.usesCleartextTraffic === true;
+  const unprotectedCount = manifestOutput.exportedWithoutPermissionCount || 0;
+  const totalComponents = manifestOutput.totalComponents || 0;
+  const totalPermissions = manifestOutput.totalDeclaredPermissions || 0;
 
-  // Check if permissions need analysis
-  if (
-    !executedActionIds.has('ACTION_ANALYZE_PERMISSIONS') &&
-    (manifestOutput.totalDeclaredPermissions > 0 || manifestOutput.packageName)
-  ) {
-    return {
-      actionId: 'ACTION_ANALYZE_PERMISSIONS',
-      rationale: `Manifest declared ${manifestOutput.totalDeclaredPermissions || 0} permissions. Selecting permission analysis to check for high-privilege dangerous grants (SMS, location, mic, storage).`,
-      input: { minRiskLevel: 'dangerous' },
-      isTerminal: false,
-      plannerType: 'DeterministicFallback'
-    };
-  }
-
-  // Check if exported components need scanning
-  if (
-    !executedActionIds.has('ACTION_SCAN_EXPORTED_COMPONENTS') &&
-    manifestOutput.totalComponents > 0
-  ) {
-    return {
-      actionId: 'ACTION_SCAN_EXPORTED_COMPONENTS',
-      rationale: `Manifest declared ${manifestOutput.totalComponents} IPC components. Scanning for unprotected exported Activities, Services, Receivers, and ContentProviders.`,
-      input: { checkProtections: true },
-      isTerminal: false,
-      plannerType: 'DeterministicFallback'
-    };
-  }
-
-  // Check if network security config needs inspection
-  if (!executedActionIds.has('ACTION_INSPECT_NETWORK_CONFIG')) {
-    const isCleartext = manifestOutput.usesCleartextTraffic === true;
+  // Observation-Driven Branch 1: High Cleartext Risk -> Prioritize Network Inspection
+  if (isCleartext && !executedActionIds.has('ACTION_INSPECT_NETWORK_CONFIG')) {
     return {
       actionId: 'ACTION_INSPECT_NETWORK_CONFIG',
-      rationale: isCleartext
-        ? 'Manifest observation: Cleartext traffic is enabled. Selecting network security inspection to identify plain HTTP endpoints and TLS configuration weaknesses.'
-        : 'Selecting network security inspection to evaluate TLS configuration and cleartext policies.',
+      rationale:
+        'Observation: Manifest explicitly enables cleartext HTTP traffic (android:usesCleartextTraffic="true"). Prioritizing immediate network security inspection to evaluate unencrypted endpoint exposure and TLS policies.',
       input: { correlateBytecode: true },
       isTerminal: false,
       plannerType: 'DeterministicFallback'
     };
   }
 
-  // Check if Dalvik Bytecode needs secret & crypto scanning
-  if (!executedActionIds.has('ACTION_SCAN_DEX_SECRETS') && targetApk.hasDex) {
+  // Observation-Driven Branch 2: Unprotected Components Detected -> Prioritize Component Scan
+  if (unprotectedCount > 0 && !executedActionIds.has('ACTION_SCAN_EXPORTED_COMPONENTS')) {
     return {
-      actionId: 'ACTION_SCAN_DEX_SECRETS',
-      rationale:
-        'APK contains compiled classes.dex bytecode. Scanning Dalvik string tables for hardcoded API credentials, cryptographic cipher weaknesses (DES/RC4/ECB), and permissive TrustManagers.',
-      input: { scanDepth: 'standard' },
+      actionId: 'ACTION_SCAN_EXPORTED_COMPONENTS',
+      rationale: `Observation: Manifest discloses ${unprotectedCount} exported components without permissions. Prioritizing component inspection to identify exposed IPC surfaces and vulnerable entry points.`,
+      input: { checkProtections: true },
       isTerminal: false,
       plannerType: 'DeterministicFallback'
     };
   }
 
-  // Terminal Action: Conclude
+  // Observation-Driven Branch 3: Analyze Declared Permissions (Skip if 0 declared)
+  if (!executedActionIds.has('ACTION_ANALYZE_PERMISSIONS')) {
+    if (totalPermissions > 0) {
+      return {
+        actionId: 'ACTION_ANALYZE_PERMISSIONS',
+        rationale: `Observation: Manifest declared ${totalPermissions} permissions. Selecting permission analysis to evaluate sensitive grants (SMS, location, mic, storage).`,
+        input: { minRiskLevel: 'dangerous' },
+        isTerminal: false,
+        plannerType: 'DeterministicFallback'
+      };
+    }
+    // If 0 permissions declared, skip ACTION_ANALYZE_PERMISSIONS
+  }
+
+  // Observation-Driven Branch 4: Scan Exported Components (Skip if 0 components)
+  if (!executedActionIds.has('ACTION_SCAN_EXPORTED_COMPONENTS')) {
+    if (totalComponents > 0) {
+      return {
+        actionId: 'ACTION_SCAN_EXPORTED_COMPONENTS',
+        rationale: `Observation: Manifest declared ${totalComponents} IPC components. Scanning for unprotected Activities, Services, Receivers, and ContentProviders.`,
+        input: { checkProtections: true },
+        isTerminal: false,
+        plannerType: 'DeterministicFallback'
+      };
+    }
+    // If 0 components declared, skip ACTION_SCAN_EXPORTED_COMPONENTS
+  }
+
+  // Observation-Driven Branch 5: Inspect Network Config (Skip if no internet permission and cleartext disabled)
+  if (!executedActionIds.has('ACTION_INSPECT_NETWORK_CONFIG')) {
+    if (hasInternet || isCleartext) {
+      return {
+        actionId: 'ACTION_INSPECT_NETWORK_CONFIG',
+        rationale: hasInternet
+          ? 'Observation: Manifest requests android.permission.INTERNET. Selecting network security inspection to evaluate TLS configuration and cleartext policies.'
+          : 'Observation: Evaluating network configuration against application network security policies.',
+        input: { correlateBytecode: true },
+        isTerminal: false,
+        plannerType: 'DeterministicFallback'
+      };
+    }
+    // If app has no INTERNET permission and cleartext is false: skip network inspection!
+  }
+
+  // Observation-Driven Branch 6: Dalvik Bytecode Secret & Crypto Scanning (Skip if no DEX)
+  if (!executedActionIds.has('ACTION_SCAN_DEX_SECRETS')) {
+    if (targetApk.hasDex) {
+      return {
+        actionId: 'ACTION_SCAN_DEX_SECRETS',
+        rationale:
+          'Observation: APK contains compiled classes.dex bytecode. Scanning Dalvik string tables for hardcoded API credentials, cryptographic cipher weaknesses (DES/RC4/ECB), and permissive TrustManagers.',
+        input: { scanDepth: 'standard' },
+        isTerminal: false,
+        plannerType: 'DeterministicFallback'
+      };
+    }
+    // If no DEX present, skip ACTION_SCAN_DEX_SECRETS
+  }
+
+  // Terminal Action: Conclude analysis
   return {
     actionId: 'ACTION_FINISH_ANALYSIS',
     rationale:
-      'All registered security checks for this package profile have been completed. Compiling final findings and verified evidence audit trail.',
+      'Observation: All observation-driven security checks relevant to this application profile have completed. Compiling final findings and verified evidence audit trail.',
     input: { summaryNote: 'Automated agentic analysis pipeline completed successfully.' },
     isTerminal: true,
     plannerType: 'DeterministicFallback'

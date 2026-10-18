@@ -275,8 +275,18 @@ export default function AnalysisDetailPage() {
                     </div>
 
                     <div className="flex items-center gap-2 text-[10px] font-mono">
-                      <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 font-semibold">
-                        {f.verificationStatus}
+                      <span
+                        className={`px-2 py-0.5 rounded font-semibold border ${
+                          f.verificationStatus === 'Verified'
+                            ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
+                            : f.verificationStatus === 'Suspected'
+                            ? 'bg-amber-500/15 text-amber-300 border-amber-500/30'
+                            : f.verificationStatus === 'Detected'
+                            ? 'bg-sky-500/15 text-sky-300 border-sky-500/30'
+                            : 'bg-purple-500/15 text-purple-300 border-purple-500/30'
+                        }`}
+                      >
+                        {f.verificationStatus || 'Verified'}
                       </span>
                       <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300">{f.cwe}</span>
                       <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300">{f.owaspCategory}</span>

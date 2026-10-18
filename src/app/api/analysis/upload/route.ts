@@ -2,17 +2,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import fs from 'node:fs';
 import path from 'node:path';
 import { validateApkBuffer } from '@/lib/security/apkValidator';
-
-const UPLOAD_DIR = path.resolve(process.cwd(), 'storage', 'uploads');
-
-function ensureUploadDir() {
-  if (!fs.existsSync(UPLOAD_DIR)) {
-    fs.mkdirSync(UPLOAD_DIR, { recursive: true });
-  }
-}
+import {
+  ensureUploadDir,
+  resolveUploadPath,
+  triggerMaintenanceIfNeeded
+} from '@/lib/security/storageManager';
 
 export async function POST(req: NextRequest) {
   try {
+    // Trigger throttled retention maintenance asynchronously
+    triggerMaintenanceIfNeeded();
+
     const formData = await req.formData();
     const file = formData.get('file') as File | null;
 
@@ -50,8 +50,10 @@ export async function POST(req: NextRequest) {
     }
 
     ensureUploadDir();
-    const safeBaseName = `${validation.metadata.sha256.substring(0, 16)}_${path.basename(fileName).replace(/[^a-zA-Z0-9._-]/g, '_')}`;
-    const safePath = path.join(UPLOAD_DIR, safeBaseName);
+    const cleanFileName = path.basename(fileName).replace(/[^a-zA-Z0-9._-]/g, '_');
+    const safeBaseName = `${validation.metadata.sha256.substring(0, 16)}_${cleanFileName}`;
+    const safePath = resolveUploadPath(safeBaseName);
+
     fs.writeFileSync(safePath, buffer);
 
     return NextResponse.json({

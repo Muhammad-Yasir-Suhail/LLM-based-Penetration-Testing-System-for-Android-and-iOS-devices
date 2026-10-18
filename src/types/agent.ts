@@ -96,6 +96,8 @@ export interface AnalysisSession {
     lowCount: number;
     infoCount: number;
     verifiedCount: number;
+    detectedCount?: number;
+    suspectedCount?: number;
     inconclusiveCount: number;
     securityPostureRating: 'A' | 'B' | 'C' | 'D' | 'F';
     summaryNarrative: string;

@@ -1,0 +1,34 @@
+name: VulnCope CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, master, 'feat/**', 'remediation/**']
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  security-verification-and-build:
+    name: Security Core Verification & Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Project Dependencies
+        run: npm ci
+
+      - name: Generate Security Test Fixtures
+        run: npm run fixtures
+
+      - name: Execute VulnCope Security Verification Test Suite (FR-01 to FR-07)
+        run: npm run test:security
+
+      - name: Verify Next.js Production Build
+        run: npm run build

@@ -142,9 +142,11 @@ export class ToolRegistry {
               allowBackup: manifestResult.allowBackup,
               usesCleartextTraffic: manifestResult.usesCleartextTraffic,
               totalDeclaredPermissions: manifestResult.declaredPermissions.length,
-              totalComponents: manifestResult.components.length
+              declaredPermissions: manifestResult.declaredPermissions,
+              totalComponents: manifestResult.components.length,
+              exportedWithoutPermissionCount: manifestResult.exportedWithoutPermission.length
             },
-            observation: `Parsed Manifest: package="${manifestResult.packageName}" targetSdk=${manifestResult.targetSdkVersion}. Flags: debuggable=${manifestResult.debuggable}, allowBackup=${manifestResult.allowBackup}, cleartextTraffic=${manifestResult.usesCleartextTraffic}. Found ${manifestResult.components.length} components and ${manifestResult.declaredPermissions.length} permissions.`
+            observation: `Parsed Manifest: package="${manifestResult.packageName}" targetSdk=${manifestResult.targetSdkVersion}. Flags: debuggable=${manifestResult.debuggable}, allowBackup=${manifestResult.allowBackup}, cleartextTraffic=${manifestResult.usesCleartextTraffic}. Found ${manifestResult.components.length} components (${manifestResult.exportedWithoutPermission.length} unprotected) and ${manifestResult.declaredPermissions.length} permissions.`
           };
         } catch (err: any) {
           return {

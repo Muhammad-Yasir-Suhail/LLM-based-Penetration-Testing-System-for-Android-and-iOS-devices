@@ -264,6 +264,8 @@ export class AgentController {
     const lowCount = findings.filter((f) => f.severity === 'Low').length;
     const infoCount = findings.filter((f) => f.severity === 'Info').length;
     const verifiedCount = findings.filter((f) => f.verificationStatus === 'Verified').length;
+    const detectedCount = findings.filter((f) => f.verificationStatus === 'Detected').length;
+    const suspectedCount = findings.filter((f) => f.verificationStatus === 'Suspected').length;
     const inconclusiveCount = findings.filter((f) => f.verificationStatus === 'Inconclusive').length;
 
     // Transparent, defensible posture rating formula
@@ -281,7 +283,7 @@ export class AgentController {
     const narrative =
       status === 'Failed'
         ? `Analysis terminated abnormally: ${errorMessage || 'Unknown error'}.`
-        : `Autonomous security evaluation executed ${trace.length} verified action steps in ${durationSeconds}s. Discovered ${findings.length} evidence-backed findings (${criticalCount} Critical, ${highCount} High, ${mediumCount} Medium). Overall Security Posture: Rating ${securityPostureRating}.`;
+        : `Autonomous security evaluation executed ${trace.length} verified action steps in ${durationSeconds}s. Discovered ${findings.length} findings (${verifiedCount} Verified, ${detectedCount} Detected indicators, ${suspectedCount} Suspected) across ${criticalCount} Critical, ${highCount} High, ${mediumCount} Medium. Overall Security Posture: Rating ${securityPostureRating}.`;
 
     return {
       sessionId,
@@ -304,6 +306,8 @@ export class AgentController {
         lowCount,
         infoCount,
         verifiedCount,
+        detectedCount,
+        suspectedCount,
         inconclusiveCount,
         securityPostureRating,
         summaryNarrative: narrative

@@ -3,11 +3,17 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { AgentController } from '@/lib/security/agentController';
 import { saveSession } from '@/lib/security/sessionStore';
+import {
+  isValidStorageKey,
+  resolveUploadPath,
+  lockStorageKey,
+  unlockStorageKey
+} from '@/lib/security/storageManager';
 
 const FIXTURES_DIR = path.resolve(process.cwd(), 'fixtures');
-const UPLOAD_DIR = path.resolve(process.cwd(), 'storage', 'uploads');
 
 export async function POST(req: NextRequest) {
+  let body: any = undefined;
   try {
     let apkBuffer: Buffer | null = null;
     let fileName = 'target.apk';
@@ -23,7 +29,7 @@ export async function POST(req: NextRequest) {
         apkBuffer = Buffer.from(ab);
       }
     } else {
-      const body = await req.json();
+      body = await req.json();
 
       if (body.fixtureId) {
         const fixtureFileName =
@@ -38,17 +44,32 @@ export async function POST(req: NextRequest) {
         apkBuffer = fs.readFileSync(fixturePath);
         fileName = fixtureFileName;
       } else if (body.storageKey) {
-        // Sanitize storage key against path traversal
-        const safeBaseName = path.basename(body.storageKey);
-        const filePath = path.join(UPLOAD_DIR, safeBaseName);
-        if (!fs.existsSync(filePath)) {
+        if (!isValidStorageKey(body.storageKey)) {
           return NextResponse.json(
-            { success: false, error: 'Uploaded file expired or not found.' },
-            { status: 404 }
+            { success: false, error: 'Invalid storage key format' },
+            { status: 400 }
           );
         }
-        apkBuffer = fs.readFileSync(filePath);
-        fileName = safeBaseName.split('_').slice(1).join('_') || safeBaseName;
+
+        try {
+          const filePath = resolveUploadPath(body.storageKey);
+          if (!fs.existsSync(filePath)) {
+            return NextResponse.json(
+              { success: false, error: 'Uploaded file expired or not found.' },
+              { status: 404 }
+            );
+          }
+          // Lock key during reading and analysis
+          lockStorageKey(body.storageKey);
+          apkBuffer = fs.readFileSync(filePath);
+          const parts = body.storageKey.split('_');
+          fileName = parts.slice(1).join('_') || body.storageKey;
+        } catch {
+          return NextResponse.json(
+            { success: false, error: 'Path resolution error on storage key' },
+            { status: 400 }
+          );
+        }
       }
     }
 
@@ -59,18 +80,24 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const controller = new AgentController();
-    const session = await controller.runAnalysis(apkBuffer, {
-      fileName
-    });
+    try {
+      const controller = new AgentController();
+      const session = await controller.runAnalysis(apkBuffer, {
+        fileName
+      });
 
-    // Save session to persistence
-    await saveSession(session);
+      // Save session to persistence
+      await saveSession(session);
 
-    return NextResponse.json({
-      success: true,
-      session
-    });
+      return NextResponse.json({
+        success: true,
+        session
+      });
+    } finally {
+      if (typeof body !== 'undefined' && body?.storageKey) {
+        unlockStorageKey(body.storageKey);
+      }
+    }
   } catch (err: any) {
     console.error('[VulnCope API Run Error]:', err);
     return NextResponse.json(

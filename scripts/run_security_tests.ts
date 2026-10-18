@@ -9,7 +9,23 @@ import assert from 'node:assert';
 import { validateApkBuffer } from '../src/lib/security/apkValidator';
 import { defaultToolRegistry, ToolRegistry } from '../src/lib/security/toolRegistry';
 import { AgentController } from '../src/lib/security/agentController';
-import { saveSession, getSession, listSessions } from '../src/lib/security/sessionStore';
+import {
+  saveSession,
+  getSession,
+  listSessions,
+  isValidSessionId,
+  resolveSessionPath
+} from '../src/lib/security/sessionStore';
+import {
+  isValidStorageKey,
+  resolveUploadPath,
+  lockStorageKey,
+  unlockStorageKey,
+  isStorageKeyLocked,
+  pruneExpiredUploads,
+  UPLOAD_DIR,
+  ensureUploadDir
+} from '../src/lib/security/storageManager';
 import { AnalysisSession } from '../src/types/agent';
 
 const FIXTURES_DIR = path.resolve(process.cwd(), 'fixtures');
@@ -131,11 +147,9 @@ async function main() {
   await runTest('FR-05', 'Controller rejects unregistered / arbitrary shell action at security boundary', async () => {
     const controller = new AgentController();
     const customRegistry = new ToolRegistry();
-    // Simulate an attempt to execute an unsupported arbitrary action
     const isSupported = customRegistry.isActionSupported('EXEC_ARBITRARY_SHELL');
     assert.strictEqual(isSupported, false, 'Unregistered action must return supported=false');
 
-    // Run controller with an APK and ensure only allowlisted actions run
     const session = await controller.runAnalysis(vulnerableBuffer, {
       sessionId: 'TEST-BOUNDARY-01',
       fileName: 'vulnerable_bank.apk'
@@ -145,9 +159,37 @@ async function main() {
     assert.strictEqual(hasArbitraryExecution, false, 'Arbitrary actions must never execute');
   });
 
-  // 6. FR-03 & FR-04: Full End-to-End Adaptive Decision Loop on Vulnerable APK
+  // 6. FR-03 & Security: Session ID Allowlist and Path Traversal Prevention (Objective 1)
+  await runTest('FR-03', 'Reject path traversal, absolute paths, and malformed session IDs with containment checks', async () => {
+    // Valid session ID
+    assert.strictEqual(isValidSessionId('VC-SES-123_valid'), true);
+    assert.ok(resolveSessionPath('VC-SES-123_valid').endsWith('.json'));
+
+    // Traversal attempts
+    const maliciousIds = [
+      '../test',
+      '../../etc/passwd',
+      '..\\..\\windows\\system32',
+      '/etc/shadow',
+      'C:\\Windows\\System32\\cmd.exe',
+      'session%2e%2e%2f',
+      'session\x00null',
+      'session id with spaces',
+      '',
+      'a'.repeat(65) // exceeds 64 chars
+    ];
+
+    for (const badId of maliciousIds) {
+      assert.strictEqual(isValidSessionId(badId), false, `Must reject malformed ID: ${badId}`);
+      assert.throws(() => resolveSessionPath(badId), /Invalid session identifier format|Path traversal/, `Must throw on bad ID: ${badId}`);
+      const session = await getSession(badId);
+      assert.strictEqual(session, null, `getSession must return null for bad ID: ${badId}`);
+    }
+  });
+
+  // 7. FR-04: Genuine Observation-Driven Adaptive Decision Loop (Objective 4)
   let vulnerableSession: AnalysisSession;
-  await runTest('FR-04', 'Observation-driven adaptive decision loop discovers real vulnerabilities', async () => {
+  await runTest('FR-04', 'Observation-driven adaptive decision loop discovers real vulnerabilities and branches dynamically', async () => {
     const controller = new AgentController({ maxSteps: 8 });
     vulnerableSession = await controller.runAnalysis(vulnerableBuffer, {
       sessionId: 'TEST-VULN-RUN-01',
@@ -158,35 +200,70 @@ async function main() {
     assert.ok(vulnerableSession.totalActionsExecuted >= 5, 'Must execute at least 5 bounded steps');
     assert.ok(vulnerableSession.findings.length > 0, 'Must discover real findings on vulnerable test app');
 
-    // Check that manifest inspection observed cleartext and exported components
-    const manifestStep = vulnerableSession.executionTrace.find((t) => t.actionId === 'ACTION_INSPECT_MANIFEST');
-    assert.ok(manifestStep, 'Manifest inspection step must be present');
-    assert.strictEqual(manifestStep?.output.usesCleartextTraffic, true);
-    assert.strictEqual(manifestStep?.output.debuggable, true);
+    // Check observation-driven branching:
+    // In vulnerable_bank.apk, manifest declares usesCleartextTraffic=true.
+    // The adaptive planner must have prioritized ACTION_INSPECT_NETWORK_CONFIG immediately at step 3!
+    const step3 = vulnerableSession.executionTrace[2];
+    assert.ok(step3, 'Step 3 must exist');
+    assert.strictEqual(step3.actionId, 'ACTION_INSPECT_NETWORK_CONFIG', 'Step 3 must dynamically prioritize network inspection due to cleartext observation');
+    assert.ok(step3.decisionRationale.includes('Cleartext') || step3.decisionRationale.includes('cleartext'));
 
     // Verify finding breakdown
     const criticals = vulnerableSession.findings.filter((f) => f.severity === 'Critical');
     const highs = vulnerableSession.findings.filter((f) => f.severity === 'High');
     assert.ok(criticals.length >= 1, 'Must detect hardcoded Google/AWS credentials as Critical');
-    assert.ok(highs.length >= 2, 'Must detect debuggable and unprotected exported components as High');
+    assert.ok(highs.length >= 2, 'Must detect debuggable and cleartext/crypto issues as High');
   });
 
-  // 7. FR-06: Traceable Evidence & Verification State
-  await runTest('FR-06', 'Every discovered finding contains traceable evidence, location, and Verified status', () => {
+  // 8. FR-06: Accurate Evidence & Verification State Differentiation (Objective 2)
+  await runTest('FR-06', 'Findings accurately differentiate Verified vulnerabilities from Detected static indicators', () => {
     assert.ok(vulnerableSession.findings.length > 0);
+
+    // Verify that every finding has valid schema, CWE, OWASP mapping
     for (const finding of vulnerableSession.findings) {
       assert.ok(finding.stableId.startsWith('VC-'), 'Finding must have stable ID starting with VC-');
       assert.ok(finding.title.length > 5, 'Finding must have descriptive title');
       assert.ok(finding.evidence.length > 0, 'Finding must have concrete technical evidence');
       assert.ok(finding.location.length > 0, 'Finding must cite file / location');
-      assert.strictEqual(finding.verificationStatus, 'Verified', 'Directly detected finding must be Verified');
+      assert.ok(
+        ['Verified', 'Detected', 'Suspected', 'Inconclusive'].includes(finding.verificationStatus),
+        `Verification status must be valid: got ${finding.verificationStatus}`
+      );
       assert.ok(finding.remediation.length > 10, 'Finding must include actionable remediation');
       assert.ok(finding.cwe.startsWith('CWE-'), 'Finding must have valid CWE mapping');
       assert.ok(finding.owaspCategory.startsWith('MASVS-'), 'Finding must map to OWASP MASVS');
     }
+
+    // 1. Sensitive permissions alone must NOT be 'Verified' vulnerabilities; they must be 'Detected'
+    const permissionFindings = vulnerableSession.findings.filter((f) => f.category === 'Privilege Declaration');
+    assert.ok(permissionFindings.length > 0, 'Should detect sensitive permissions in vulnerable app');
+    for (const pf of permissionFindings) {
+      assert.strictEqual(pf.verificationStatus, 'Detected', 'Sensitive permissions must be labeled Detected, not Verified');
+      assert.strictEqual(pf.confidence, 'Suspected');
+    }
+
+    // 2. Confirmed dangerous build configurations (debuggable, cleartext) must be 'Verified'
+    const debugFinding = vulnerableSession.findings.find((f) => f.cwe === 'CWE-215');
+    assert.ok(debugFinding, 'Must detect debuggable flag');
+    assert.strictEqual(debugFinding?.verificationStatus, 'Verified');
+
+    const cleartextFinding = vulnerableSession.findings.find((f) => f.cwe === 'CWE-319' && f.location.includes('AndroidManifest.xml'));
+    assert.ok(cleartextFinding, 'Must detect manifest cleartext traffic flag');
+    assert.strictEqual(cleartextFinding?.verificationStatus, 'Verified');
+
+    // 3. High-entropy credentials (Google/AWS) must be 'Verified'
+    const keyFinding = vulnerableSession.findings.find((f) => f.cwe === 'CWE-798');
+    assert.ok(keyFinding, 'Must detect hardcoded credentials');
+    assert.strictEqual(keyFinding?.verificationStatus, 'Verified');
+
+    // 4. Weak crypto references (DES/RC4 string occurrences) must be 'Detected' static indicators
+    const cryptoFinding = vulnerableSession.findings.find((f) => f.cwe === 'CWE-327');
+    if (cryptoFinding) {
+      assert.strictEqual(cryptoFinding.verificationStatus, 'Detected', 'Obsolete cipher string pool references must be labeled Detected');
+    }
   });
 
-  // 8. Positive vs. Negative Case: Hardened APK Evaluation
+  // 9. Positive vs. Negative Case: Hardened APK Evaluation & Adaptive Branching (Objective 4)
   await runTest('FR-04', 'Hardened APK produces zero false-positive critical findings and rating A', async () => {
     const controller = new AgentController({ maxSteps: 8 });
     const hardenedSession = await controller.runAnalysis(hardenedBuffer, {
@@ -198,9 +275,14 @@ async function main() {
     const criticals = hardenedSession.findings.filter((f) => f.severity === 'Critical');
     assert.strictEqual(criticals.length, 0, 'Hardened app must have 0 Critical findings');
     assert.strictEqual(hardenedSession.summary.securityPostureRating, 'A', 'Hardened app must receive Posture Rating A');
+
+    // In hardened_app, usesCleartextTraffic is false.
+    // Notice that Step 3 does NOT execute ACTION_INSPECT_NETWORK_CONFIG, but proceeds to components/permissions!
+    const step3 = hardenedSession.executionTrace[2];
+    assert.notStrictEqual(step3?.actionId, 'ACTION_INSPECT_NETWORK_CONFIG', 'Hardened app must not prioritize network config before components');
   });
 
-  // 9. FR-03 & Persistence: Session Storage
+  // 10. FR-03 & Persistence: Session Storage
   await runTest('FR-03', 'Persist analysis session to local storage and retrieve by ID', async () => {
     await saveSession(vulnerableSession);
     const loaded = await getSession(vulnerableSession.sessionId);
@@ -211,6 +293,47 @@ async function main() {
     const all = await listSessions();
     const foundInList = all.some((s) => s.sessionId === vulnerableSession.sessionId);
     assert.strictEqual(foundInList, true, 'Session must appear in session list');
+  });
+
+  // 11. FR-07: Safe APK Storage Hygiene & Retention Management (Objective 5)
+  await runTest('FR-07', 'Enforce APK storage key allowlist, active file locking, and retention pruning', () => {
+    ensureUploadDir();
+
+    // 1. Storage key validation
+    assert.strictEqual(isValidStorageKey('1234567890abcdef_test_app.apk'), true);
+    assert.strictEqual(isValidStorageKey('../../etc/passwd'), false);
+    assert.strictEqual(isValidStorageKey('bad_key'), false);
+
+    // 2. Traversal rejection in storage path resolution
+    assert.throws(() => resolveUploadPath('../../etc/passwd'), /Invalid storage key format/);
+
+    // 3. Active key locking
+    const testKey = '1234567890abcdef_sample_bank.apk';
+    assert.strictEqual(isStorageKeyLocked(testKey), false);
+    lockStorageKey(testKey);
+    assert.strictEqual(isStorageKeyLocked(testKey), true);
+    unlockStorageKey(testKey);
+    assert.strictEqual(isStorageKeyLocked(testKey), false);
+
+    // 4. Retention pruning simulation
+    const dummyOldFile = 'abcdef1234567890_dummy_expired.apk';
+    const dummyPath = path.join(UPLOAD_DIR, dummyOldFile);
+    fs.writeFileSync(dummyPath, Buffer.from('PK\x03\x04dummy'));
+
+    // Set file time to 48 hours ago
+    const twoDaysAgo = (Date.now() - 48 * 3600 * 1000) / 1000;
+    fs.utimesSync(dummyPath, twoDaysAgo, twoDaysAgo);
+
+    // When locked, it must NOT be pruned
+    lockStorageKey(dummyOldFile);
+    const lockedPrune = pruneExpiredUploads({ maxAgeMs: 24 * 3600 * 1000 });
+    assert.strictEqual(fs.existsSync(dummyPath), true, 'Locked expired file must be preserved');
+    unlockStorageKey(dummyOldFile);
+
+    // When unlocked, it must be pruned
+    const unlockedPrune = pruneExpiredUploads({ maxAgeMs: 24 * 3600 * 1000 });
+    assert.strictEqual(fs.existsSync(dummyPath), false, 'Unlocked expired file must be pruned');
+    assert.ok(unlockedPrune.prunedCount >= 1, 'Pruned count must be at least 1');
   });
 
   // Summary

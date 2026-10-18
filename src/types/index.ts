@@ -53,6 +53,10 @@ export interface Finding {
   detectedBy: EngineType[];
   correlatedIssueId?: string;
   exploitability: 'High' | 'Medium' | 'Low' | 'Proof of Concept Available';
+  isRealRun?: boolean;
+  verificationStatus?: string;
+  sessionId?: string;
+  sourceTool?: string;
 }
 
 export interface ApplicationVersion {
