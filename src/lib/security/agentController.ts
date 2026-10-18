@@ -33,7 +33,7 @@ export class AgentController {
     options?: ControllerOptions
   ): Promise<AnalysisSession> {
     const startTime = Date.now();
-    const sessionId = options?.sessionId || `VC-SES-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
+    const sessionId = options?.sessionId || `VS-SES-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
     const fileName = options?.fileName || 'target.apk';
 
     // Initial APK intake validation

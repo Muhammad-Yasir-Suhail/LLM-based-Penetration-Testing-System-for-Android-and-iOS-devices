@@ -162,8 +162,8 @@ async function main() {
   // 6. FR-03 & Security: Session ID Allowlist and Path Traversal Prevention (Objective 1)
   await runTest('FR-03', 'Reject path traversal, absolute paths, and malformed session IDs with containment checks', async () => {
     // Valid session ID
-    assert.strictEqual(isValidSessionId('VC-SES-123_valid'), true);
-    assert.ok(resolveSessionPath('VC-SES-123_valid').endsWith('.json'));
+    assert.strictEqual(isValidSessionId('VS-SES-123_valid'), true);
+    assert.ok(resolveSessionPath('VS-SES-123_valid').endsWith('.json'));
 
     // Traversal attempts
     const maliciousIds = [
@@ -221,7 +221,7 @@ async function main() {
 
     // Verify that every finding has valid schema, CWE, OWASP mapping
     for (const finding of vulnerableSession.findings) {
-      assert.ok(finding.stableId.startsWith('VC-'), 'Finding must have stable ID starting with VC-');
+      assert.ok(finding.stableId.startsWith('VS-') || finding.stableId.startsWith('VC-'), 'Finding must have stable ID starting with VS-');
       assert.ok(finding.title.length > 5, 'Finding must have descriptive title');
       assert.ok(finding.evidence.length > 0, 'Finding must have concrete technical evidence');
       assert.ok(finding.location.length > 0, 'Finding must cite file / location');

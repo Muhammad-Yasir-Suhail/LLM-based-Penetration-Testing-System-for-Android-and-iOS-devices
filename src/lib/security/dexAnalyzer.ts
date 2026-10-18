@@ -20,7 +20,7 @@ export function analyzeDexBuffer(
   let findingCounter = 1;
 
   function genId() {
-    return `VC-DEX-${String(findingCounter++).padStart(3, '0')}`;
+    return `VS-DEX-${String(findingCounter++).padStart(3, '0')}`;
   }
 
   const findings: SecurityFinding[] = [];

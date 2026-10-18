@@ -78,7 +78,7 @@ export function analyzeManifestBuffer(
   let findingCounter = 1;
 
   function genId() {
-    return `VC-MAN-${String(findingCounter++).padStart(3, '0')}`;
+    return `VS-MAN-${String(findingCounter++).padStart(3, '0')}`;
   }
 
   // Traverse tree

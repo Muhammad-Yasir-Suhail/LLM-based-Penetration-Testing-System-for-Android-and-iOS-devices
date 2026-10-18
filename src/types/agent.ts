@@ -40,7 +40,7 @@ export interface ActionExecutionRecord {
 }
 
 export interface SecurityFinding {
-  stableId: string; // e.g. "VC-SEC-001"
+  stableId: string; // e.g. "VS-SEC-001"
   title: string;
   description: string;
   category: string;
