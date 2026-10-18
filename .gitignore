@@ -25,3 +25,5 @@ storage/
 .vulncope/
 *.apk
 *.dex
+*.pdf
+scripts/generate_pdf_report.py
