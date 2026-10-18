@@ -1,4 +1,4 @@
-# VulnCope — Mid Evaluation 01 Demonstration Script & Defense Q&A Guide (R8)
+# VulnScope — Mid Evaluation 01 Demonstration Script & Defense Q&A Guide (R8)
 **Project Title:** AI-Assisted Vulnerability Detection and Security Analysis of Mobile Applications  
 **Team Members:** Member 1 (Lead Developer / Architecture) & Member 2 (Security Analyzers & UI)  
 **Target Milestone:** Mid Evaluation 01  
@@ -12,8 +12,8 @@ This sequence demonstrates the genuine agentic decision core, real APK intake, o
 
 ### Step 1: Open Application & Environment Verification (Member 1)
 - **Action:** Open browser to `http://localhost:3000`.
-- **Narration:** "Welcome to VulnCope. Our project focuses on an evidence-grounded agentic mobile application security testing framework. Unlike simple chatbots or static wrappers, VulnCope operates an autonomous decision loop where an agent executes allowlisted tools, observes real outputs, and adapts subsequent decisions."
-- **Point out:** Visible VulnCope branding, clean developer workspace UI, and the active agent core status.
+- **Narration:** "Welcome to VulnScope. Our project focuses on an evidence-grounded agentic mobile application security testing framework. Unlike simple chatbots or static wrappers, VulnScope operates an autonomous decision loop where an agent executes allowlisted tools, observes real outputs, and adapts subsequent decisions."
+- **Point out:** Visible VulnScope branding, clean developer workspace UI, and the active agent core status.
 
 ### Step 2: Navigate to Live Agent Pipeline (`/analysis/run`) (Member 2)
 - **Action:** Click "Launch Agent Run" or navigate to `/analysis/run`.
@@ -30,7 +30,7 @@ This sequence demonstrates the genuine agentic decision core, real APK intake, o
 
 ### Step 4: Execute Negative / Hardened Test Case (Member 2)
 - **Action:** Click "Analyze Another APK", select `Hardened Vault Benchmark`, and click "Execute Benchmark Analysis".
-- **Narration:** "To demonstrate that VulnCope does not invent false positives or rely on hardcoded scan results, we run the Hardened Benchmark. The agent observes clean manifest flags, no unprotected IPC components, and no hardcoded credentials in the bytecode."
+- **Narration:** "To demonstrate that VulnScope does not invent false positives or rely on hardcoded scan results, we run the Hardened Benchmark. The agent observes clean manifest flags, no unprotected IPC components, and no hardcoded credentials in the bytecode."
 - **Point out:** 0 Critical findings, 0 High findings, Overall Security Posture: **Grade A**.
 
 ### Step 5: Demonstrate Security Boundary & Failure Handling (Member 1)
@@ -44,15 +44,15 @@ This sequence demonstrates the genuine agentic decision core, real APK intake, o
 
 ### Q1: "How is this different from just running MobSF or another scanner and sending the output to ChatGPT?"
 **Technically Honest Answer (Member 1):**  
-"A standard scanner-plus-wrapper approach is a rigid, one-way pipeline: it executes a predetermined set of tools, generates a static report, and asks an LLM to summarize it. In VulnCope, the LLM or planner is placed **inside an active decision loop**. The agent starts with minimal observations, selects an allowlisted action, inspects the programmatic result, and determines what to inspect next based on what it actually found. For example, if no cleartext flag or network permission is observed, the agent does not waste time or context tokens on network inspections. Furthermore, findings are never accepted merely because the LLM claimed they exist; every finding requires programmatic verification and traceable evidence."
+"A standard scanner-plus-wrapper approach is a rigid, one-way pipeline: it executes a predetermined set of tools, generates a static report, and asks an LLM to summarize it. In VulnScope, the LLM or planner is placed **inside an active decision loop**. The agent starts with minimal observations, selects an allowlisted action, inspects the programmatic result, and determines what to inspect next based on what it actually found. For example, if no cleartext flag or network permission is observed, the agent does not waste time or context tokens on network inspections. Furthermore, findings are never accepted merely because the LLM claimed they exist; every finding requires programmatic verification and traceable evidence."
 
 ### Q2: "What happens if you do not have an OpenAI or Gemini API key during testing or grading?"
 **Technically Honest Answer (Member 1):**  
-"We anticipated API unavailability, connectivity limits, and grading unpredictability. VulnCope includes an auditable `DeterministicRulePlanner` fallback. It executes the exact same allowlisted actions, evaluates the exact same observation criteria, and produces the exact same verified findings without sending any data over the internet or requiring an API key. When an API key is provided in `.env.local`, the platform seamlessly transitions to LLM-guided planning."
+"We anticipated API unavailability, connectivity limits, and grading unpredictability. VulnScope includes an auditable `DeterministicRulePlanner` fallback. It executes the exact same allowlisted actions, evaluates the exact same observation criteria, and produces the exact same verified findings without sending any data over the internet or requiring an API key. When an API key is provided in `.env.local`, the platform seamlessly transitions to LLM-guided planning."
 
 ### Q3: "Did you decompile the APKs yourself or are you using external tools?"
 **Technically Honest Answer (Member 2):**  
-"For this mid-evaluation milestone, we implemented a self-contained, in-process static analyzer in TypeScript. We built an Android compiled binary XML (`AxmlParser`) that parses binary `AndroidManifest.xml` files, an `ApkValidator` that checks PKZIP layout and cryptographic digests, a `ManifestAnalyzer` that audits permissions and IPC component exposure, and a `DexAnalyzer` that extracts strings from compiled Dalvik bytecode (`classes.dex`). This ensures VulnCope runs with zero external binary dependencies on any operating system."
+"For this mid-evaluation milestone, we implemented a self-contained, in-process static analyzer in TypeScript. We built an Android compiled binary XML (`AxmlParser`) that parses binary `AndroidManifest.xml` files, an `ApkValidator` that checks PKZIP layout and cryptographic digests, a `ManifestAnalyzer` that audits permissions and IPC component exposure, and a `DexAnalyzer` that extracts strings from compiled Dalvik bytecode (`classes.dex`). This ensures VulnScope runs with zero external binary dependencies on any operating system."
 
 ### Q4: "Can the LLM execute arbitrary shell commands on the server?"
 **Technically Honest Answer (Member 1):**  

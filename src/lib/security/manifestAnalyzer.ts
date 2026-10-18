@@ -177,7 +177,7 @@ export function analyzeManifestBuffer(
       verificationStatus: 'Verified',
       evidence: '<application android:debuggable="true" ...>',
       location: 'AndroidManifest.xml:<application>',
-      sourceTool: 'VulnCope Manifest Inspector v1.0',
+      sourceTool: 'VulnScope Manifest Inspector v1.0',
       remediation:
         'Ensure android:debuggable is removed or set to false in production release configurations via build.gradle release buildType.',
       sessionId,
@@ -200,7 +200,7 @@ export function analyzeManifestBuffer(
       verificationStatus: 'Detected',
       evidence: '<application android:allowBackup="true" ...>',
       location: 'AndroidManifest.xml:<application>',
-      sourceTool: 'VulnCope Manifest Inspector v1.0',
+      sourceTool: 'VulnScope Manifest Inspector v1.0',
       remediation:
         'Explicitly disable application backup with android:allowBackup="false", or specify granular dataExtractionRules.',
       sessionId,
@@ -223,7 +223,7 @@ export function analyzeManifestBuffer(
       verificationStatus: 'Verified',
       evidence: '<application android:usesCleartextTraffic="true" ...>',
       location: 'AndroidManifest.xml:<application>',
-      sourceTool: 'VulnCope Manifest Inspector v1.0',
+      sourceTool: 'VulnScope Manifest Inspector v1.0',
       remediation:
         'Set android:usesCleartextTraffic="false" and enforce HTTPS/TLS across all application endpoints with certificate pinning where appropriate.',
       sessionId,
@@ -264,7 +264,7 @@ export function analyzeManifestBuffer(
       verificationStatus,
       evidence: `<${comp.type} android:name="${comp.name}" android:exported="true" (missing android:permission) />`,
       location: `AndroidManifest.xml:<${comp.type} name="${comp.name}">`,
-      sourceTool: 'VulnCope Manifest Inspector v1.0',
+      sourceTool: 'VulnScope Manifest Inspector v1.0',
       remediation: `Set android:exported="false" if external invocation is not required, or define custom permission with protectionLevel="signature".`,
       sessionId,
       timestamp
@@ -287,7 +287,7 @@ export function analyzeManifestBuffer(
         verificationStatus: 'Detected',
         evidence: `<uses-permission android:name="${perm}" />`,
         location: `AndroidManifest.xml:<uses-permission name="${perm}">`,
-        sourceTool: 'VulnCope Manifest Inspector v1.0',
+        sourceTool: 'VulnScope Manifest Inspector v1.0',
         remediation: `Review whether this permission is strictly necessary for core functionality and verify runtime permission request guards.`,
         sessionId,
         timestamp

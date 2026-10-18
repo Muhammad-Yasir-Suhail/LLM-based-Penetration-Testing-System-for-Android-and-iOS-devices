@@ -47,7 +47,7 @@ export default function SecurityEnginesPage() {
             </span>
           </div>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Allowlisted security analysis actions orchestrated by the VulnCope autonomous agent decision loop.
+            Allowlisted security analysis actions orchestrated by the VulnScope autonomous agent decision loop.
           </p>
         </div>
 
@@ -66,7 +66,7 @@ export default function SecurityEnginesPage() {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-lg font-bold text-white font-mono">VulnCope Real Agentic Security Core</h2>
+                <h2 className="text-lg font-bold text-white font-mono">VulnScope Real Agentic Security Core</h2>
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
                   VERIFIED OPERATIONAL
                 </span>

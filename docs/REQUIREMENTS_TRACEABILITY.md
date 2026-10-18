@@ -1,4 +1,4 @@
-# VulnCope — Requirements Traceability & Acceptance Criteria (R4)
+# VulnScope — Requirements Traceability & Acceptance Criteria (R4)
 **Project Title:** AI-Assisted Vulnerability Detection and Security Analysis of Mobile Applications  
 **Milestone Focus:** Mid Evaluation 01  
 **Rubric Area:** R4 — 10 Marks
@@ -27,5 +27,5 @@
 | **NFR-02** | **Bounded Execution** | The agent decision loop must strictly enforce a maximum action boundary (default: 8 steps) to prevent runaway execution. | Controlled iteration counter and `maxSteps` boundary in `AgentController.runAnalysis()`. |
 | **NFR-03** | **Execution Timeouts** | Individual tool actions must be constrained by execution timeouts (5s to 15s) to prevent thread hangs. | `Promise.race` timeout wrapper in `AgentController.executeWithTimeout()`. |
 | **NFR-04** | **Secret Management** | LLM API credentials must never be committed to Git, leaked to the frontend client bundle, or logged to disk. | Server-side environment variables (`.env.local`), placeholder `.env.example`, gitignored storage. |
-| **NFR-05** | **Safe Storage** | Uploaded packages and extracted bytecode must be stored in private, unserved directories (`storage/uploads/`, `.vulncope/`). | Gitignored storage directories outside the public Next.js static asset root. |
+| **NFR-05** | **Safe Storage** | Uploaded packages and extracted bytecode must be stored in private, unserved directories (`storage/uploads/`, `.vulnscope/`). | Gitignored storage directories outside the public Next.js static asset root. |
 | **NFR-06** | **Offline Reproducibility** | The platform must remain 100% functional and demonstrable even when internet connectivity or third-party LLM API keys are unavailable. | `DeterministicRulePlanner` fallback providing verified, honest offline execution. |

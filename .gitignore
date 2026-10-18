@@ -19,8 +19,9 @@ pnpm-debug.log*
 .DS_Store
 Thumbs.db
 
-# VulnCope secure analysis storage and local session persistence
+# VulnScope secure analysis storage and local session persistence
 storage/
+.vulnscope/
 .vulncope/
 *.apk
 *.dex

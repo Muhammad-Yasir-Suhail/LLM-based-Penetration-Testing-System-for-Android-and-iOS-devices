@@ -260,7 +260,7 @@ async function callOpenAiPlanner(context: PlannerContext, apiKey: string): Promi
     )
     .join('\n\n');
 
-  const systemMessage = `You are VulnCope's autonomous mobile security testing planner.
+  const systemMessage = `You are VulnScope's autonomous mobile security testing planner.
 You select the NEXT action to run against the target APK from the allowed registry.
 Never execute arbitrary commands. Select only from the provided action IDs.
 Respond ONLY with a valid JSON object matching this schema:
@@ -338,7 +338,7 @@ async function callGeminiPlanner(context: PlannerContext, apiKey: string): Promi
     )
     .join('\n\n');
 
-  const prompt = `You are VulnCope's autonomous mobile security testing planner.
+  const prompt = `You are VulnScope's autonomous mobile security testing planner.
 Target APK: ${context.targetApk.fileName} (SHA256: ${context.targetApk.sha256})
 
 Available Actions:

@@ -53,7 +53,7 @@ export const Topbar: React.FC = () => {
     <header className="sticky top-0 z-30 h-16 bg-[#080c14]/85 backdrop-blur-md border-b border-slate-800/80 px-4 sm:px-6 flex items-center justify-between gap-4">
       {/* Left: Breadcrumbs */}
       <div className="flex items-center gap-2 text-xs font-mono">
-        <span className="text-emerald-400 font-bold">VulnCope</span>
+        <span className="text-emerald-400 font-bold">VulnScope</span>
         <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
         <span className="text-slate-200 font-semibold">{getBreadcrumbTitle(pathname)}</span>
       </div>

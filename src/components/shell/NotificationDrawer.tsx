@@ -80,7 +80,7 @@ export const NotificationDrawer: React.FC = () => {
           {/* Footer */}
           <div className="p-3 bg-[#0a0e16] border-t border-slate-800 text-center">
             <p className="text-[11px] font-mono text-slate-400">
-              VulnCope Security Event Stream • Local Dispatcher
+              VulnScope Security Event Stream • Local Dispatcher
             </p>
           </div>
         </div>

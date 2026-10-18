@@ -52,7 +52,7 @@ function generateVulnerableApk() {
 
   const manifestXml = `<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.vulncope.insecurebank"
+    package="com.vulnscope.insecurebank"
     android:versionCode="101"
     android:versionName="1.0.1">
 
@@ -63,13 +63,13 @@ function generateVulnerableApk() {
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
-        android:label="VulnCope Insecure Bank Benchmark"
+        android:label="VulnScope Insecure Bank Benchmark"
         android:debuggable="true"
         android:allowBackup="true"
         android:usesCleartextTraffic="true">
 
         <activity
-            android:name="com.vulncope.insecurebank.MainActivity"
+            android:name="com.vulnscope.insecurebank.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -78,15 +78,15 @@ function generateVulnerableApk() {
         </activity>
 
         <activity
-            android:name="com.vulncope.insecurebank.DebugAuthBypassActivity"
+            android:name="com.vulnscope.insecurebank.DebugAuthBypassActivity"
             android:exported="true" />
 
         <service
-            android:name="com.vulncope.insecurebank.BackdoorTransferService"
+            android:name="com.vulnscope.insecurebank.BackdoorTransferService"
             android:exported="true" />
 
         <receiver
-            android:name="com.vulncope.insecurebank.UnprotectedSmsReceiver"
+            android:name="com.vulnscope.insecurebank.UnprotectedSmsReceiver"
             android:exported="true" />
 
     </application>
@@ -96,8 +96,8 @@ function generateVulnerableApk() {
 
   // DEX with hardcoded secrets
   const dex = createDexBuffer([
-    'com/vulncope/insecurebank/MainActivity',
-    'AIzaSyD-vulncope-test-google-key-99824',
+    'com/vulnscope/insecurebank/MainActivity',
+    'AIzaSyD-vulnscope-test-google-key-99824',
     'AKIAIOSFODNN7EXAMPLE',
     'http://api.insecurebank.internal/transfer',
     'http://auth.insecurebank.internal/login',
@@ -121,7 +121,7 @@ function generateHardenedApk() {
 
   const manifestXml = `<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.vulncope.securevault"
+    package="com.vulnscope.securevault"
     android:versionCode="204"
     android:versionName="2.4.0">
 
@@ -130,13 +130,13 @@ function generateHardenedApk() {
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:label="VulnCope Hardened Benchmark"
+        android:label="VulnScope Hardened Benchmark"
         android:debuggable="false"
         android:allowBackup="false"
         android:usesCleartextTraffic="false">
 
         <activity
-            android:name="com.vulncope.securevault.MainActivity"
+            android:name="com.vulnscope.securevault.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -145,7 +145,7 @@ function generateHardenedApk() {
         </activity>
 
         <service
-            android:name="com.vulncope.securevault.ProtectedCryptoService"
+            android:name="com.vulnscope.securevault.ProtectedCryptoService"
             android:exported="false" />
 
     </application>
@@ -154,7 +154,7 @@ function generateHardenedApk() {
   zip.addFile('AndroidManifest.xml', Buffer.from(manifestXml, 'utf8'));
 
   const dex = createDexBuffer([
-    'com/vulncope/securevault/MainActivity',
+    'com/vulnscope/securevault/MainActivity',
     'https://api.securevault.com/v2/handshake',
     'AES/GCM/NoPadding'
   ]);

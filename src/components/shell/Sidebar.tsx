@@ -112,7 +112,7 @@ export const Sidebar: React.FC = () => {
             <div className="flex flex-col">
               <div className="flex items-center gap-1.5">
                 <span className="text-base font-bold tracking-tight text-white font-mono">
-                  Vuln<span className="text-emerald-400">Cope</span>
+                  Vuln<span className="text-emerald-400">Scope</span>
                 </span>
                 <span className="text-[10px] uppercase font-mono px-1.5 py-0.2 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
                   FYP Core
@@ -221,7 +221,7 @@ export const Sidebar: React.FC = () => {
           className={`w-full flex items-center justify-between p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30 hover:bg-emerald-500/15 transition-all text-left ${
             collapsed ? 'justify-center p-2' : ''
           }`}
-          title="VulnCope Real Agentic Core & Demo Status"
+          title="VulnScope Real Agentic Core & Demo Status"
         >
           <div className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-emerald-400 shrink-0" />

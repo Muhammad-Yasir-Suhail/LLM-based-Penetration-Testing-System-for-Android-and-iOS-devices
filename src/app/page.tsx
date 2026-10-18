@@ -24,7 +24,7 @@ import { useAppState } from '@/context/AppStateContext';
 export default function LoginPage() {
   const router = useRouter();
   const { setOnboardingOpen } = useAppState();
-  const [email, setEmail] = useState('lead.researcher@vulncope.security');
+  const [email, setEmail] = useState('lead.researcher@vulnscope.security');
   const [password, setPassword] = useState('••••••••••••');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -55,7 +55,7 @@ export default function LoginPage() {
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
               <span className="text-base font-bold font-mono tracking-tight text-white">
-                Vuln<span className="text-emerald-400">Cope</span>
+                Vuln<span className="text-emerald-400">Scope</span>
               </span>
               <span className="text-[10px] uppercase font-mono px-1.5 py-0.2 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
                 FYP Core
@@ -99,7 +99,7 @@ export default function LoginPage() {
               for Mobile Applications.
             </h1>
             <p className="text-sm sm:text-base text-slate-400 max-w-xl leading-relaxed">
-              VulnCope is an autonomous security testing framework for authorized Android applications. An LLM-assisted controller plans allowlisted tool actions, observes verified static & bytecode outputs, adapts subsequent decisions, and compiles traceable, evidence-backed security findings.
+              VulnScope is an autonomous security testing framework for authorized Android applications. An LLM-assisted controller plans allowlisted tool actions, observes verified static & bytecode outputs, adapts subsequent decisions, and compiles traceable, evidence-backed security findings.
             </p>
           </div>
 
@@ -108,7 +108,7 @@ export default function LoginPage() {
             <div className="flex items-center justify-between text-xs font-mono text-slate-300">
               <span className="flex items-center gap-2 font-bold text-white">
                 <Terminal className="w-4 h-4 text-emerald-400" />
-                VulnCope Autonomous Decision Loop
+                VulnScope Autonomous Decision Loop
               </span>
               <span className="text-[11px] text-emerald-400">Auditable Trace</span>
             </div>
@@ -167,7 +167,7 @@ export default function LoginPage() {
                 Evaluation Workspace
               </span>
               <h2 className="text-xl font-bold text-white tracking-tight">
-                Enter VulnCope Platform
+                Enter VulnScope Platform
               </h2>
               <p className="text-xs text-slate-400">
                 Access the live agent execution loop, interactive attack-surface graphs, and findings manager.
@@ -208,7 +208,7 @@ export default function LoginPage() {
       {/* Footer */}
       <footer className="px-6 py-4 border-t border-slate-800/80 bg-[#080c14]/70 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-mono text-slate-400 z-10">
         <div>
-          VulnCope • Final Year Project (FYP-2 Mid Evaluation 01) • BS Software Engineering
+          VulnScope • Final Year Project (FYP-2 Mid Evaluation 01) • BS Software Engineering
         </div>
         <div className="flex items-center gap-4 text-[11px]">
           <span>OWASP MASVS Aligned</span>

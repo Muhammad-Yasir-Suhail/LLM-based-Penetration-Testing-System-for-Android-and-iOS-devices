@@ -9,8 +9,7 @@ import {
   lockStorageKey,
   unlockStorageKey
 } from '@/lib/security/storageManager';
-
-const FIXTURES_DIR = path.resolve(process.cwd(), 'fixtures');
+import { getFixtureBuffer } from '@/lib/security/fixturesLoader';
 
 export async function POST(req: NextRequest) {
   let body: any = undefined;
@@ -32,17 +31,9 @@ export async function POST(req: NextRequest) {
       body = await req.json();
 
       if (body.fixtureId) {
-        const fixtureFileName =
-          body.fixtureId === 'hardened_app' ? 'hardened_app.apk' : 'vulnerable_bank.apk';
-        const fixturePath = path.join(FIXTURES_DIR, fixtureFileName);
-        if (!fs.existsSync(fixturePath)) {
-          return NextResponse.json(
-            { success: false, error: `Test fixture not found: ${fixtureFileName}` },
-            { status: 404 }
-          );
-        }
-        apkBuffer = fs.readFileSync(fixturePath);
-        fileName = fixtureFileName;
+        const fixture = getFixtureBuffer(body.fixtureId);
+        apkBuffer = fixture.buffer;
+        fileName = fixture.fileName;
       } else if (body.storageKey) {
         if (!isValidStorageKey(body.storageKey)) {
           return NextResponse.json(
@@ -99,7 +90,7 @@ export async function POST(req: NextRequest) {
       }
     }
   } catch (err: any) {
-    console.error('[VulnCope API Run Error]:', err);
+    console.error('[VulnScope API Run Error]:', err);
     return NextResponse.json(
       { success: false, error: err.message || 'Execution error during security analysis' },
       { status: 500 }

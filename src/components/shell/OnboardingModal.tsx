@@ -67,7 +67,7 @@ export const OnboardingModal: React.FC = () => {
               <span className="text-[10px] uppercase font-mono font-bold text-brand-cyan">
                 Workspace Setup • Step {step} of 4
               </span>
-              <h2 className="text-base font-bold text-white">VulnCope Initialization</h2>
+              <h2 className="text-base font-bold text-white">VulnScope Initialization</h2>
             </div>
           </div>
           <span className="text-xs font-mono text-slate-400">
@@ -86,7 +86,7 @@ export const OnboardingModal: React.FC = () => {
               <div>
                 <h3 className="text-sm font-bold text-slate-100">Name your security workspace</h3>
                 <p className="text-xs text-slate-400 mt-1">
-                  VulnCope will isolate mobile applications, analysis history, and vulnerability correlation within this workspace.
+                  VulnScope will isolate mobile applications, analysis history, and vulnerability correlation within this workspace.
                 </p>
               </div>
 
@@ -118,7 +118,7 @@ export const OnboardingModal: React.FC = () => {
               <div>
                 <h3 className="text-sm font-bold text-slate-100">Select target mobile platforms</h3>
                 <p className="text-xs text-slate-400 mt-1">
-                  Choose the ecosystems VulnCope will analyze and correlate in this workspace.
+                  Choose the ecosystems VulnScope will analyze and correlate in this workspace.
                 </p>
               </div>
 
@@ -152,7 +152,7 @@ export const OnboardingModal: React.FC = () => {
               <div>
                 <h3 className="text-sm font-bold text-slate-100">Configure security objectives</h3>
                 <p className="text-xs text-slate-400 mt-1">
-                  VulnCope will optimize correlation rules and scoring weights based on these priorities.
+                  VulnScope will optimize correlation rules and scoring weights based on these priorities.
                 </p>
               </div>
 

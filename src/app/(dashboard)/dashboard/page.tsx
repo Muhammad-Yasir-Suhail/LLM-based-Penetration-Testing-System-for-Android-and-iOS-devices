@@ -150,7 +150,7 @@ export default function DashboardPage() {
         </Link>
       </div>
 
-      {/* VulnCope Lifecycle Banner */}
+      {/* VulnScope Lifecycle Banner */}
       <PipelineBanner activeStep="correlate" />
 
       {/* Top KPI Cards */}

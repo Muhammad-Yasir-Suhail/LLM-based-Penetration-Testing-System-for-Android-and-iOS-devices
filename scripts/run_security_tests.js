@@ -1,5 +1,5 @@
 /**
- * VulnCope Security Engine Verification & Acceptance Test Suite
+ * VulnScope Security Engine Verification & Acceptance Test Suite
  * Maps requirements FR-01 to FR-07 and non-functional requirements to executable assertions.
  */
 

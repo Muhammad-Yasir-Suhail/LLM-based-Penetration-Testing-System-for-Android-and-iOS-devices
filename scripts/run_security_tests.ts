@@ -1,5 +1,5 @@
 /**
- * VulnCope Security Engine Verification & Acceptance Test Suite
+ * VulnScope Security Engine Verification & Acceptance Test Suite
  * Automated executable validation for FYP Mid Evaluation 01.
  */
 
@@ -74,7 +74,7 @@ async function runTest(
 
 async function main() {
   console.log('\n============================================================');
-  console.log('  VULNCOPE VERIFICATION & ACCEPTANCE TEST SUITE');
+  console.log('  VULNSCOPE VERIFICATION & ACCEPTANCE TEST SUITE');
   console.log('  Testing Real Agentic Security Core & Tool Execution');
   console.log('============================================================\n');
 

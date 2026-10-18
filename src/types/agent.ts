@@ -51,7 +51,7 @@ export interface SecurityFinding {
   verificationStatus: FindingVerificationStatus;
   evidence: string; // Exact code, manifest XML line, or DEX string match
   location: string; // e.g. "AndroidManifest.xml:line 18"
-  sourceTool: string; // e.g. "VulnCope Manifest Inspector v1.0"
+  sourceTool: string; // e.g. "VulnScope Manifest Inspector v1.0"
   remediation: string;
   sessionId: string;
   timestamp: string;

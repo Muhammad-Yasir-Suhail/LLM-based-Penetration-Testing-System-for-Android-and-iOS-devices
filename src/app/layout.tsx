@@ -3,7 +3,7 @@ import './globals.css';
 import { AppStateProvider } from '@/context/AppStateContext';
 
 export const metadata: Metadata = {
-  title: 'VulnCope — Evidence-Grounded Agentic Mobile Application Security Testing Framework',
+  title: 'VulnScope — Evidence-Grounded Agentic Mobile Application Security Testing Framework',
   description: 'Evidence-grounded, LLM-assisted agentic framework for authorized mobile application security testing, adaptive action planning, and traceable audit findings.',
 };
 

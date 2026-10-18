@@ -44,7 +44,7 @@ export default function FindingsPage() {
   const [appFilter, setAppFilter] = useState<string>('All');
   const [categoryFilter, setCategoryFilter] = useState<string>('All');
 
-  // Fetch real sessions from VulnCope API
+  // Fetch real sessions from VulnScope API
   useEffect(() => {
     let isMounted = true;
     async function loadRealSessions() {
@@ -75,8 +75,8 @@ export default function FindingsPage() {
                   status: 'Open',
                   applicationId: session.sessionId,
                   applicationName: session.targetApk.fileName,
-                  projectId: 'proj-vulncope',
-                  projectName: 'VulnCope Real Sessions',
+                  projectId: 'proj-vulnscope',
+                  projectName: 'VulnScope Real Sessions',
                   platform: 'Android',
                   category: sf.category,
                   cwe: sf.cwe,
@@ -85,7 +85,7 @@ export default function FindingsPage() {
                   owaspCategory: sf.owaspCategory as any,
                   confidence: sf.confidence === 'Confirmed' ? 95 : sf.confidence === 'Suspected' ? 70 : 50,
                   detectedAt: sf.timestamp || session.completedAt || new Date().toISOString(),
-                  assignedTo: 'VulnCope Core',
+                  assignedTo: 'VulnScope Core',
                   affectedComponent: sf.location,
                   filePath: sf.location,
                   lineNumber: 1,

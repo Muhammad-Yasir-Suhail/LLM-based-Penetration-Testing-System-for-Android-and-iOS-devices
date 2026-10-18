@@ -1,4 +1,4 @@
-# VulnCope — Iteration Plan & Work Breakdown (Mid Evaluation 01)
+# VulnScope — Iteration Plan & Work Breakdown (Mid Evaluation 01)
 **Project Title:** AI-Assisted Vulnerability Detection and Security Analysis of Mobile Applications  
 **Team Composition:** 2 Software Engineering Team Members  
 **Milestone Focus:** Mid Evaluation 01 Implementation & Demonstration  
@@ -19,8 +19,8 @@
 
 ### Milestone 1: Environment Audit, Rebranding, and Baseline Checkpoint (Completed)
 - **Task 1.1:** Audit existing Next.js codebase, dependencies, build status, and Git history. *(Owner: Member 1)*
-- **Task 1.2:** Rebrand product identity from SentinelX to VulnCope across visible branding and metadata. *(Owner: Member 2)*
-- **Task 1.3:** Configure secure storage directory `.vulncope` and `storage/uploads/` in `.gitignore`. *(Owner: Member 1)*
+- **Task 1.2:** Rebrand product identity from SentinelX to VulnScope across visible branding and metadata. *(Owner: Member 2)*
+- **Task 1.3:** Configure secure storage directory `.vulnscope` and `storage/uploads/` in `.gitignore`. *(Owner: Member 1)*
 - **Deliverable:** Clean baseline Git commit and verified compilation.
 
 ### Milestone 2: Genuine Static & Bytecode Analysis Core (Completed)

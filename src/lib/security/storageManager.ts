@@ -5,10 +5,10 @@ export const UPLOAD_DIR = path.resolve(process.cwd(), 'storage', 'uploads');
 
 /**
  * Default retention window: 24 hours.
- * Configurable via VULNCOPE_APK_RETENTION_HOURS environment variable.
+ * Configurable via VULNSCOPE_APK_RETENTION_HOURS environment variable.
  */
 export function getRetentionPeriodMs(): number {
-  const hours = parseFloat(process.env.VULNCOPE_APK_RETENTION_HOURS || '24');
+  const hours = parseFloat(process.env.VULNSCOPE_APK_RETENTION_HOURS || process.env.VULNCOPE_APK_RETENTION_HOURS || '24');
   return Math.max(1, isNaN(hours) ? 24 : hours) * 60 * 60 * 1000;
 }
 
@@ -126,11 +126,11 @@ export function pruneExpiredUploads(options?: {
           preservedCount++;
         }
       } catch (err) {
-        console.warn(`[VulnCope StorageManager] Could not evaluate file ${file}:`, err);
+        console.warn(`[VulnScope StorageManager] Could not evaluate file ${file}:`, err);
       }
     }
   } catch (err) {
-    console.warn(`[VulnCope StorageManager] Error during upload cleanup:`, err);
+    console.warn(`[VulnScope StorageManager] Error during upload cleanup:`, err);
   }
 
   return { prunedCount, preservedCount, lockedCount };

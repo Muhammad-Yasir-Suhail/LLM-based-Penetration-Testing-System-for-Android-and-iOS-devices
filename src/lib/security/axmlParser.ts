@@ -1,5 +1,5 @@
 /**
- * VulnCope Binary AndroidManifest.xml (AXML) Parser
+ * VulnScope Binary AndroidManifest.xml (AXML) Parser
  * Decodes Android compiled binary XML format into a structured DOM/JSON tree.
  */
 

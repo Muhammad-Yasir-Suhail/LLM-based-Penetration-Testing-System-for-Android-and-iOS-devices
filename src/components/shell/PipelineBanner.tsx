@@ -20,7 +20,7 @@ export const PipelineBanner: React.FC<{ activeStep?: string; compact?: boolean }
         <div className="flex items-center gap-2">
           <span className="flex h-2 w-2 rounded-full bg-emerald-400 shrink-0" />
           <span className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-300">
-            VulnCope Agentic Security Intelligence & Orchestration Pipeline
+            VulnScope Agentic Security Intelligence & Orchestration Pipeline
           </span>
         </div>
         <span className="text-[11px] font-mono text-slate-400 bg-slate-800/60 px-2 py-0.5 rounded border border-slate-700/50">

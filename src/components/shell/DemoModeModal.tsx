@@ -23,7 +23,7 @@ export const DemoModeModal: React.FC = () => {
             </div>
             <div>
               <span className="text-[10px] uppercase font-mono font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
-                VulnCope Mid Evaluation 01
+                VulnScope Mid Evaluation 01
               </span>
               <h3 className="text-base font-bold text-white mt-1">Platform Architecture & Operational Status</h3>
             </div>
@@ -40,7 +40,7 @@ export const DemoModeModal: React.FC = () => {
         <div className="p-6 space-y-4 text-xs leading-relaxed text-slate-300">
           <div className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
             <p className="font-semibold text-slate-100">
-              VulnCope: AI-Assisted Vulnerability Detection & Security Analysis of Mobile Applications
+              VulnScope: AI-Assisted Vulnerability Detection & Security Analysis of Mobile Applications
             </p>
             <p className="text-slate-400">
               An evidence-grounded, LLM-assisted agentic framework for authorized mobile application security testing. The agent selects supported analysis actions, observes real tool outputs, adapts subsequent decisions, and compiles traceable security findings.

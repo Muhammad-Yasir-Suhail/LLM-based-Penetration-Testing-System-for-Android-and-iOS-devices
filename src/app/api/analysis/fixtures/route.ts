@@ -1,14 +1,12 @@
 import { NextResponse } from 'next/server';
-import fs from 'node:fs';
-import path from 'node:path';
 import crypto from 'node:crypto';
+import { getFixtureBuffer } from '@/lib/security/fixturesLoader';
 
 export async function GET() {
-  const fixturesDir = path.resolve(process.cwd(), 'fixtures');
   const availableFixtures = [
     {
       id: 'vulnerable_bank',
-      name: 'VulnCope Insecure Bank Benchmark APK',
+      name: 'VulnScope Insecure Bank Benchmark APK',
       fileName: 'vulnerable_bank.apk',
       description:
         'Authorized test fixture with deliberate vulnerabilities: debuggable=true, cleartext HTTP enabled, exported unprotected components, hardcoded Google Cloud & AWS credentials in Dalvik bytecode, and broken crypto ciphers.',
@@ -17,7 +15,7 @@ export async function GET() {
     },
     {
       id: 'hardened_app',
-      name: 'VulnCope Hardened Secure Benchmark APK',
+      name: 'VulnScope Hardened Secure Benchmark APK',
       fileName: 'hardened_app.apk',
       description:
         'Authorized test fixture adhering to Android security best practices: debuggable=false, cleartext disabled, no unprotected exported components, zero hardcoded credentials, TLS enforced.',
@@ -27,16 +25,16 @@ export async function GET() {
   ];
 
   const enriched = availableFixtures.map((f) => {
-    const filePath = path.join(fixturesDir, f.fileName);
-    let exists = false;
+    let exists = true;
     let sizeBytes = 0;
     let sha256 = '';
 
-    if (fs.existsSync(filePath)) {
-      exists = true;
-      const buf = fs.readFileSync(filePath);
-      sizeBytes = buf.length;
-      sha256 = crypto.createHash('sha256').update(buf).digest('hex');
+    try {
+      const fixture = getFixtureBuffer(f.id);
+      sizeBytes = fixture.buffer.length;
+      sha256 = crypto.createHash('sha256').update(fixture.buffer).digest('hex');
+    } catch {
+      exists = false;
     }
 
     return {

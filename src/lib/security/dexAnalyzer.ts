@@ -120,7 +120,7 @@ export function analyzeDexBuffer(
         verificationStatus: 'Verified',
         evidence: `Extracted string token: "${str.substring(0, 12)}...${str.substring(str.length - 4)}" from classes.dex`,
         location: 'classes.dex:StringPool',
-        sourceTool: 'VulnCope DEX String Analyzer v1.0',
+        sourceTool: 'VulnScope DEX String Analyzer v1.0',
         remediation:
           'Remove API key from application code. Store credentials in a secure backend vault and restrict Google Cloud API keys by Android SHA-1 fingerprint and package name.',
         sessionId,
@@ -146,7 +146,7 @@ export function analyzeDexBuffer(
         verificationStatus: 'Verified',
         evidence: `Extracted AWS key: "${str}" in classes.dex`,
         location: 'classes.dex:StringPool',
-        sourceTool: 'VulnCope DEX String Analyzer v1.0',
+        sourceTool: 'VulnScope DEX String Analyzer v1.0',
         remediation:
           'Rotate the compromised AWS IAM key immediately and use Amazon Cognito Identity Pools with temporary STS credentials instead of permanent keys.',
         sessionId,
@@ -172,7 +172,7 @@ export function analyzeDexBuffer(
         verificationStatus: 'Verified',
         evidence: `Extracted Slack token snippet: "${str.substring(0, 10)}..."`,
         location: 'classes.dex:StringPool',
-        sourceTool: 'VulnCope DEX String Analyzer v1.0',
+        sourceTool: 'VulnScope DEX String Analyzer v1.0',
         remediation: 'Revoke and rotate Slack token immediately. Proxy notifications through an authorized backend service.',
         sessionId,
         timestamp
@@ -217,7 +217,7 @@ export function analyzeDexBuffer(
       verificationStatus: 'Detected',
       evidence: `HTTP endpoints identified in DEX string pool:\n${insecureEndpoints.slice(0, 5).map((u) => ` - ${u}`).join('\n')}`,
       location: 'classes.dex:StringPool',
-      sourceTool: 'VulnCope DEX String Analyzer v1.0',
+      sourceTool: 'VulnScope DEX String Analyzer v1.0',
       remediation: 'Upgrade all API endpoints to HTTPS/TLS v1.3. Enforce strict transport security and Network Security Config.',
       sessionId,
       timestamp
@@ -239,7 +239,7 @@ export function analyzeDexBuffer(
       verificationStatus: 'Detected',
       evidence: `Cipher suite references detected in string pool: ${algos}`,
       location: 'classes.dex:CryptoReferences',
-      sourceTool: 'VulnCope DEX String Analyzer v1.0',
+      sourceTool: 'VulnScope DEX String Analyzer v1.0',
       remediation: 'Migrate to AES/GCM/NoPadding (authenticated encryption) with 256-bit keys or standard AndroidX Security Crypto primitives.',
       sessionId,
       timestamp
@@ -260,7 +260,7 @@ export function analyzeDexBuffer(
       verificationStatus: 'Suspected',
       evidence: `Detected TrustManager signatures in bytecode: ${insecureTrustManagers.join(', ')}`,
       location: 'classes.dex:NetworkStack',
-      sourceTool: 'VulnCope DEX String Analyzer v1.0',
+      sourceTool: 'VulnScope DEX String Analyzer v1.0',
       remediation: 'Remove custom permissive TrustManagers. Use default Android system trust store with standard certificate pinning.',
       sessionId,
       timestamp

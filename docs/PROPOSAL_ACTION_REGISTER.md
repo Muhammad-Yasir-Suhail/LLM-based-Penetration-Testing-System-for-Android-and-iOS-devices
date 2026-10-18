@@ -1,6 +1,6 @@
-# VulnCope — Proposal Action Register (Mid Evaluation 01)
+# VulnScope — Proposal Action Register (Mid Evaluation 01)
 **Project Title:** AI-Assisted Vulnerability Detection and Security Analysis of Mobile Applications  
-**Framework Name:** VulnCope  
+**Framework Name:** VulnScope  
 **Degree Program:** BS Software Engineering — Final Year Project (FYP-2)  
 **Evaluation Milestone:** Mid Evaluation 01 (Rubric Area R1 — 10 Marks)
 
@@ -30,5 +30,5 @@ This register tracks all actionable recommendations, scope adjustments, and tech
 ## 3. Scope Boundaries & FYP-2 Evaluation Commitments
 
 - **Platform Focus:** Android is the primary operational implementation platform for Mid Evaluation 01. iOS source analysis remains part of the long-term research direction.
-- **Defensive Research Guarantee:** VulnCope does not construct autonomous exploit payloads or perform unauthorized network intrusion. All testing is conducted on applications owned by the team or authorized benchmark packages.
+- **Defensive Research Guarantee:** VulnScope does not construct autonomous exploit payloads or perform unauthorized network intrusion. All testing is conducted on applications owned by the team or authorized benchmark packages.
 - **Verification Integrity:** An issue is never flagged as "Verified" simply because an LLM asserted it. Verification requires programmatic confirmation from the parser or analyzer.

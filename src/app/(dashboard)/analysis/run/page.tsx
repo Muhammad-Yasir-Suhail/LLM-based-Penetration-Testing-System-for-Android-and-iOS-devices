@@ -117,7 +117,7 @@ export default function RunAnalysisPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `vulncope_${session.sessionId}.json`;
+    a.download = `vulnscope_${session.sessionId}.json`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -139,7 +139,7 @@ export default function RunAnalysisPage() {
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-[10px] font-mono uppercase font-bold text-emerald-400 tracking-wider">
-                  VulnCope Agent Core
+                  VulnScope Agent Core
                 </span>
                 <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-slate-800 text-slate-300 border border-slate-700">
                   Android Static & Bytecode Sandbox
@@ -226,7 +226,7 @@ export default function RunAnalysisPage() {
                         </span>
                       </div>
                       <p className="text-[11px] font-mono text-slate-400 mt-0.5">
-                        com.vulncope.insecurebank (v1.0.1) • 1.1 KB
+                        com.vulnscope.insecurebank (v1.0.1) • 1.1 KB
                       </p>
                     </div>
                     <div
@@ -270,7 +270,7 @@ export default function RunAnalysisPage() {
                         </span>
                       </div>
                       <p className="text-[11px] font-mono text-slate-400 mt-0.5">
-                        com.vulncope.securevault (v2.4.0) • 0.8 KB
+                        com.vulnscope.securevault (v2.4.0) • 0.8 KB
                       </p>
                     </div>
                     <div

@@ -2,7 +2,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { AnalysisSession } from '@/types/agent';
 
-const STORAGE_DIR = path.resolve(process.cwd(), process.env.VULNCOPE_STORAGE_DIR || '.vulncope', 'sessions');
+const STORAGE_DIR = path.resolve(
+  process.cwd(),
+  process.env.VULNSCOPE_STORAGE_DIR || process.env.VULNCOPE_STORAGE_DIR || '.vulnscope',
+  'sessions'
+);
 
 // In-memory cache for fast access
 const sessionCache: Map<string, AnalysisSession> = new Map();
@@ -60,7 +64,7 @@ export async function saveSession(session: AnalysisSession): Promise<void> {
     if (err.message?.includes('traversal') || err.message?.includes('identifier')) {
       throw err;
     }
-    console.warn(`[VulnCope SessionStore] Could not write session to disk:`, err);
+    console.warn(`[VulnScope SessionStore] Could not write session to disk:`, err);
   }
 }
 
@@ -83,7 +87,7 @@ export async function getSession(sessionId: string): Promise<AnalysisSession | n
       return session;
     }
   } catch (err) {
-    console.warn(`[VulnCope SessionStore] Error reading session ${sessionId}:`, err);
+    console.warn(`[VulnScope SessionStore] Error reading session ${sessionId}:`, err);
   }
 
   return null;
@@ -116,7 +120,7 @@ export async function listSessions(): Promise<AnalysisSession[]> {
       }
     }
   } catch (err) {
-    console.warn(`[VulnCope SessionStore] Error reading session dir:`, err);
+    console.warn(`[VulnScope SessionStore] Error reading session dir:`, err);
   }
 
   // Add any in-memory sessions not on disk

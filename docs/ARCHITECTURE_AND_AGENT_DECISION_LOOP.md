@@ -1,6 +1,6 @@
-# VulnCope — System Architecture & Agent Decision Loop (R5)
+# VulnScope — System Architecture & Agent Decision Loop (R5)
 **Project Title:** AI-Assisted Vulnerability Detection and Security Analysis of Mobile Applications  
-**Framework Name:** VulnCope  
+**Framework Name:** VulnScope  
 **Milestone Focus:** Mid Evaluation 01 Design Artefacts  
 **Rubric Area:** R5 — 15 Marks
 
@@ -8,7 +8,7 @@
 
 ## 1. High-Level System Architecture
 
-VulnCope is designed as a modular, evidence-grounded security testing framework. The frontend developer workspace communicates with the Next.js API layer, which coordinates the bounded Agent Controller, allowlisted Tool Registry, and static deconstruction engines.
+VulnScope is designed as a modular, evidence-grounded security testing framework. The frontend developer workspace communicates with the Next.js API layer, which coordinates the bounded Agent Controller, allowlisted Tool Registry, and static deconstruction engines.
 
 ```mermaid
 graph TB
@@ -26,11 +26,11 @@ graph TB
         API_Sessions["/api/analysis/sessions"]
     end
 
-    subgraph AgentCore ["VulnCope Agentic Security Core"]
+    subgraph AgentCore ["VulnScope Agentic Security Core"]
         Controller["AgentController (Bounded Loop)"]
         Planner["llmPlanner (LLM / Rule Fallback)"]
         Registry["ToolRegistry (Allowlisted Actions)"]
-        Storage["SessionStore (.vulncope/sessions)"]
+        Storage["SessionStore (.vulnscope/sessions)"]
     end
 
     subgraph Analyzers ["Real Static & Bytecode Analyzers"]
@@ -141,7 +141,7 @@ stateDiagram-v2
     FinalizeAnalysis --> [*]: Save Session & Render Findings
 ```
 
-### Demonstrable Branching Scenarios in VulnCope:
+### Demonstrable Branching Scenarios in VulnScope:
 1. **Vulnerable Package Branch (`vulnerable_bank.apk`):**
    - Manifest inspection observes `android:usesCleartextTraffic="true"`, `android:debuggable="true"`, and exported components without permissions.
    - The planner adaptively schedules `ACTION_INSPECT_NETWORK_CONFIG` and `ACTION_SCAN_DEX_SECRETS` to verify the presence of cleartext endpoints and embedded credentials.
@@ -209,7 +209,7 @@ interface SecurityFinding {
   verificationStatus: 'Verified' | 'Detected' | 'Suspected' | 'Inconclusive';
   evidence: string;                        // Exact extracted token or XML attribute
   location: string;                        // e.g. "classes.dex:StringPool"
-  sourceTool: string;                      // "VulnCope DEX String Analyzer v1.0"
+  sourceTool: string;                      // "VulnScope DEX String Analyzer v1.0"
   remediation: string;
   sessionId: string;
   timestamp: string;

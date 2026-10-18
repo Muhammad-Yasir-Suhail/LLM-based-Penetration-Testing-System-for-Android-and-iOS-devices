@@ -69,7 +69,7 @@ export default function AnalysisDetailPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `vulncope_${realSession.sessionId}.json`;
+    a.download = `vulnscope_${realSession.sessionId}.json`;
     a.click();
     URL.revokeObjectURL(url);
   };
