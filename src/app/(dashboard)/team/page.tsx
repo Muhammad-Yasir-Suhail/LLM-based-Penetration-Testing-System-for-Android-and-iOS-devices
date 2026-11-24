@@ -44,7 +44,7 @@ export default function TeamPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white font-sans">
+          <h1 className="text-[28px] sm:text-[36px] leading-[1.1] font-medium tracking-[-0.03em] text-gradient-silver font-sans">
             Team & Access Control
           </h1>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
@@ -54,7 +54,7 @@ export default function TeamPage() {
 
         <button
           onClick={() => setIsInviteOpen(true)}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-brand-cyan to-brand-indigo text-slate-950 text-xs font-mono font-bold shadow-lg shadow-cyan-500/20 hover:opacity-95 transition-all"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#e6e6e6] hover:bg-white text-[#2f3031] text-xs font-mono font-semibold shadow-rc-button hover:shadow-[0_0_0_2px_rgba(0,0,0,0.5),0_0_24px_2px_rgba(255,255,255,0.28),inset_0_1px_0.4px_#fff] transition-all duration-200"
         >
           <UserPlus className="w-4 h-4" />
           <span>Invite Member</span>
@@ -62,7 +62,7 @@ export default function TeamPage() {
       </div>
 
       {/* Toolbar */}
-      <div className="p-4 rounded-2xl bg-[#0d121c] border border-slate-800/80 shadow-lg flex items-center justify-between gap-4 text-xs font-mono">
+      <div className="p-4 rounded-2xl bg-[#0e0f11] border border-slate-800/80 shadow-lg flex items-center justify-between gap-4 text-xs font-mono">
         <div className="relative flex-1 max-w-md">
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
@@ -80,7 +80,7 @@ export default function TeamPage() {
       </div>
 
       {/* Team Table */}
-      <div className="rounded-3xl bg-[#0d121c] border border-slate-800/80 shadow-xl overflow-hidden">
+      <div className="rounded-3xl bg-[#0e0f11] border border-slate-800/80 shadow-xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
@@ -148,7 +148,7 @@ export default function TeamPage() {
       {isInviteOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
           <div
-            className="w-full max-w-md bg-[#0d121c] border border-slate-700 rounded-2xl shadow-2xl overflow-hidden glass-panel-glow"
+            className="w-full max-w-md bg-[#0e0f11] border border-slate-700 rounded-2xl shadow-2xl overflow-hidden glass-panel-glow"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="p-5 border-b border-slate-800 bg-slate-900/60 flex items-center justify-between">

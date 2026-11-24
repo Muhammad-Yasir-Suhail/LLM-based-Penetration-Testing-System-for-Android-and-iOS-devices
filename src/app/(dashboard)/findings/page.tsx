@@ -172,7 +172,7 @@ export default function FindingsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white font-sans">
+            <h1 className="text-[28px] sm:text-[36px] leading-[1.1] font-medium tracking-[-0.03em] text-gradient-silver font-sans">
               Security Findings
             </h1>
             <span className="px-2.5 py-0.5 rounded-full text-xs font-mono bg-brand-cyan/10 text-brand-cyan border border-brand-cyan/30">
@@ -213,7 +213,7 @@ export default function FindingsPage() {
       )}
 
       {/* Source Selector Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-2xl bg-[#0d121c] border border-slate-800 font-mono text-xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-2xl bg-[#0e0f11] border border-slate-800 font-mono text-xs">
         <div className="flex items-center gap-2">
           <span className="text-slate-400 text-[11px] uppercase">Data Source:</span>
           <div className="flex items-center gap-1 bg-slate-900 p-1 rounded-xl border border-slate-800">
@@ -261,7 +261,7 @@ export default function FindingsPage() {
 
       {/* Stats Counter Bar */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3.5 font-mono text-xs">
-        <div className="p-4 rounded-2xl bg-[#0d121c] border border-slate-800 shadow-md">
+        <div className="p-4 rounded-2xl bg-[#0e0f11] border border-slate-800 shadow-md">
           <span className="text-slate-400 text-[10px] uppercase block">Total Displayed</span>
           <span className="text-2xl font-extrabold text-white">
             {filteredFindings.length}
@@ -269,7 +269,7 @@ export default function FindingsPage() {
           <span className="text-[10px] text-slate-400 block mt-0.5">Filtered findings</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-[#0d121c] border border-rose-500/30 shadow-md">
+        <div className="p-4 rounded-2xl bg-[#0e0f11] border border-rose-500/30 shadow-md">
           <span className="text-rose-400 text-[10px] uppercase font-bold block">Critical</span>
           <span className="text-2xl font-extrabold text-rose-400">
             {criticalCount}
@@ -277,7 +277,7 @@ export default function FindingsPage() {
           <span className="text-[10px] text-rose-300 block mt-0.5">P0 Blockers</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-[#0d121c] border border-amber-500/30 shadow-md">
+        <div className="p-4 rounded-2xl bg-[#0e0f11] border border-amber-500/30 shadow-md">
           <span className="text-amber-400 text-[10px] uppercase font-bold block">High</span>
           <span className="text-2xl font-extrabold text-amber-400">
             {highCount}
@@ -285,7 +285,7 @@ export default function FindingsPage() {
           <span className="text-[10px] text-amber-300 block mt-0.5">P1 Urgent</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-[#0d121c] border border-yellow-500/30 shadow-md">
+        <div className="p-4 rounded-2xl bg-[#0e0f11] border border-yellow-500/30 shadow-md">
           <span className="text-yellow-400 text-[10px] uppercase font-bold block">Medium</span>
           <span className="text-2xl font-extrabold text-yellow-400">
             {mediumCount}
@@ -293,7 +293,7 @@ export default function FindingsPage() {
           <span className="text-[10px] text-slate-400 block mt-0.5">P2 Standard</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-[#0d121c] border border-emerald-500/30 shadow-md col-span-2 sm:col-span-1">
+        <div className="p-4 rounded-2xl bg-[#0e0f11] border border-emerald-500/30 shadow-md col-span-2 sm:col-span-1">
           <span className="text-emerald-400 text-[10px] uppercase font-bold block">Verified</span>
           <span className="text-2xl font-extrabold text-emerald-400">
             {verifiedCount}
@@ -303,7 +303,7 @@ export default function FindingsPage() {
       </div>
 
       {/* Filter Toolbar */}
-      <div className="p-4 rounded-2xl bg-[#0d121c] border border-slate-800/80 shadow-lg space-y-3 text-xs font-mono">
+      <div className="p-4 rounded-2xl bg-[#0e0f11] border border-slate-800/80 shadow-lg space-y-3 text-xs font-mono">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
           {/* Search */}
           <div className="relative flex-1 max-w-md">
@@ -370,7 +370,7 @@ export default function FindingsPage() {
       </div>
 
       {/* Findings Table */}
-      <div className="rounded-3xl bg-[#0d121c] border border-slate-800/80 shadow-xl overflow-hidden">
+      <div className="rounded-3xl bg-[#0e0f11] border border-slate-800/80 shadow-xl overflow-hidden">
         {filteredFindings.length === 0 ? (
           <div className="p-12 text-center space-y-3 font-mono">
             <ShieldCheck className="w-10 h-10 text-slate-500 mx-auto" />

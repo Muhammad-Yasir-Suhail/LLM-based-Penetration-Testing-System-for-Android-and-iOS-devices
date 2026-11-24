@@ -10,27 +10,27 @@ export const DemoModeModal: React.FC = () => {
   if (!demoModalOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-200" onClick={() => setDemoModalOpen(false)}>
       <div
-        className="w-full max-w-xl bg-[#0d121c] border border-emerald-500/40 rounded-2xl shadow-2xl overflow-hidden glass-panel"
+        className="w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-2xl glass-panel-glow"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-5 border-b border-slate-800 bg-emerald-500/10 flex items-start justify-between">
+        <div className="relative p-5 border-b border-white/[0.07] flex items-start justify-between overflow-hidden"><div aria-hidden className="absolute -top-16 left-1/2 -translate-x-1/2 w-72 h-32 bg-emerald-500/15 blur-3xl" />
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300">
+            <div className="relative keycap p-2.5 text-emerald-300">
               <Activity className="w-6 h-6" />
             </div>
             <div>
               <span className="text-[10px] uppercase font-mono font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
                 VulnScope Mid Evaluation 01
               </span>
-              <h3 className="text-base font-bold text-white mt-1">Platform Architecture & Operational Status</h3>
+              <h3 className="text-base font-semibold tracking-tight text-white mt-1.5">Platform Architecture & Operational Status</h3>
             </div>
           </div>
           <button
             onClick={() => setDemoModalOpen(false)}
-            className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
+            className="relative p-1.5 rounded-lg text-white/40 hover:text-white hover:bg-white/[0.06] hover:rotate-90 transition-all duration-300"
           >
             <X className="w-5 h-5" />
           </button>
@@ -89,10 +89,10 @@ export const DemoModeModal: React.FC = () => {
         </div>
 
         {/* Footer */}
-        <div className="p-4 bg-[#0a0e16] border-t border-slate-800 flex justify-end">
+        <div className="p-4 border-t border-white/[0.07] flex justify-end">
           <button
             onClick={() => setDemoModalOpen(false)}
-            className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold font-mono transition-all"
+            className="rc-btn rc-btn-primary"
           >
             Acknowledge & Continue
           </button>

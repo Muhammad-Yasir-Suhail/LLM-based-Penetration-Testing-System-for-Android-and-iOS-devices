@@ -92,7 +92,7 @@ How can I assist you with mobile vulnerability triage, exploitability analysis, 
   return (
     <div className="max-w-5xl mx-auto space-y-4 flex flex-col h-[calc(100vh-8.5rem)]">
       {/* Header */}
-      <div className="p-4 rounded-3xl bg-[#0d121c] border border-slate-800/80 shadow-xl flex items-center justify-between shrink-0">
+      <div className="p-4 rounded-3xl bg-[#0e0f11] border border-slate-800/80 shadow-xl flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-purple-500/30 to-brand-cyan/20 border border-purple-500/40 text-purple-300 flex items-center justify-center shadow-md">
             <Bot className="w-5 h-5" />
@@ -120,7 +120,7 @@ How can I assist you with mobile vulnerability triage, exploitability analysis, 
       </div>
 
       {/* Chat Messages Body */}
-      <div className="flex-1 overflow-y-auto p-4 rounded-3xl bg-[#0d121c] border border-slate-800/80 shadow-xl space-y-4">
+      <div className="flex-1 overflow-y-auto p-4 rounded-3xl bg-[#0e0f11] border border-slate-800/80 shadow-xl space-y-4">
         {messages.map((msg) => {
           const isAi = msg.sender === 'ai';
           return (
@@ -222,7 +222,7 @@ How can I assist you with mobile vulnerability triage, exploitability analysis, 
       </div>
 
       {/* Input Box & Quick Prompt Pills */}
-      <div className="p-3 rounded-3xl bg-[#0d121c] border border-slate-800/80 shadow-xl space-y-2.5 shrink-0">
+      <div className="p-3 rounded-3xl bg-[#0e0f11] border border-slate-800/80 shadow-xl space-y-2.5 shrink-0">
         {/* Quick Prompts */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs font-mono">
           {[
@@ -260,7 +260,7 @@ How can I assist you with mobile vulnerability triage, exploitability analysis, 
           <button
             type="submit"
             disabled={!inputQuery.trim() || isTyping}
-            className="p-2.5 rounded-2xl bg-gradient-to-r from-brand-cyan to-brand-indigo text-slate-950 hover:opacity-90 transition-opacity disabled:opacity-40"
+            className="p-2.5 rounded-2xl bg-[#e6e6e6] hover:bg-white text-[#2f3031] shadow-rc-button transition-all duration-200 disabled:opacity-40"
           >
             <Send className="w-4 h-4" />
           </button>

@@ -39,7 +39,7 @@ export default function SecurityEnginesPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white font-sans">
+            <h1 className="text-[28px] sm:text-[36px] leading-[1.1] font-medium tracking-[-0.03em] text-gradient-silver font-sans">
               Security Engines & Tool Registry
             </h1>
             <span className="px-2.5 py-0.5 rounded-full text-xs font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
@@ -123,7 +123,7 @@ export default function SecurityEnginesPage() {
           return (
             <div
               key={engine.id}
-              className="p-6 rounded-3xl bg-[#0d121c] border border-slate-800/80 shadow-xl space-y-5 flex flex-col justify-between"
+              className="p-6 rounded-3xl bg-[#0e0f11] border border-slate-800/80 shadow-xl space-y-5 flex flex-col justify-between"
             >
               <div className="space-y-4">
                 <div className="flex items-start justify-between gap-3">
@@ -178,7 +178,7 @@ export default function SecurityEnginesPage() {
       {selectedEngine && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
           <div
-            className="w-full max-w-lg bg-[#0d121c] border border-slate-700 rounded-2xl shadow-2xl overflow-hidden glass-panel-glow"
+            className="w-full max-w-lg bg-[#0e0f11] border border-slate-700 rounded-2xl shadow-2xl overflow-hidden glass-panel-glow"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="p-5 border-b border-slate-800 bg-slate-900/60 flex items-center justify-between">
@@ -232,7 +232,7 @@ export default function SecurityEnginesPage() {
               </div>
             </div>
 
-            <div className="p-4 bg-[#0a0e16] border-t border-slate-800 flex justify-end gap-2">
+            <div className="p-4 bg-[#0a0b0d] border-t border-slate-800 flex justify-end gap-2">
               <button
                 onClick={() => setSelectedEngine(null)}
                 className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-mono font-semibold"

@@ -145,7 +145,7 @@ export default function RunAnalysisPage() {
                   Android Static & Bytecode Sandbox
                 </span>
               </div>
-              <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight mt-0.5">
+              <h1 className="text-2xl sm:text-[30px] leading-tight font-medium tracking-[-0.025em] text-white mt-0.5">
                 Agentic Security Analysis Pipeline
               </h1>
               <p className="text-xs text-slate-400 mt-0.5">
@@ -299,7 +299,7 @@ export default function RunAnalysisPage() {
               <div className="pt-2 flex justify-end">
                 <button
                   onClick={() => runAnalysis(selectedFixture)}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-mono font-bold text-xs shadow-lg shadow-emerald-500/20 transition-all"
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#e6e6e6] hover:bg-white text-[#2f3031] shadow-rc-button font-mono font-bold text-xs transition-all duration-200"
                 >
                   <Activity className="w-4 h-4" />
                   <span>Execute Benchmark Analysis</span>
@@ -353,7 +353,7 @@ export default function RunAnalysisPage() {
                 <button
                   disabled={!selectedFile}
                   onClick={() => runAnalysis()}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 disabled:bg-slate-800 disabled:text-slate-500 hover:bg-emerald-400 text-slate-950 font-mono font-bold text-xs shadow-lg shadow-emerald-500/20 transition-all"
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 disabled:bg-slate-800 disabled:text-slate-500 hover:bg-emerald-400 text-slate-950 font-mono font-bold text-xs transition-all duration-200"
                 >
                   <Activity className="w-4 h-4" />
                   <span>Upload & Run Security Pipeline</span>
@@ -563,7 +563,7 @@ export default function RunAnalysisPage() {
                           <span className="text-[9px] uppercase font-bold text-slate-400 block tracking-wider mb-1">
                             Structured Action Output JSON
                           </span>
-                          <pre className="p-2.5 rounded-lg bg-[#07090e] border border-slate-800 text-[10px] text-slate-300 overflow-x-auto max-h-48">
+                          <pre className="p-2.5 rounded-lg bg-[#07080a] border border-slate-800 text-[10px] text-slate-300 overflow-x-auto max-h-48">
                             {JSON.stringify(record.output, null, 2)}
                           </pre>
                         </div>
@@ -687,7 +687,7 @@ export default function RunAnalysisPage() {
                     <p className="text-xs text-slate-300 leading-relaxed font-sans">{finding.description}</p>
 
                     {/* Exact Technical Evidence */}
-                    <div className="p-3 rounded-lg bg-[#07090e] border border-slate-800 space-y-1 font-mono text-xs">
+                    <div className="p-3 rounded-lg bg-[#07080a] border border-slate-800 space-y-1 font-mono text-xs">
                       <div className="flex items-center justify-between text-[10px] text-slate-400">
                         <span>TECHNICAL EVIDENCE ({finding.sourceTool})</span>
                         <span className="text-slate-500">{finding.location}</span>

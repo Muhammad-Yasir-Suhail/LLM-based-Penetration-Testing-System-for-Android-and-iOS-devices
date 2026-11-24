@@ -32,7 +32,7 @@ export default function ActivityPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white font-sans">
+          <h1 className="text-[28px] sm:text-[36px] leading-[1.1] font-medium tracking-[-0.03em] text-gradient-silver font-sans">
             Activity & Audit Trail
           </h1>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
@@ -46,7 +46,7 @@ export default function ActivityPage() {
       </div>
 
       {/* Toolbar */}
-      <div className="p-4 rounded-2xl bg-[#0d121c] border border-slate-800/80 shadow-lg flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs font-mono">
+      <div className="p-4 rounded-2xl bg-[#0e0f11] border border-slate-800/80 shadow-lg flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs font-mono">
         <div className="relative flex-1 max-w-md">
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
@@ -82,12 +82,12 @@ export default function ActivityPage() {
       </div>
 
       {/* Activity Timeline List */}
-      <div className="p-6 rounded-3xl bg-[#0d121c] border border-slate-800/80 shadow-xl space-y-4">
+      <div className="p-6 rounded-3xl bg-[#0e0f11] border border-slate-800/80 shadow-xl space-y-4">
         <div className="space-y-4 relative before:absolute before:inset-0 before:left-4 before:w-0.5 before:bg-slate-800">
           {filteredEvents.map((evt) => (
             <div key={evt.id} className="relative pl-10">
               {/* Timeline Dot */}
-              <div className="absolute left-2.5 top-4 -translate-x-1/2 w-3.5 h-3.5 rounded-full bg-brand-cyan border-4 border-[#07090e] shadow-md" />
+              <div className="absolute left-2.5 top-4 -translate-x-1/2 w-3.5 h-3.5 rounded-full bg-brand-cyan border-4 border-[#07080a] shadow-md" />
 
               <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/80 shadow-sm space-y-2">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">

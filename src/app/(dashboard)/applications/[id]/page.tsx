@@ -94,7 +94,7 @@ export default function ApplicationDetailPage() {
       </Link>
 
       {/* Main Application Header Card */}
-      <div className="p-6 rounded-3xl bg-[#0d121c] border border-slate-800/80 shadow-xl space-y-6">
+      <div className="p-6 rounded-3xl bg-[#0e0f11] border border-slate-800/80 shadow-xl space-y-6">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="flex items-start gap-4">
             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-900 flex items-center justify-center font-mono font-extrabold text-sm text-white shadow-xl shrink-0">
@@ -102,7 +102,7 @@ export default function ApplicationDetailPage() {
             </div>
             <div>
               <div className="flex flex-wrap items-center gap-2.5">
-                <h1 className="text-xl sm:text-2xl font-bold text-white">{application.name}</h1>
+                <h1 className="text-2xl sm:text-[30px] leading-tight font-medium tracking-[-0.025em] text-white">{application.name}</h1>
                 <span className="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-xs font-mono text-slate-300">
                   v{application.currentVersion} (#{application.currentBuild})
                 </span>
@@ -123,7 +123,7 @@ export default function ApplicationDetailPage() {
           <div className="flex flex-wrap items-center gap-2.5">
             <Link
               href="/analysis/run"
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-brand-cyan to-brand-indigo text-slate-950 text-xs font-mono font-bold shadow-lg shadow-cyan-500/20 hover:opacity-95 transition-all"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#e6e6e6] hover:bg-white text-[#2f3031] text-xs font-mono font-semibold shadow-rc-button hover:shadow-[0_0_0_2px_rgba(0,0,0,0.5),0_0_24px_2px_rgba(255,255,255,0.28),inset_0_1px_0.4px_#fff] transition-all duration-200"
             >
               <Activity className="w-4 h-4 animate-pulse" />
               <span>Run Analysis</span>
@@ -184,7 +184,7 @@ export default function ApplicationDetailPage() {
       {activeTab === 'history' && (
         <div className="space-y-6">
           {/* Version Score Trend Chart */}
-          <div className="p-6 rounded-3xl bg-[#0d121c] border border-slate-800/80 shadow-xl space-y-4">
+          <div className="p-6 rounded-3xl bg-[#0e0f11] border border-slate-800/80 shadow-xl space-y-4">
             <div className="flex items-center justify-between">
               <div>
                 <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400">
@@ -214,7 +214,7 @@ export default function ApplicationDetailPage() {
                   <XAxis dataKey="version" stroke="#64748b" fontSize={11} tickLine={false} />
                   <YAxis stroke="#64748b" fontSize={11} tickLine={false} />
                   <Tooltip
-                    contentStyle={{ backgroundColor: '#0d121c', borderColor: '#334155', borderRadius: '12px', fontSize: '12px' }}
+                    contentStyle={{ backgroundColor: '#0e0f11', borderColor: '#334155', borderRadius: '12px', fontSize: '12px' }}
                   />
                   <Area type="monotone" dataKey="score" stroke="#38bdf8" fillOpacity={1} fill="url(#colorScore)" strokeWidth={2.5} />
                   <Line type="monotone" dataKey="critical" stroke="#f43f5e" strokeWidth={2} />
@@ -235,9 +235,9 @@ export default function ApplicationDetailPage() {
                 return (
                   <div key={idx} className="relative pl-10">
                     {/* Timeline Node Dot */}
-                    <div className="absolute left-2.5 top-5 -translate-x-1/2 w-3.5 h-3.5 rounded-full bg-brand-cyan border-4 border-[#07090e] shadow-md" />
+                    <div className="absolute left-2.5 top-5 -translate-x-1/2 w-3.5 h-3.5 rounded-full bg-brand-cyan border-4 border-[#07080a] shadow-md" />
 
-                    <div className="p-5 rounded-3xl bg-[#0d121c] border border-slate-800/80 shadow-lg space-y-3">
+                    <div className="p-5 rounded-3xl bg-[#0e0f11] border border-slate-800/80 shadow-lg space-y-3">
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                         <div className="flex items-center gap-3">
                           <span className="text-base font-bold text-white font-mono">{ver.version}</span>
@@ -312,7 +312,7 @@ export default function ApplicationDetailPage() {
                 <Link
                   key={finding.id}
                   href={`/findings/${finding.id}`}
-                  className="p-4 rounded-2xl bg-[#0d121c] border border-slate-800 hover:border-slate-700 shadow-md flex items-center justify-between gap-4 group transition-all"
+                  className="p-4 rounded-2xl bg-[#0e0f11] border border-slate-800 hover:border-slate-700 shadow-md flex items-center justify-between gap-4 group transition-all"
                 >
                   <div className="flex items-center gap-3.5 overflow-hidden">
                     <span className={`px-2 py-1 rounded text-xs font-mono font-bold uppercase border shrink-0 ${sColor.badge}`}>
@@ -340,7 +340,7 @@ export default function ApplicationDetailPage() {
 
       {/* Tab: Metadata */}
       {activeTab === 'metadata' && (
-        <div className="p-6 rounded-3xl bg-[#0d121c] border border-slate-800 shadow-xl space-y-4 text-xs font-mono">
+        <div className="p-6 rounded-3xl bg-[#0e0f11] border border-slate-800 shadow-xl space-y-4 text-xs font-mono">
           <h3 className="text-sm font-bold text-white uppercase">Package Fingerprint & Security Metadata</h3>
 
           <div className="space-y-2">

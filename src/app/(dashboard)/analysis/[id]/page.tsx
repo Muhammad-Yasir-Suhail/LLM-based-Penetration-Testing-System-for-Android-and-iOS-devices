@@ -220,7 +220,7 @@ export default function AnalysisDetailPage() {
                         <span className="text-[9px] uppercase font-bold text-slate-400 block tracking-wider mb-1">
                           Action Output Data
                         </span>
-                        <pre className="p-2.5 rounded-lg bg-[#07090e] border border-slate-800 text-[10px] text-slate-300 overflow-x-auto max-h-48">
+                        <pre className="p-2.5 rounded-lg bg-[#07080a] border border-slate-800 text-[10px] text-slate-300 overflow-x-auto max-h-48">
                           {JSON.stringify(record.output, null, 2)}
                         </pre>
                       </div>
@@ -295,7 +295,7 @@ export default function AnalysisDetailPage() {
 
                   <p className="text-xs text-slate-300 leading-relaxed font-sans">{f.description}</p>
 
-                  <div className="p-3 rounded-lg bg-[#07090e] border border-slate-800 space-y-1 font-mono text-xs">
+                  <div className="p-3 rounded-lg bg-[#07080a] border border-slate-800 space-y-1 font-mono text-xs">
                     <div className="flex items-center justify-between text-[10px] text-slate-400">
                       <span>EVIDENCE ({f.sourceTool})</span>
                       <span className="text-slate-500">{f.location}</span>

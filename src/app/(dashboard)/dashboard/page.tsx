@@ -100,7 +100,7 @@ export default function DashboardPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white font-sans">
+            <h1 className="text-[28px] sm:text-[36px] leading-[1.1] font-medium tracking-[-0.03em] text-gradient-silver font-sans">
               Security Overview
             </h1>
             <span className="px-2.5 py-0.5 rounded-full text-xs font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
@@ -121,7 +121,7 @@ export default function DashboardPage() {
           </Link>
           <Link
             href="/analysis/run"
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-mono font-bold shadow-lg shadow-emerald-500/20 transition-all"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#e6e6e6] hover:bg-white text-[#2f3031] shadow-rc-button text-xs font-mono font-bold transition-all duration-200"
           >
             <Activity className="w-4 h-4" />
             <span>Launch Agent Run</span>
@@ -144,7 +144,7 @@ export default function DashboardPage() {
         </div>
         <Link
           href="/analysis/run"
-          className="px-3.5 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold transition-all text-center shrink-0"
+          className="px-3.5 py-1.5 rounded-lg bg-[#e6e6e6] hover:bg-white text-[#2f3031] shadow-rc-button font-bold transition-all text-center shrink-0"
         >
           Execute Analysis
         </Link>
@@ -156,7 +156,7 @@ export default function DashboardPage() {
       {/* Top KPI Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
         {/* Total Apps */}
-        <div className="p-4 rounded-2xl bg-[#0d121c] border border-slate-800/80 shadow-lg relative overflow-hidden group hover:border-slate-700 transition-all">
+        <div className="p-4 rounded-2xl bg-[#0e0f11] border border-slate-800/80 shadow-lg relative overflow-hidden group hover:border-slate-700 transition-all">
           <div className="flex items-center justify-between text-slate-400 mb-2">
             <span className="text-xs font-mono uppercase">Applications</span>
             <Smartphone className="w-4 h-4 text-sky-400" />
@@ -171,7 +171,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Critical Findings */}
-        <div className="p-4 rounded-2xl bg-[#0d121c] border border-rose-500/30 shadow-lg relative overflow-hidden group hover:border-rose-500/50 transition-all">
+        <div className="p-4 rounded-2xl bg-[#0e0f11] border border-rose-500/30 shadow-lg relative overflow-hidden group hover:border-rose-500/50 transition-all">
           <div className="flex items-center justify-between text-slate-400 mb-2">
             <span className="text-xs font-mono uppercase text-rose-400 font-bold">Critical Findings</span>
             <ShieldAlert className="w-4 h-4 text-rose-500 animate-pulse" />
@@ -188,7 +188,7 @@ export default function DashboardPage() {
         </div>
 
         {/* High Findings */}
-        <div className="p-4 rounded-2xl bg-[#0d121c] border border-amber-500/30 shadow-lg relative overflow-hidden group hover:border-amber-500/50 transition-all">
+        <div className="p-4 rounded-2xl bg-[#0e0f11] border border-amber-500/30 shadow-lg relative overflow-hidden group hover:border-amber-500/50 transition-all">
           <div className="flex items-center justify-between text-slate-400 mb-2">
             <span className="text-xs font-mono uppercase text-amber-400 font-bold">High Findings</span>
             <AlertTriangle className="w-4 h-4 text-amber-500" />
@@ -205,7 +205,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Security Score */}
-        <div className="p-4 rounded-2xl bg-[#0d121c] border border-brand-cyan/30 shadow-lg relative overflow-hidden group hover:border-brand-cyan/50 transition-all">
+        <div className="p-4 rounded-2xl bg-[#0e0f11] border border-brand-cyan/30 shadow-lg relative overflow-hidden group hover:border-brand-cyan/50 transition-all">
           <div className="flex items-center justify-between text-slate-400 mb-2">
             <span className="text-xs font-mono uppercase text-brand-cyan font-bold">Security Score</span>
             <ShieldCheck className="w-4 h-4 text-emerald-400" />
@@ -223,7 +223,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Scans This Month */}
-        <div className="p-4 rounded-2xl bg-[#0d121c] border border-slate-800/80 shadow-lg relative overflow-hidden group hover:border-slate-700 transition-all col-span-2 sm:col-span-1">
+        <div className="p-4 rounded-2xl bg-[#0e0f11] border border-slate-800/80 shadow-lg relative overflow-hidden group hover:border-slate-700 transition-all col-span-2 sm:col-span-1">
           <div className="flex items-center justify-between text-slate-400 mb-2">
             <span className="text-xs font-mono uppercase">Scans This Month</span>
             <Activity className="w-4 h-4 text-indigo-400" />
@@ -241,7 +241,7 @@ export default function DashboardPage() {
       {/* Main Posture & Breakdown Section */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Large Security Score Posture Gauge */}
-        <div className="lg:col-span-5 p-6 rounded-3xl bg-[#0d121c] border border-slate-800/80 shadow-xl flex flex-col justify-between space-y-6">
+        <div className="lg:col-span-5 p-6 rounded-3xl bg-[#0e0f11] border border-slate-800/80 shadow-xl flex flex-col justify-between space-y-6">
           <div className="flex items-center justify-between">
             <div>
               <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400">Workspace Posture</span>
@@ -318,7 +318,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Findings Over Time & Severity Donut */}
-        <div className="lg:col-span-7 p-6 rounded-3xl bg-[#0d121c] border border-slate-800/80 shadow-xl flex flex-col justify-between space-y-4">
+        <div className="lg:col-span-7 p-6 rounded-3xl bg-[#0e0f11] border border-slate-800/80 shadow-xl flex flex-col justify-between space-y-4">
           <div className="flex items-center justify-between">
             <div>
               <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400">Remediation Velocity</span>
@@ -354,7 +354,7 @@ export default function DashboardPage() {
                 <XAxis dataKey="month" stroke="#64748b" fontSize={11} tickLine={false} />
                 <YAxis stroke="#64748b" fontSize={11} tickLine={false} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#0d121c', borderColor: '#334155', borderRadius: '12px', fontSize: '12px' }}
+                  contentStyle={{ backgroundColor: '#0e0f11', borderColor: '#334155', borderRadius: '12px', fontSize: '12px' }}
                 />
                 <Area type="monotone" dataKey="resolved" stroke="#10b981" fillOpacity={1} fill="url(#colorResolved)" strokeWidth={2} />
                 <Area type="monotone" dataKey="critical" stroke="#f43f5e" fillOpacity={1} fill="url(#colorCritical)" strokeWidth={2} />
@@ -378,7 +378,7 @@ export default function DashboardPage() {
       {/* Second Row: Top Vulnerability Categories & Platform Breakdown & Recent Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Most Common Vulnerability Categories */}
-        <div className="lg:col-span-4 p-6 rounded-3xl bg-[#0d121c] border border-slate-800/80 shadow-xl space-y-4">
+        <div className="lg:col-span-4 p-6 rounded-3xl bg-[#0e0f11] border border-slate-800/80 shadow-xl space-y-4">
           <div className="flex items-center justify-between">
             <div>
               <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400">OWASP MASVS / CWE</span>
@@ -415,7 +415,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Severity Donut & Platforms */}
-        <div className="lg:col-span-4 p-6 rounded-3xl bg-[#0d121c] border border-slate-800/80 shadow-xl space-y-4">
+        <div className="lg:col-span-4 p-6 rounded-3xl bg-[#0e0f11] border border-slate-800/80 shadow-xl space-y-4">
           <div className="flex items-center justify-between">
             <div>
               <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400">Risk Allocation</span>
@@ -441,7 +441,7 @@ export default function DashboardPage() {
                   ))}
                 </Pie>
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#0d121c', borderColor: '#334155', borderRadius: '12px', fontSize: '12px' }}
+                  contentStyle={{ backgroundColor: '#0e0f11', borderColor: '#334155', borderRadius: '12px', fontSize: '12px' }}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -466,7 +466,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Recent Security Activity Stream */}
-        <div className="lg:col-span-4 p-6 rounded-3xl bg-[#0d121c] border border-slate-800/80 shadow-xl space-y-4">
+        <div className="lg:col-span-4 p-6 rounded-3xl bg-[#0e0f11] border border-slate-800/80 shadow-xl space-y-4">
           <div className="flex items-center justify-between">
             <div>
               <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400">Live Audit Stream</span>

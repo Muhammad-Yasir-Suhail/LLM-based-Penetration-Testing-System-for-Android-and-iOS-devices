@@ -55,7 +55,7 @@ export default function CorrelationPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white font-sans">
+            <h1 className="text-[28px] sm:text-[36px] leading-[1.1] font-medium tracking-[-0.03em] text-gradient-silver font-sans">
               Cross-Engine Finding Correlation
             </h1>
             <span className="px-2.5 py-0.5 rounded-full text-xs font-mono bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">
@@ -125,7 +125,7 @@ export default function CorrelationPage() {
         </div>
 
         {/* Right: Interactive Evidence Relationship Tree & Unified Remediation */}
-        <div className="lg:col-span-7 p-6 rounded-3xl bg-[#0d121c] border border-slate-800/80 shadow-xl space-y-6">
+        <div className="lg:col-span-7 p-6 rounded-3xl bg-[#0e0f11] border border-slate-800/80 shadow-xl space-y-6">
           {/* Correlated Issue Header */}
           <div className="flex items-start justify-between pb-4 border-b border-slate-800">
             <div>
@@ -237,7 +237,7 @@ export default function CorrelationPage() {
 
             <Link
               href="/findings"
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-brand-cyan to-brand-indigo text-slate-950 text-xs font-mono font-bold shadow-lg shadow-cyan-500/20 hover:opacity-95 transition-all"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#e6e6e6] hover:bg-white text-[#2f3031] text-xs font-mono font-semibold shadow-rc-button hover:shadow-[0_0_0_2px_rgba(0,0,0,0.5),0_0_24px_2px_rgba(255,255,255,0.28),inset_0_1px_0.4px_#fff] transition-all duration-200"
             >
               <span>View Individual Findings</span>
               <ArrowRight className="w-4 h-4" />

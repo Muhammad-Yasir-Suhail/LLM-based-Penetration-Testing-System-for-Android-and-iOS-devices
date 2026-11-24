@@ -53,7 +53,7 @@ export default function FindingDetailPage() {
       </Link>
 
       {/* Main Finding Card */}
-      <div className="p-6 rounded-3xl bg-[#0d121c] border border-slate-800/80 shadow-xl space-y-6">
+      <div className="p-6 rounded-3xl bg-[#0e0f11] border border-slate-800/80 shadow-xl space-y-6">
         <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6 pb-4 border-b border-slate-800">
           <div className="space-y-2">
             <div className="flex flex-wrap items-center gap-2">
@@ -67,7 +67,7 @@ export default function FindingDetailPage() {
                 • {finding.category} • {finding.cwe}
               </span>
             </div>
-            <h1 className="text-xl sm:text-2xl font-bold text-white leading-tight">
+            <h1 className="text-2xl sm:text-[30px] leading-tight font-medium tracking-[-0.025em] text-white">
               {finding.title}
             </h1>
             <p className="text-xs font-mono text-slate-400">
@@ -148,7 +148,7 @@ export default function FindingDetailPage() {
 
         {/* AI Explanation Side Panel (Collapsible / Reactive) */}
         {aiDrawerOpen && (
-          <div className="p-5 rounded-2xl bg-gradient-to-br from-purple-500/15 via-[#0d121c] to-brand-cyan/15 border border-purple-500/40 space-y-4 animate-in fade-in duration-200">
+          <div className="p-5 rounded-2xl bg-gradient-to-br from-purple-500/15 via-[#0e0f11] to-brand-cyan/15 border border-purple-500/40 space-y-4 animate-in fade-in duration-200">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-purple-300 font-mono font-bold text-xs uppercase">
                 <Bot className="w-4 h-4 text-purple-400" />

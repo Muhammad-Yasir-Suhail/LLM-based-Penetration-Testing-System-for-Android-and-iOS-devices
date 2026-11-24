@@ -119,7 +119,7 @@ export default function ProjectsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white font-sans">
+          <h1 className="text-[28px] sm:text-[36px] leading-[1.1] font-medium tracking-[-0.03em] text-gradient-silver font-sans">
             Projects
           </h1>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
@@ -132,7 +132,7 @@ export default function ProjectsPage() {
             setIsModalOpen(true);
             setModalStep(1);
           }}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-brand-cyan to-brand-indigo text-slate-950 text-xs font-mono font-bold shadow-lg shadow-cyan-500/20 hover:opacity-95 transition-all"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#e6e6e6] hover:bg-white text-[#2f3031] text-xs font-mono font-semibold shadow-rc-button hover:shadow-[0_0_0_2px_rgba(0,0,0,0.5),0_0_24px_2px_rgba(255,255,255,0.28),inset_0_1px_0.4px_#fff] transition-all duration-200"
         >
           <Plus className="w-4 h-4" />
           <span>New Project</span>
@@ -140,7 +140,7 @@ export default function ProjectsPage() {
       </div>
 
       {/* Filters & Search Toolbar */}
-      <div className="p-4 rounded-2xl bg-[#0d121c] border border-slate-800/80 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-4 rounded-2xl bg-[#0e0f11] border border-slate-800/80 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
         {/* Search */}
         <div className="relative flex-1 max-w-md">
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -193,7 +193,7 @@ export default function ProjectsPage() {
             <Link
               key={project.id}
               href={`/projects/${project.id}`}
-              className="p-5 rounded-3xl bg-[#0d121c] border border-slate-800/80 hover:border-slate-700 shadow-xl transition-all flex flex-col justify-between group space-y-4 hover:shadow-2xl"
+              className="p-5 rounded-3xl bg-[#0e0f11] border border-slate-800/80 hover:border-slate-700 shadow-xl transition-all flex flex-col justify-between group space-y-4 hover:shadow-2xl"
             >
               <div>
                 <div className="flex items-start justify-between gap-2 mb-3">
@@ -243,7 +243,7 @@ export default function ProjectsPage() {
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
           <div
-            className="w-full max-w-xl bg-[#0d121c] border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden glass-panel-glow"
+            className="w-full max-w-xl bg-[#0e0f11] border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden glass-panel-glow"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
@@ -403,7 +403,7 @@ export default function ProjectsPage() {
             </div>
 
             {/* Modal Footer */}
-            <div className="p-4 bg-[#0a0e16] border-t border-slate-800 flex items-center justify-between">
+            <div className="p-4 bg-[#0a0b0d] border-t border-slate-800 flex items-center justify-between">
               {modalStep > 1 ? (
                 <button
                   type="button"
@@ -429,7 +429,7 @@ export default function ProjectsPage() {
                 <button
                   type="button"
                   onClick={handleCreateProject}
-                  className="px-5 py-2 rounded-xl bg-gradient-to-r from-brand-cyan to-brand-indigo text-slate-950 text-xs font-bold font-mono shadow-lg shadow-cyan-500/20 hover:opacity-95 transition-all"
+                  className="px-5 py-2 rounded-xl bg-[#e6e6e6] hover:bg-white text-[#2f3031] text-xs font-mono font-semibold shadow-rc-button transition-all duration-200"
                 >
                   Complete & Register Project
                 </button>

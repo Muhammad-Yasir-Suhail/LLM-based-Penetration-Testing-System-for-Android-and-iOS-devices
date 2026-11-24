@@ -97,7 +97,7 @@ export default function AttackSurfacePage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white font-sans">
+            <h1 className="text-[28px] sm:text-[36px] leading-[1.1] font-medium tracking-[-0.03em] text-gradient-silver font-sans">
               Attack Surface Explorer
             </h1>
             <span className="px-2.5 py-0.5 rounded-full text-xs font-mono bg-brand-cyan/10 text-brand-cyan border border-brand-cyan/30">
@@ -128,7 +128,7 @@ export default function AttackSurfacePage() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3.5">
-        <div className="p-4 rounded-2xl bg-[#0d121c] border border-brand-cyan/30 shadow-lg">
+        <div className="p-4 rounded-2xl bg-[#0e0f11] border border-brand-cyan/30 shadow-lg">
           <span className="text-[11px] font-mono uppercase text-slate-400">Attack Surface Score</span>
           <div className="flex items-baseline gap-2 mt-1">
             <span className="text-2xl font-extrabold text-white font-mono">{activeApp.attackSurfaceScore}</span>
@@ -137,7 +137,7 @@ export default function AttackSurfacePage() {
           <span className="text-[10px] text-amber-400 font-mono">Moderate Exposure</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-[#0d121c] border border-slate-800 shadow-lg">
+        <div className="p-4 rounded-2xl bg-[#0e0f11] border border-slate-800 shadow-lg">
           <span className="text-[11px] font-mono uppercase text-slate-400">Exposed Components</span>
           <div className="flex items-baseline gap-2 mt-1">
             <span className="text-2xl font-extrabold text-white font-mono">{exposedComponentsCount}</span>
@@ -146,7 +146,7 @@ export default function AttackSurfacePage() {
           <span className="text-[10px] text-slate-400 font-mono">Activities, Services, Providers</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-[#0d121c] border border-rose-500/30 shadow-lg">
+        <div className="p-4 rounded-2xl bg-[#0e0f11] border border-rose-500/30 shadow-lg">
           <span className="text-[11px] font-mono uppercase text-rose-400 font-bold">High-Risk Nodes</span>
           <div className="flex items-baseline gap-2 mt-1">
             <span className="text-2xl font-extrabold text-rose-400 font-mono">{highRiskCount}</span>
@@ -155,7 +155,7 @@ export default function AttackSurfacePage() {
           <span className="text-[10px] text-slate-400 font-mono">Direct exploit vectors</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-[#0d121c] border border-slate-800 shadow-lg">
+        <div className="p-4 rounded-2xl bg-[#0e0f11] border border-slate-800 shadow-lg">
           <span className="text-[11px] font-mono uppercase text-slate-400">External Endpoints</span>
           <div className="flex items-baseline gap-2 mt-1">
             <span className="text-2xl font-extrabold text-white font-mono">{externalEndpointsCount}</span>
@@ -164,7 +164,7 @@ export default function AttackSurfacePage() {
           <span className="text-[10px] text-slate-400 font-mono">1 unencrypted HTTP domain</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-[#0d121c] border border-slate-800 shadow-lg col-span-2 sm:col-span-1">
+        <div className="p-4 rounded-2xl bg-[#0e0f11] border border-slate-800 shadow-lg col-span-2 sm:col-span-1">
           <span className="text-[11px] font-mono uppercase text-slate-400">Sensitive Permissions</span>
           <div className="flex items-baseline gap-2 mt-1">
             <span className="text-2xl font-extrabold text-white font-mono">{sensitivePermsCount}</span>
@@ -177,7 +177,7 @@ export default function AttackSurfacePage() {
       {/* Main Interactive Split: Graph Topology on Left, Node Inspector on Right */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Topology Graph Visualizer */}
-        <div className="lg:col-span-7 p-6 rounded-3xl bg-[#0d121c] border border-slate-800/80 shadow-xl space-y-4">
+        <div className="lg:col-span-7 p-6 rounded-3xl bg-[#0e0f11] border border-slate-800/80 shadow-xl space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800">
             <div className="flex items-center gap-2">
               <Network className="w-5 h-5 text-brand-cyan" />
@@ -223,7 +223,7 @@ export default function AttackSurfacePage() {
                   onClick={() => setSelectedNodeId(node.id)}
                   className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
                     isSelected
-                      ? 'bg-brand-500/15 border-brand-cyan shadow-lg shadow-cyan-950/40 ring-1 ring-brand-cyan'
+                      ? 'bg-brand-500/15 border-brand-cyan shadow-lg shadow-black/40 ring-1 ring-brand-cyan'
                       : 'bg-slate-900/40 border-slate-800 hover:border-slate-700 hover:bg-slate-800/40'
                   }`}
                 >
@@ -262,7 +262,7 @@ export default function AttackSurfacePage() {
         </div>
 
         {/* Node Inspector Side Panel */}
-        <div className="lg:col-span-5 p-6 rounded-3xl bg-[#0d121c] border border-slate-800/80 shadow-xl space-y-5">
+        <div className="lg:col-span-5 p-6 rounded-3xl bg-[#0e0f11] border border-slate-800/80 shadow-xl space-y-5">
           <div className="flex items-start justify-between pb-3 border-b border-slate-800">
             <div>
               <span className="text-[10px] font-mono uppercase tracking-wider text-brand-cyan font-bold">

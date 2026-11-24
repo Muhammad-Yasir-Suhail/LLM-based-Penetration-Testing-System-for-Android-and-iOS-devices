@@ -49,7 +49,7 @@ export default function SecurityPosturePage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white font-sans">
+          <h1 className="text-[28px] sm:text-[36px] leading-[1.1] font-medium tracking-[-0.03em] text-gradient-silver font-sans">
             Security Posture Analytics
           </h1>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
@@ -65,7 +65,7 @@ export default function SecurityPosturePage() {
       <PipelineBanner activeStep="prioritize" compact />
 
       {/* OWASP MASVS Category Compliance Grid */}
-      <div className="p-6 rounded-3xl bg-[#0d121c] border border-slate-800/80 shadow-xl space-y-4">
+      <div className="p-6 rounded-3xl bg-[#0e0f11] border border-slate-800/80 shadow-xl space-y-4">
         <div className="flex items-center justify-between">
           <div>
             <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400">
@@ -101,7 +101,7 @@ export default function SecurityPosturePage() {
       </div>
 
       {/* Application Risk Matrix */}
-      <div className="p-6 rounded-3xl bg-[#0d121c] border border-slate-800/80 shadow-xl space-y-4">
+      <div className="p-6 rounded-3xl bg-[#0e0f11] border border-slate-800/80 shadow-xl space-y-4">
         <div className="flex items-center justify-between">
           <div>
             <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400">

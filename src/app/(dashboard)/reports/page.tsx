@@ -40,7 +40,7 @@ export default function ReportsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white font-sans">
+          <h1 className="text-[28px] sm:text-[36px] leading-[1.1] font-medium tracking-[-0.03em] text-gradient-silver font-sans">
             Security Reports
           </h1>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
@@ -50,7 +50,7 @@ export default function ReportsPage() {
 
         <button
           onClick={handleCreateNewReport}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-brand-cyan to-brand-indigo text-slate-950 text-xs font-mono font-bold shadow-lg shadow-cyan-500/20 hover:opacity-95 transition-all"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#e6e6e6] hover:bg-white text-[#2f3031] text-xs font-mono font-semibold shadow-rc-button hover:shadow-[0_0_0_2px_rgba(0,0,0,0.5),0_0_24px_2px_rgba(255,255,255,0.28),inset_0_1px_0.4px_#fff] transition-all duration-200"
         >
           <Plus className="w-4 h-4" />
           <span>Generate New Report</span>
@@ -64,7 +64,7 @@ export default function ReportsPage() {
           return (
             <div
               key={rep.id}
-              className="p-6 rounded-3xl bg-[#0d121c] border border-slate-800/80 shadow-xl space-y-4 flex flex-col justify-between"
+              className="p-6 rounded-3xl bg-[#0e0f11] border border-slate-800/80 shadow-xl space-y-4 flex flex-col justify-between"
             >
               <div>
                 <div className="flex items-start justify-between gap-2 mb-3">

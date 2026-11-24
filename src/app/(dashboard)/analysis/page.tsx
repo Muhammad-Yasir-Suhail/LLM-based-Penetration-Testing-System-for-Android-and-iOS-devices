@@ -48,7 +48,7 @@ export default function AnalysisRunsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white font-sans">
+          <h1 className="text-[28px] sm:text-[36px] leading-[1.1] font-medium tracking-[-0.03em] text-gradient-silver font-sans">
             Security Analysis Runs
           </h1>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
@@ -58,7 +58,7 @@ export default function AnalysisRunsPage() {
 
         <Link
           href="/analysis/run"
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-mono font-bold shadow-lg shadow-emerald-500/20 transition-all"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#e6e6e6] hover:bg-white text-[#2f3031] shadow-rc-button text-xs font-mono font-bold transition-all duration-200"
         >
           <Activity className="w-4 h-4" />
           <span>New Agentic Analysis Run</span>

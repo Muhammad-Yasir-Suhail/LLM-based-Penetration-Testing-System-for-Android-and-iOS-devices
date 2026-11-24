@@ -15,7 +15,7 @@ const pipelineSteps = [
 
 export const PipelineBanner: React.FC<{ activeStep?: string; compact?: boolean }> = ({ activeStep = 'correlate', compact = false }) => {
   return (
-    <div className="w-full bg-[#0a0e17]/80 border border-slate-800/80 rounded-xl p-3 sm:p-4 backdrop-blur-md">
+    <div className="w-full bg-white/[0.02] border border-white/[0.07] rounded-2xl p-3 sm:p-4 backdrop-blur-md">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
         <div className="flex items-center gap-2">
           <span className="flex h-2 w-2 rounded-full bg-emerald-400 shrink-0" />
@@ -37,7 +37,7 @@ export const PipelineBanner: React.FC<{ activeStep?: string; compact?: boolean }
               key={step.id}
               className={`relative rounded-lg p-2.5 transition-all duration-200 border ${
                 isActive
-                  ? `${step.border} ring-1 ring-brand-cyan/40 shadow-lg shadow-cyan-950/40`
+                  ? `${step.border} ring-1 ring-[#ff6363]/40 shadow-[0_0_24px_-6px_rgba(255,99,99,0.45)]`
                   : 'bg-slate-900/40 border-slate-800/60 hover:bg-slate-800/40'
               }`}
             >

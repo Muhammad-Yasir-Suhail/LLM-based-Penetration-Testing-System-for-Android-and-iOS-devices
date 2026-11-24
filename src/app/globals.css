@@ -2,104 +2,612 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ==========================================================================
+   VulnScope design system — Raycast keyboard inspired
+   ========================================================================== */
+
 @layer base {
   :root {
-    --background: 222 47% 4%;
-    --foreground: 210 40% 98%;
-    --card: 222 47% 6%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222 47% 6%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 199 89% 48%;
-    --primary-foreground: 222 47% 4%;
-    --secondary: 217 33% 17%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217 33% 14%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217 33% 17%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217 33% 17%;
-    --input: 217 33% 17%;
-    --ring: 199 89% 48%;
+    --ease-rc: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-press: cubic-bezier(0.32, 0.72, 0, 1);
+
+    --bg: #07080a;
+    --surface-1: #0c0d0f;
+    --surface-2: #111214;
+    --surface-3: #17181b;
+    --line: rgba(255, 255, 255, 0.08);
+    --line-strong: rgba(255, 255, 255, 0.14);
+    --text: #ffffff;
+    --text-2: rgba(255, 255, 255, 0.6);
+    --text-3: rgba(255, 255, 255, 0.4);
+    --red: #ff6363;
+    --red-glow: rgba(255, 99, 99, 0.35);
+
+    --sidebar-w: 256px;
+
+    /* legacy HSL tokens retained for compatibility */
+    --background: 220 14% 3%;
+    --foreground: 0 0% 100%;
+    --card: 220 7% 6%;
+    --card-foreground: 0 0% 100%;
+    --popover: 220 7% 6%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 0 100% 69%;
+    --primary-foreground: 220 14% 3%;
+    --secondary: 220 5% 12%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 220 5% 10%;
+    --muted-foreground: 230 4% 62%;
+    --accent: 220 5% 12%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 350 89% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 100% / 0.08;
+    --input: 0 0% 100% / 0.08;
+    --ring: 0 100% 69%;
+  }
+
+  html {
+    background: var(--bg);
+    color-scheme: dark;
+    -webkit-tap-highlight-color: transparent;
   }
 
   body {
-    @apply bg-[#07090e] text-slate-100 antialiased selection:bg-brand-500/30 selection:text-brand-cyan;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    @apply antialiased;
+    background: var(--bg);
+    color: var(--text);
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11", "ss01";
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: rgba(255, 99, 99, 0.28);
+    color: #fff;
+  }
+
+  h1, h2, h3 {
+    letter-spacing: -0.02em;
+  }
+
+  :focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.55);
+    outline-offset: 2px;
+    border-radius: 6px;
   }
 }
 
-/* Custom Cyber Background Grids & Dots */
+@layer components {
+/* ---------- Backgrounds -------------------------------------------------- */
+
 .bg-grid-cyber {
-  background-size: 32px 32px;
-  background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(255, 99, 99, 0.07), transparent 60%),
+    linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 100% 100%, 48px 48px, 48px 48px;
+  background-attachment: fixed, scroll, scroll;
 }
 
 .bg-radial-gradient {
-  background: radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.08) 0%, transparent 60%);
+  background: radial-gradient(circle at 50% 0%, rgba(255, 99, 99, 0.08) 0%, transparent 60%);
 }
 
 .bg-radial-glow {
-  background: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.12) 0%, transparent 70%);
+  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.06) 0%, transparent 70%);
 }
 
-/* Glass Panels */
+.bg-noise::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* ---------- Panels & cards ---------------------------------------------- */
+
+.glass-panel,
+.glass-panel-subtle,
+.glass-panel-glow {
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  transition: border-color 0.3s var(--ease-rc), box-shadow 0.3s var(--ease-rc), transform 0.3s var(--ease-rc);
+}
+
 .glass-panel {
-  background: rgba(13, 17, 26, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(180deg, rgba(22, 23, 26, 0.85), rgba(12, 13, 15, 0.85));
+  border: 1px solid var(--line);
+  box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.04) inset, 0 24px 48px -28px rgba(0, 0, 0, 0.9);
 }
 
 .glass-panel-subtle {
-  background: rgba(15, 21, 34, 0.5);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(17, 18, 20, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .glass-panel-glow {
-  background: rgba(13, 17, 26, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(56, 189, 248, 0.2);
-  box-shadow: 0 0 25px -5px rgba(56, 189, 248, 0.1);
+  background: linear-gradient(180deg, rgba(24, 25, 28, 0.92), rgba(12, 13, 15, 0.92));
+  border: 1px solid var(--line-strong);
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.06) inset,
+    0 0 0 1px rgba(0, 0, 0, 0.6),
+    0 30px 80px -30px rgba(0, 0, 0, 0.95),
+    0 0 60px -20px rgba(255, 99, 99, 0.18);
 }
 
-/* Custom Scrollbars */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+/* Shared card treatment for every rounded, bordered surface in the app area. */
+.app-main [class*="rounded-xl"][class*="border"],
+.app-main [class*="rounded-2xl"][class*="border"],
+.app-main [class*="rounded-3xl"][class*="border"] {
+  transition:
+    border-color 0.3s var(--ease-rc),
+    box-shadow 0.3s var(--ease-rc),
+    background-color 0.3s var(--ease-rc),
+    transform 0.3s var(--ease-rc);
 }
 
-::-webkit-scrollbar-track {
-  background: #080b11;
+.app-main [class*="rounded-2xl"][class*="border"]:hover,
+.app-main [class*="rounded-3xl"][class*="border"]:hover {
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.05) inset, 0 24px 48px -28px rgba(0, 0, 0, 0.95);
 }
 
-::-webkit-scrollbar-thumb {
-  background: #1e293b;
+/* Tactile press for every button / link-button in the app */
+.app-main button:not(:disabled),
+.app-shell button:not(:disabled),
+.press {
+  transition-property: color, background-color, border-color, box-shadow, transform, opacity;
+  transition-duration: 0.2s;
+  transition-timing-function: var(--ease-rc);
+}
+
+.app-main button:not(:disabled):active,
+.app-shell button:not(:disabled):active,
+.press:active {
+  transform: scale(0.97);
+}
+
+/* Interactive card used by redesigned components */
+.rc-card {
+  position: relative;
+  background: linear-gradient(180deg, var(--surface-2), var(--surface-1));
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.04) inset;
+  transition: transform 0.35s var(--ease-rc), border-color 0.35s var(--ease-rc), box-shadow 0.35s var(--ease-rc);
+}
+
+.rc-card-hover:hover {
+  transform: translateY(-3px);
+  border-color: var(--line-strong);
+  box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.06) inset, 0 30px 60px -30px rgba(0, 0, 0, 0.95), 0 0 40px -18px rgba(255, 99, 99, 0.25);
+}
+
+/* Spotlight: follows the cursor (set --mx / --my via JS) */
+.spotlight {
+  position: relative;
+  isolation: isolate;
+}
+.spotlight::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 0%), rgba(255, 99, 99, 0.55), rgba(255, 255, 255, 0.12) 40%, transparent 70%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.35s var(--ease-rc);
+  pointer-events: none;
+  z-index: 1;
+}
+.spotlight:hover::before {
+  opacity: 1;
+}
+
+/* ---------- Buttons (Raycast keycap style) -------------------------------- */
+
+.rc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+  transition: transform 0.2s var(--ease-rc), box-shadow 0.25s var(--ease-rc), background-color 0.25s var(--ease-rc), color 0.25s var(--ease-rc), opacity 0.2s;
+  will-change: transform;
+}
+.rc-btn:active { transform: translateY(1px) scale(0.98); }
+.rc-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.rc-btn-primary {
+  background: #e6e6e6;
+  color: #2f3031;
+  box-shadow:
+    0 0 0 2px rgba(0, 0, 0, 0.5),
+    0 0 14px 0 rgba(255, 255, 255, 0.19),
+    0 -1px 0.4px 0 rgba(0, 0, 0, 0.2) inset,
+    0 1px 0.4px 0 #fff inset;
+}
+.rc-btn-primary:hover {
+  background: #ffffff;
+  box-shadow:
+    0 0 0 2px rgba(0, 0, 0, 0.5),
+    0 0 24px 2px rgba(255, 255, 255, 0.28),
+    0 -1px 0.4px 0 rgba(0, 0, 0, 0.2) inset,
+    0 1px 0.4px 0 #fff inset;
+}
+
+.rc-btn-secondary {
+  background: linear-gradient(180deg, #1c1d20, #141517);
+  color: #fff;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 1px 0 0 rgba(255, 255, 255, 0.06) inset,
+    0 6px 16px -8px rgba(0, 0, 0, 0.9);
+}
+.rc-btn-secondary:hover {
+  background: linear-gradient(180deg, #232427, #18191b);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.14),
+    0 1px 0 0 rgba(255, 255, 255, 0.08) inset,
+    0 10px 24px -10px rgba(0, 0, 0, 0.9);
+}
+
+.rc-btn-red {
+  background: linear-gradient(180deg, #ff7676, #e5484d);
+  color: #fff;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.5),
+    0 1px 0 0 rgba(255, 255, 255, 0.35) inset,
+    0 0 24px -4px rgba(255, 99, 99, 0.55);
+}
+.rc-btn-red:hover {
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.5),
+    0 1px 0 0 rgba(255, 255, 255, 0.35) inset,
+    0 0 36px 0 rgba(255, 99, 99, 0.7);
+}
+
+/* ---------- Keycaps ------------------------------------------------------- */
+
+.kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 6px;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+  background: linear-gradient(180deg, #232427, #17181a);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6), 0 1px 0 0 rgba(255, 255, 255, 0.08) inset, 0 -1px 0 0 rgba(0, 0, 0, 0.6) inset;
+}
+
+.keycap {
+  position: relative;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #1e1f22 0%, #141517 70%, #0f1012 100%);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.7),
+    0 1px 0 0 rgba(255, 255, 255, 0.07) inset,
+    0 -3px 0 0 rgba(0, 0, 0, 0.55) inset,
+    0 8px 16px -8px rgba(0, 0, 0, 0.9);
+  transition: transform 0.18s var(--ease-press), box-shadow 0.25s var(--ease-rc), background 0.25s var(--ease-rc), color 0.25s;
+}
+.keycap::after {
+  /* the top face highlight */
+  content: "";
+  position: absolute;
+  inset: 3px 4px 6px 4px;
+  border-radius: 7px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 60%);
+  pointer-events: none;
+}
+.keycap:hover {
+  transform: translateY(1px);
+}
+.keycap.is-pressed {
+  transform: translateY(3px);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.7),
+    0 1px 0 0 rgba(255, 255, 255, 0.05) inset,
+    0 -1px 0 0 rgba(0, 0, 0, 0.55) inset,
+    0 2px 6px -2px rgba(0, 0, 0, 0.9);
+}
+.keycap.is-lit {
+  color: #fff;
+  box-shadow:
+    0 0 0 1px rgba(255, 99, 99, 0.55),
+    0 1px 0 0 rgba(255, 255, 255, 0.1) inset,
+    0 -3px 0 0 rgba(0, 0, 0, 0.55) inset,
+    0 0 28px -2px rgba(255, 99, 99, 0.55),
+    0 8px 16px -8px rgba(0, 0, 0, 0.9);
+}
+.keycap-red {
+  background: linear-gradient(180deg, #ff7a7a 0%, #e5484d 75%, #c23a3f 100%);
+  color: #fff;
+}
+
+/* RGB light bar (from the keyboard's side LEDs) */
+.light-bar {
+  height: 2px;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, transparent, var(--red), #ffb4b4, var(--red), transparent);
+  background-size: 200% 100%;
+  animation: light-bar 3.2s linear infinite;
+  box-shadow: 0 0 18px 2px var(--red-glow);
+}
+@keyframes light-bar {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+/* LED dot column */
+.led {
+  width: 4px;
+  height: 4px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.12);
+  transition: background 0.3s, box-shadow 0.3s;
+}
+.led.on {
+  background: var(--red);
+  box-shadow: 0 0 8px 1px var(--red-glow);
+}
+
+/* ---------- Typography helpers ----------------------------------------- */
+
+.text-gradient-silver {
+  background: linear-gradient(180deg, #ffffff 30%, rgba(255, 255, 255, 0.55));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.eyebrow {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.spec-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.spec-row:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+/* ---------- Motion primitives -------------------------------------------- */
+
+/* Modal / overlay support for existing `animate-in fade-in` classes */
+.animate-in {
+  animation: rc-fade-in 0.22s var(--ease-rc) both;
+}
+.animate-in.fixed > * {
+  animation: rc-pop-in 0.32s var(--ease-rc) both;
+}
+@keyframes rc-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes rc-pop-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.97); filter: blur(4px); }
+  to { opacity: 1; transform: none; filter: none; }
+}
+
+.slide-in-right {
+  animation: rc-slide-right 0.38s var(--ease-rc) both;
+}
+@keyframes rc-slide-right {
+  from { transform: translateX(32px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+/* Staggered page entrance for dashboard routes */
+.page-enter > * > * {
+  animation: rc-rise 0.5s var(--ease-rc) both;
+}
+.page-enter > * > *:nth-child(1) { animation-delay: 0ms; }
+.page-enter > * > *:nth-child(2) { animation-delay: 60ms; }
+.page-enter > * > *:nth-child(3) { animation-delay: 120ms; }
+.page-enter > * > *:nth-child(4) { animation-delay: 180ms; }
+.page-enter > * > *:nth-child(5) { animation-delay: 240ms; }
+.page-enter > * > *:nth-child(6) { animation-delay: 300ms; }
+.page-enter > * > *:nth-child(n + 7) { animation-delay: 340ms; }
+
+@keyframes rc-rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; filter: none; }
+}
+
+/* Scroll reveal (driven by <Reveal/>) */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  filter: blur(8px);
+  transition:
+    opacity 0.7s var(--ease-rc),
+    transform 0.7s var(--ease-rc),
+    filter 0.7s var(--ease-rc);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+[data-reveal="scale"] { transform: scale(0.94); }
+[data-reveal="left"] { transform: translateX(-24px); }
+[data-reveal="right"] { transform: translateX(24px); }
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* Word-by-word scroll highlight (Raycast "Everything that you love…" block) */
+.reveal-word {
+  color: rgba(255, 255, 255, 0.16);
+  transition: color 0.4s var(--ease-rc);
+}
+.reveal-word.is-lit {
+  color: #fff;
+}
+
+/* Scanning beam over a surface */
+.scan-beam {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 40%;
+  top: -40%;
+  background: linear-gradient(180deg, transparent, rgba(255, 99, 99, 0.10) 70%, rgba(255, 99, 99, 0.5) 99%, transparent);
+  animation: scan-beam 3.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  pointer-events: none;
+}
+@keyframes scan-beam {
+  0% { top: -40%; }
+  100% { top: 100%; }
+}
+
+/* Radar sweep */
+.radar-sweep {
+  background: conic-gradient(from 0deg, rgba(255, 99, 99, 0.45), rgba(255, 99, 99, 0) 25%);
+  animation: spin-slow 4s linear infinite;
   border-radius: 9999px;
 }
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
 
+.blink-caret::after {
+  content: "▍";
+  margin-left: 2px;
+  color: var(--red);
+  animation: caret 1s steps(1) infinite;
+}
+@keyframes caret {
+  50% { opacity: 0; }
+}
+
+/* Endless marquee */
+.marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 40s linear infinite;
+}
+.marquee-mask {
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+}
+@keyframes marquee {
+  to { transform: translateX(-50%); }
+}
+
+/* Floating keycaps in the arc */
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.float-y {
+  animation: float-y 5s ease-in-out infinite;
+}
+
+/* Ping ring for live nodes */
+@keyframes ring-ping {
+  0% { transform: scale(0.8); opacity: 0.7; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+.ring-ping {
+  animation: ring-ping 2s var(--ease-rc) infinite;
+}
+
+}
+
+/* ---------- Scrollbars --------------------------------------------------- */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: rgba(255, 255, 255, 0.16);
+  background-clip: padding-box;
 }
 
-/* Code block highlight lines */
+/* ---------- Code view ---------------------------------------------------- */
+
 .code-line-vuln {
-  background: rgba(244, 63, 94, 0.18) !important;
-  border-left: 3px solid #f43f5e;
+  background: rgba(255, 99, 99, 0.14) !important;
+  border-left: 2px solid var(--red);
 }
-
 .code-line-normal:hover {
   background: rgba(255, 255, 255, 0.03);
 }
 
-/* Print styles for reports */
+/* ---------- Form controls (global polish) ------------------------------- */
+
+.app-main input[type="text"],
+.app-main input[type="search"],
+.app-main input[type="email"],
+.app-main input:not([type]),
+.app-main textarea,
+.app-main select,
+.app-shell input:not(.bg-transparent) {
+  transition: border-color 0.2s var(--ease-rc), box-shadow 0.2s var(--ease-rc), background-color 0.2s;
+}
+.app-main input:focus,
+.app-main textarea:focus,
+.app-main select:focus,
+.app-shell input:not(.bg-transparent):focus {
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.06);
+}
+
+/* ---------- Accessibility: reduced motion -------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+/* ---------- Print -------------------------------------------------------- */
+
 @media print {
   body {
     background: #ffffff !important;
@@ -115,5 +623,12 @@
     background: #ffffff !important;
     border: 1px solid #e2e8f0 !important;
     box-shadow: none !important;
+  }
+  .page-enter > * > *,
+  [data-reveal] {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
   }
 }

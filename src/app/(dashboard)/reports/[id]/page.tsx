@@ -59,7 +59,7 @@ export default function ReportPreviewPage() {
       </div>
 
       {/* Printable Executive Report Document */}
-      <div className="p-8 sm:p-12 rounded-3xl bg-[#0d121c] border border-slate-800 shadow-2xl space-y-8 font-sans print:bg-white print:text-black print:p-0 print:border-none print:shadow-none">
+      <div className="p-8 sm:p-12 rounded-3xl bg-[#0e0f11] border border-slate-800 shadow-2xl space-y-8 font-sans print:bg-white print:text-black print:p-0 print:border-none print:shadow-none">
         {/* Cover Header */}
         <div className="border-b-2 border-slate-800 pb-8 space-y-4">
           <div className="flex items-center justify-between">

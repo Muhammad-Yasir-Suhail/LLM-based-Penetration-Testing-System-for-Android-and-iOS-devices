@@ -45,7 +45,7 @@ export default function StaticAnalysisPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white font-sans">
+            <h1 className="text-[28px] sm:text-[36px] leading-[1.1] font-medium tracking-[-0.03em] text-gradient-silver font-sans">
               Static Code Analysis & AST Viewer
             </h1>
             <span className="px-2.5 py-0.5 rounded-full text-xs font-mono bg-brand-cyan/10 text-brand-cyan border border-brand-cyan/30">
@@ -68,25 +68,25 @@ export default function StaticAnalysisPage() {
 
       {/* KPI Stats Strip */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 font-mono text-xs">
-        <div className="p-3.5 rounded-2xl bg-[#0d121c] border border-slate-800 shadow-md">
+        <div className="p-3.5 rounded-2xl bg-[#0e0f11] border border-slate-800 shadow-md">
           <span className="text-slate-400 text-[10px] uppercase block">Files Analyzed</span>
           <span className="text-xl font-extrabold text-white">1,428</span>
           <span className="text-[10px] text-slate-400 block mt-0.5">Classes deconstructed</span>
         </div>
 
-        <div className="p-3.5 rounded-2xl bg-[#0d121c] border border-slate-800 shadow-md">
+        <div className="p-3.5 rounded-2xl bg-[#0e0f11] border border-slate-800 shadow-md">
           <span className="text-slate-400 text-[10px] uppercase block">Rules Executed</span>
           <span className="text-xl font-extrabold text-white">87</span>
           <span className="text-[10px] text-slate-400 block mt-0.5">OWASP MASVS rules</span>
         </div>
 
-        <div className="p-3.5 rounded-2xl bg-[#0d121c] border border-rose-500/30 shadow-md">
+        <div className="p-3.5 rounded-2xl bg-[#0e0f11] border border-rose-500/30 shadow-md">
           <span className="text-rose-400 text-[10px] uppercase font-bold block">AST Findings</span>
           <span className="text-xl font-extrabold text-rose-400">9</span>
           <span className="text-[10px] text-slate-400 block mt-0.5">Direct source matches</span>
         </div>
 
-        <div className="p-3.5 rounded-2xl bg-[#0d121c] border border-slate-800 shadow-md">
+        <div className="p-3.5 rounded-2xl bg-[#0e0f11] border border-slate-800 shadow-md">
           <span className="text-slate-400 text-[10px] uppercase block">Decompiler Confidence</span>
           <span className="text-xl font-extrabold text-emerald-400">94%</span>
           <span className="text-[10px] text-slate-400 block mt-0.5">High semantic fidelity</span>
@@ -96,7 +96,7 @@ export default function StaticAnalysisPage() {
       {/* Split Code Viewer and Vulnerability Inspector */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left: File Tree & Decompiled Code Viewer */}
-        <div className="lg:col-span-7 rounded-3xl bg-[#0d121c] border border-slate-800/80 shadow-xl overflow-hidden flex flex-col">
+        <div className="lg:col-span-7 rounded-3xl bg-[#0e0f11] border border-slate-800/80 shadow-xl overflow-hidden flex flex-col">
           {/* File Selector Tabs */}
           <div className="flex items-center justify-between p-3 bg-slate-900/70 border-b border-slate-800">
             <div className="flex items-center gap-2 overflow-x-auto text-xs font-mono">
@@ -170,7 +170,7 @@ export default function StaticAnalysisPage() {
         </div>
 
         {/* Right: Finding Detail Inspector */}
-        <div className="lg:col-span-5 p-6 rounded-3xl bg-[#0d121c] border border-slate-800/80 shadow-xl space-y-5 flex flex-col justify-between">
+        <div className="lg:col-span-5 p-6 rounded-3xl bg-[#0e0f11] border border-slate-800/80 shadow-xl space-y-5 flex flex-col justify-between">
           <div className="space-y-5">
             {/* Finding Header */}
             <div className="flex items-start justify-between pb-3 border-b border-slate-800">
@@ -234,7 +234,7 @@ export default function StaticAnalysisPage() {
 
             <Link
               href="/copilot"
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-brand-cyan to-brand-indigo text-slate-950 text-xs font-mono font-bold shadow-lg shadow-cyan-500/20 hover:opacity-95 transition-all"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#e6e6e6] hover:bg-white text-[#2f3031] text-xs font-mono font-semibold shadow-rc-button hover:shadow-[0_0_0_2px_rgba(0,0,0,0.5),0_0_24px_2px_rgba(255,255,255,0.28),inset_0_1px_0.4px_#fff] transition-all duration-200"
             >
               <Bot className="w-4 h-4" />
               <span>Ask AI To Fix</span>

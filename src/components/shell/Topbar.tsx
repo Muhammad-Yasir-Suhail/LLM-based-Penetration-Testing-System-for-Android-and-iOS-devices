@@ -7,17 +7,17 @@ import {
   Search,
   Bell,
   HelpCircle,
-  Sparkles,
   Command,
-  ShieldCheck,
   ChevronRight,
-  Terminal,
-  Activity
+  Activity,
+  Menu
 } from 'lucide-react';
 import { useAppState } from '@/context/AppStateContext';
+import { useShell } from './ShellContext';
 
 export const Topbar: React.FC = () => {
   const pathname = usePathname();
+  const { setMobileOpen } = useShell();
   const {
     setSearchModalOpen,
     notificationsOpen,
@@ -50,72 +50,88 @@ export const Topbar: React.FC = () => {
   const openFindingsCount = findings.filter(f => f.status === 'Open' || f.status === 'In Review').length;
 
   return (
-    <header className="sticky top-0 z-30 h-16 bg-[#080c14]/85 backdrop-blur-md border-b border-slate-800/80 px-4 sm:px-6 flex items-center justify-between gap-4">
-      {/* Left: Breadcrumbs */}
-      <div className="flex items-center gap-2 text-xs font-mono">
-        <span className="text-emerald-400 font-bold">VulnScope</span>
-        <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-        <span className="text-slate-200 font-semibold">{getBreadcrumbTitle(pathname)}</span>
+    <header className="sticky top-0 z-30 h-16 px-3 sm:px-6 flex items-center justify-between gap-3 bg-[#07080a]/70 backdrop-blur-xl backdrop-saturate-150 border-b border-white/[0.06]">
+      {/* Left: menu + breadcrumbs */}
+      <div className="flex items-center gap-2 min-w-0">
+        <button
+          onClick={() => setMobileOpen(true)}
+          className="lg:hidden p-2 -ml-1 rounded-lg text-white/60 hover:text-white hover:bg-white/[0.06]"
+          aria-label="Open navigation"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+        <div className="flex items-center gap-1.5 text-[13px] min-w-0">
+          <span className="hidden sm:inline text-white/40">VulnScope</span>
+          <ChevronRight className="hidden sm:inline w-3.5 h-3.5 text-white/25 shrink-0" />
+          <span key={pathname} className="text-white font-medium truncate animate-in">
+            {getBreadcrumbTitle(pathname)}
+          </span>
+        </div>
       </div>
 
-      {/* Center / Search Button */}
+      {/* Center / Search Button (Raycast-style command bar) */}
       <div className="flex-1 max-w-md hidden md:block">
         <button
           onClick={() => setSearchModalOpen(true)}
-          className="w-full flex items-center justify-between px-3.5 py-1.5 rounded-lg bg-slate-900/80 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-slate-200 transition-all text-xs"
+          className="group w-full flex items-center justify-between h-9 pl-3 pr-1.5 rounded-[10px] bg-white/[0.03] border border-white/[0.08] hover:border-white/[0.16] hover:bg-white/[0.05] text-white/45 hover:text-white/80 text-[13px]"
         >
-          <div className="flex items-center gap-2">
-            <Search className="w-3.5 h-3.5 text-slate-400" />
-            <span>Search findings, applications, CVEs, rules...</span>
+          <div className="flex items-center gap-2 truncate">
+            <Search className="w-3.5 h-3.5 shrink-0 transition-transform duration-200 group-hover:scale-110" />
+            <span className="truncate">Search findings, applications, CVEs, rules...</span>
           </div>
-          <kbd className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-[10px] text-slate-400 font-mono">
-            <Command className="w-3 h-3" /> K
-          </kbd>
+          <span className="flex items-center gap-1 shrink-0">
+            <kbd className="kbd"><Command className="w-3 h-3" /></kbd>
+            <kbd className="kbd">K</kbd>
+          </span>
         </button>
       </div>
 
       {/* Right Controls */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-1.5 sm:gap-2">
         {/* Quick Scan Action */}
         <Link
           href="/analysis/run"
-          className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 border border-emerald-500/40 text-xs font-semibold font-mono transition-all shadow-sm"
+          className="rc-btn rc-btn-primary hidden sm:inline-flex !h-8 !px-3 !text-[13px]"
         >
-          <Activity className="w-3.5 h-3.5 text-emerald-400" />
+          <Activity className="w-3.5 h-3.5" />
           <span>New Analysis Run</span>
         </Link>
 
         {/* Security Score Badge */}
-        <div className="hidden lg:flex items-center gap-2 px-2.5 py-1 rounded-lg bg-slate-900/80 border border-slate-800 text-xs font-mono">
-          <span className="text-slate-400">Score:</span>
-          <span className="font-bold text-emerald-400">{workspaceScore.score}/100</span>
+        <div className="hidden xl:flex items-center gap-2 h-8 px-3 rounded-lg bg-white/[0.03] border border-white/[0.08] text-xs font-mono">
+          <span className="text-white/40">Score</span>
+          <span className="font-semibold text-emerald-400">{workspaceScore.score}/100</span>
         </div>
 
         {/* Notification Bell */}
         <button
           onClick={() => setNotificationsOpen(!notificationsOpen)}
-          className="relative p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/80 transition-colors"
+          className="group relative p-2 rounded-lg text-white/55 hover:text-white hover:bg-white/[0.06]"
           title="Notifications"
         >
-          <Bell className="w-4 h-4" />
+          <Bell className="w-4 h-4 transition-transform duration-300 ease-rc group-hover:rotate-[14deg]" />
           {openFindingsCount > 0 && (
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-[#080c14]" />
+            <span className="absolute top-1.5 right-1.5 flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full rounded-full bg-[#ff6363] ring-ping" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-[#ff6363] ring-2 ring-[#07080a]" />
+            </span>
           )}
         </button>
 
         {/* Prototype Info Trigger */}
         <button
           onClick={() => setDemoModalOpen(true)}
-          className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-300 hover:bg-amber-500/20 border border-amber-500/30 text-xs font-mono transition-all"
+          className="flex items-center gap-1.5 h-8 px-2.5 rounded-lg bg-amber-400/[0.08] text-amber-200 hover:bg-amber-400/15 border border-amber-400/20 hover:border-amber-400/40 text-xs font-mono"
         >
-          <HelpCircle className="w-3.5 h-3.5 text-amber-400" />
+          <HelpCircle className="w-3.5 h-3.5 text-amber-300" />
           <span className="hidden sm:inline">FYP Demo</span>
         </button>
 
         {/* Search on mobile */}
         <button
           onClick={() => setSearchModalOpen(true)}
-          className="md:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/80 transition-colors"
+          className="md:hidden p-2 rounded-lg text-white/55 hover:text-white hover:bg-white/[0.06]"
+          aria-label="Search"
         >
           <Search className="w-4 h-4" />
         </button>

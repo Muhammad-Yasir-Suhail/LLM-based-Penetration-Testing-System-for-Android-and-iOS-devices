@@ -14,16 +14,16 @@ export const NotificationDrawer: React.FC = () => {
     <div className="fixed inset-0 z-50 overflow-hidden">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in"
         onClick={() => setNotificationsOpen(false)}
       />
 
       <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
-        <div className="w-screen max-w-md bg-[#0d121c] border-l border-slate-800 shadow-2xl flex flex-col">
+        <div className="slide-in-right w-screen max-w-md bg-[linear-gradient(180deg,#111214,#0a0b0d)] border-l border-white/[0.08] shadow-[-30px_0_80px_-20px_rgba(0,0,0,0.9)] flex flex-col">
           {/* Header */}
-          <div className="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/60">
+          <div className="p-4 h-16 border-b border-white/[0.07] flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="p-1.5 rounded-lg bg-brand-500/10 text-brand-cyan">
+              <div className="keycap p-1.5 text-[#ff6363]">
                 <Bell className="w-4 h-4" />
               </div>
               <div>
@@ -33,14 +33,14 @@ export const NotificationDrawer: React.FC = () => {
             </div>
             <button
               onClick={() => setNotificationsOpen(false)}
-              className="p-1 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800"
+              className="p-1.5 rounded-lg text-white/40 hover:text-white hover:bg-white/[0.06] hover:rotate-90 transition-all duration-300"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
 
           {/* Quick Filter */}
-          <div className="px-4 py-2 bg-[#090d16] border-b border-slate-800/80 flex items-center justify-between text-xs">
+          <div className="px-4 py-2.5 border-b border-white/[0.06] flex items-center justify-between text-xs">
             <span className="text-slate-400 font-mono">{activityEvents.length} updates logged</span>
             <button className="text-brand-cyan hover:underline text-[11px] font-mono">
               Mark all as read
@@ -53,11 +53,11 @@ export const NotificationDrawer: React.FC = () => {
               return (
                 <div
                   key={evt.id}
-                  className="p-3 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-slate-700 transition-all space-y-2"
+                  className="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:border-white/[0.14] hover:bg-white/[0.04] hover:-translate-y-px transition-all duration-200 space-y-2 animate-in"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-2">
-                      <span className="h-2 w-2 rounded-full bg-brand-cyan shrink-0" />
+                      <span className="h-1.5 w-1.5 rounded-full bg-[#ff6363] shadow-glow shrink-0" />
                       <h4 className="text-xs font-semibold text-slate-200">{evt.title}</h4>
                     </div>
                     <span className="text-[10px] font-mono text-slate-400 whitespace-nowrap">{evt.timestamp}</span>
@@ -78,7 +78,7 @@ export const NotificationDrawer: React.FC = () => {
           </div>
 
           {/* Footer */}
-          <div className="p-3 bg-[#0a0e16] border-t border-slate-800 text-center">
+          <div className="p-3 border-t border-white/[0.06] text-center">
             <p className="text-[11px] font-mono text-slate-400">
               VulnScope Security Event Stream • Local Dispatcher
             </p>

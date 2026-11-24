@@ -46,25 +46,25 @@ export const OnboardingModal: React.FC = () => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
       <div
-        className="w-full max-w-xl bg-[#0d121c] border border-brand-cyan/30 rounded-2xl shadow-2xl overflow-hidden glass-panel-glow"
+        className="w-full max-w-xl max-h-[92vh] overflow-y-auto rounded-2xl glass-panel-glow"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Progress Bar */}
-        <div className="h-1 bg-slate-800 flex">
+        <div className="h-[2px] bg-white/[0.06] flex">
           <div
-            className="bg-gradient-to-r from-brand-cyan to-brand-indigo transition-all duration-300"
+            className="light-bar transition-all duration-500 ease-rc"
             style={{ width: `${(step / 4) * 100}%` }}
           />
         </div>
 
         {/* Header */}
-        <div className="p-6 border-b border-slate-800 bg-slate-900/50 flex items-center justify-between">
+        <div className="p-6 border-b border-white/[0.07] flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-brand-500/20 border border-brand-cyan/40 text-brand-cyan">
+            <div className="keycap p-2 text-[#ff6363]">
               <Shield className="w-5 h-5" />
             </div>
             <div>
-              <span className="text-[10px] uppercase font-mono font-bold text-brand-cyan">
+              <span className="text-[10px] uppercase font-mono tracking-[0.12em] text-white/45">
                 Workspace Setup • Step {step} of 4
               </span>
               <h2 className="text-base font-bold text-white">VulnScope Initialization</h2>
@@ -79,7 +79,7 @@ export const OnboardingModal: React.FC = () => {
         </div>
 
         {/* Body Steps */}
-        <div className="p-6 space-y-5">
+        <div key={step} className="p-6 space-y-5 animate-in">
           {/* Step 1: Workspace Name */}
           {step === 1 && (
             <div className="space-y-4">
@@ -133,11 +133,11 @@ export const OnboardingModal: React.FC = () => {
                     onClick={() => setTargetPlatform(opt.id as any)}
                     className={`p-3.5 rounded-xl border text-left transition-all ${
                       targetPlatform === opt.id
-                        ? 'bg-brand-500/20 border-brand-cyan text-white shadow-lg shadow-cyan-950/40'
+                        ? 'bg-white/[0.06] border-white/30 text-white shadow-[0_0_30px_-10px_rgba(255,99,99,0.5)] -translate-y-0.5'
                         : 'bg-slate-900/50 border-slate-800 text-slate-400 hover:border-slate-700'
                     }`}
                   >
-                    <opt.icon className={`w-5 h-5 mb-2 ${targetPlatform === opt.id ? 'text-brand-cyan' : 'text-slate-400'}`} />
+                    <opt.icon className={`w-5 h-5 mb-2 ${targetPlatform === opt.id ? 'text-[#ff6363]' : 'text-slate-400'}`} />
                     <p className="text-xs font-bold">{opt.label}</p>
                     <p className="text-[10px] text-slate-400 mt-0.5">{opt.desc}</p>
                   </button>
@@ -172,12 +172,12 @@ export const OnboardingModal: React.FC = () => {
                       onClick={() => toggleObjective(obj)}
                       className={`flex items-center justify-between p-3 rounded-xl border text-left transition-all text-xs font-medium ${
                         isSelected
-                          ? 'bg-indigo-500/20 border-indigo-400 text-white'
+                          ? 'bg-white/[0.06] border-white/25 text-white'
                           : 'bg-slate-900/50 border-slate-800 text-slate-400 hover:border-slate-700'
                       }`}
                     >
                       <span>{obj}</span>
-                      <CheckCircle2 className={`w-4 h-4 ${isSelected ? 'text-brand-cyan' : 'text-slate-400'}`} />
+                      <CheckCircle2 className={`w-4 h-4 ${isSelected ? 'text-[#ff6363]' : 'text-slate-600'}`} />
                     </button>
                   );
                 })}
@@ -209,7 +209,7 @@ export const OnboardingModal: React.FC = () => {
         </div>
 
         {/* Footer Navigation */}
-        <div className="p-4 bg-[#0a0e16] border-t border-slate-800 flex items-center justify-between">
+        <div className="p-4 border-t border-white/[0.07] flex items-center justify-between">
           {step > 1 ? (
             <button
               onClick={() => setStep(step - 1)}
@@ -224,14 +224,14 @@ export const OnboardingModal: React.FC = () => {
           {step < 4 ? (
             <button
               onClick={() => setStep(step + 1)}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-brand-cyan/20 text-brand-cyan hover:bg-brand-cyan/30 border border-brand-cyan/40 text-xs font-bold font-mono transition-all"
+              className="rc-btn rc-btn-secondary !h-9"
             >
               Next <ArrowRight className="w-3.5 h-3.5" />
             </button>
           ) : (
             <button
               onClick={handleFinish}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand-cyan to-brand-indigo text-slate-950 font-bold text-xs font-mono shadow-lg shadow-cyan-500/20 hover:opacity-95 transition-all"
+              className="rc-btn rc-btn-primary"
             >
               Launch Dashboard <ArrowRight className="w-4 h-4" />
             </button>

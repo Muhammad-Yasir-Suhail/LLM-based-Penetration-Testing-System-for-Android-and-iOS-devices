@@ -86,21 +86,21 @@ export const CommandPalette: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 px-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-150">
+    <div className="fixed inset-0 z-50 flex items-start justify-center pt-[12vh] px-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-150" onClick={() => setSearchModalOpen(false)}>
       <div
-        className="w-full max-w-2xl bg-[#0d121c] border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden glass-panel-glow"
+        className="w-full max-w-2xl rounded-2xl overflow-hidden glass-panel-glow"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search Header */}
-        <div className="flex items-center gap-3 px-4 py-3.5 border-b border-slate-800 bg-slate-900/60">
-          <Search className="w-5 h-5 text-brand-cyan shrink-0" />
+        <div className="flex items-center gap-3 px-4 h-14 border-b border-white/[0.07]">
+          <Search className="w-5 h-5 text-white/50 shrink-0" />
           <input
             ref={inputRef}
             type="text"
             placeholder="Type a command, search findings, applications, CVEs, or reports..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="flex-1 bg-transparent text-sm text-slate-100 placeholder-slate-500 focus:outline-none font-sans"
+            className="flex-1 bg-transparent text-[15px] text-white placeholder-white/35 focus:outline-none font-sans"
           />
           {query && (
             <button
@@ -110,7 +110,7 @@ export const CommandPalette: React.FC = () => {
               <X className="w-4 h-4" />
             </button>
           )}
-          <kbd className="px-2 py-0.5 rounded bg-slate-800 text-[11px] font-mono text-slate-400 border border-slate-700">
+          <kbd className="kbd">
             ESC
           </kbd>
         </div>
@@ -120,13 +120,13 @@ export const CommandPalette: React.FC = () => {
           {/* Quick Actions if query is empty */}
           {!q && (
             <div>
-              <div className="px-3 py-1 text-[11px] font-mono font-semibold uppercase text-slate-400">
+              <div className="px-3 py-1 text-[10px] font-mono uppercase tracking-[0.12em] text-white/35">
                 Quick Navigation
               </div>
               <div className="grid grid-cols-2 gap-1.5 mt-1">
                 <button
                   onClick={() => navigateTo('/attack-surface')}
-                  className="flex items-center gap-2.5 p-2.5 rounded-lg bg-slate-900/50 hover:bg-slate-800 border border-slate-800 text-left transition-colors"
+                  className="flex items-center gap-2.5 p-2.5 rounded-xl bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.06] hover:border-white/[0.12] text-left transition-all duration-200 hover:-translate-y-px"
                 >
                   <div className="p-1.5 rounded-md bg-sky-500/10 text-sky-400">
                     <Smartphone className="w-4 h-4" />
@@ -139,7 +139,7 @@ export const CommandPalette: React.FC = () => {
 
                 <button
                   onClick={() => navigateTo('/correlation')}
-                  className="flex items-center gap-2.5 p-2.5 rounded-lg bg-slate-900/50 hover:bg-slate-800 border border-slate-800 text-left transition-colors"
+                  className="flex items-center gap-2.5 p-2.5 rounded-xl bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.06] hover:border-white/[0.12] text-left transition-all duration-200 hover:-translate-y-px"
                 >
                   <div className="p-1.5 rounded-md bg-indigo-500/10 text-indigo-400">
                     <AlertTriangle className="w-4 h-4" />
@@ -152,7 +152,7 @@ export const CommandPalette: React.FC = () => {
 
                 <button
                   onClick={() => navigateTo('/copilot')}
-                  className="flex items-center gap-2.5 p-2.5 rounded-lg bg-slate-900/50 hover:bg-slate-800 border border-slate-800 text-left transition-colors"
+                  className="flex items-center gap-2.5 p-2.5 rounded-xl bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.06] hover:border-white/[0.12] text-left transition-all duration-200 hover:-translate-y-px"
                 >
                   <div className="p-1.5 rounded-md bg-purple-500/10 text-purple-400">
                     <Bot className="w-4 h-4" />
@@ -165,7 +165,7 @@ export const CommandPalette: React.FC = () => {
 
                 <button
                   onClick={() => navigateTo('/analysis/run')}
-                  className="flex items-center gap-2.5 p-2.5 rounded-lg bg-slate-900/50 hover:bg-slate-800 border border-slate-800 text-left transition-colors"
+                  className="flex items-center gap-2.5 p-2.5 rounded-xl bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.06] hover:border-white/[0.12] text-left transition-all duration-200 hover:-translate-y-px"
                 >
                   <div className="p-1.5 rounded-md bg-brand-cyan/10 text-brand-cyan">
                     <Command className="w-4 h-4" />
@@ -182,7 +182,7 @@ export const CommandPalette: React.FC = () => {
           {/* Security Findings Matches */}
           {matchedFindings.length > 0 && (
             <div>
-              <div className="px-3 py-1 text-[11px] font-mono font-semibold uppercase text-slate-400">
+              <div className="px-3 py-1 text-[10px] font-mono uppercase tracking-[0.12em] text-white/35">
                 Security Findings ({matchedFindings.length})
               </div>
               <div className="space-y-1 mt-1">
@@ -192,7 +192,7 @@ export const CommandPalette: React.FC = () => {
                     <button
                       key={f.id}
                       onClick={() => navigateTo(`/findings/${f.id}`)}
-                      className="w-full flex items-center justify-between p-2.5 rounded-lg bg-slate-900/40 hover:bg-slate-800 border border-slate-800/80 text-left transition-colors group"
+                      className="w-full flex items-center justify-between p-2.5 rounded-xl bg-transparent hover:bg-white/[0.06] border border-transparent hover:border-white/[0.08] text-left transition-all duration-150 group"
                     >
                       <div className="flex items-center gap-3 overflow-hidden">
                         <span className={`px-1.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase border ${sColor.badge}`}>
@@ -207,7 +207,7 @@ export const CommandPalette: React.FC = () => {
                           </p>
                         </div>
                       </div>
-                      <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-brand-cyan shrink-0" />
+                      <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#ff6363] group-hover:translate-x-0.5 transition-transform shrink-0" />
                     </button>
                   );
                 })}
@@ -218,7 +218,7 @@ export const CommandPalette: React.FC = () => {
           {/* Applications Matches */}
           {matchedApps.length > 0 && (
             <div>
-              <div className="px-3 py-1 text-[11px] font-mono font-semibold uppercase text-slate-400">
+              <div className="px-3 py-1 text-[10px] font-mono uppercase tracking-[0.12em] text-white/35">
                 Applications ({matchedApps.length})
               </div>
               <div className="space-y-1 mt-1">
@@ -226,7 +226,7 @@ export const CommandPalette: React.FC = () => {
                   <button
                     key={app.id}
                     onClick={() => navigateTo(`/applications/${app.id}`)}
-                    className="w-full flex items-center justify-between p-2.5 rounded-lg bg-slate-900/40 hover:bg-slate-800 border border-slate-800/80 text-left transition-colors group"
+                    className="w-full flex items-center justify-between p-2.5 rounded-xl bg-transparent hover:bg-white/[0.06] border border-transparent hover:border-white/[0.08] text-left transition-all duration-150 group"
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-7 h-7 rounded bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-xs font-mono">
@@ -241,7 +241,7 @@ export const CommandPalette: React.FC = () => {
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-mono text-emerald-400">{app.securityScore}/100</span>
-                      <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-brand-cyan" />
+                      <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#ff6363] group-hover:translate-x-0.5 transition-transform" />
                     </div>
                   </button>
                 ))}
@@ -252,7 +252,7 @@ export const CommandPalette: React.FC = () => {
           {/* Projects Matches */}
           {matchedProjects.length > 0 && (
             <div>
-              <div className="px-3 py-1 text-[11px] font-mono font-semibold uppercase text-slate-400">
+              <div className="px-3 py-1 text-[10px] font-mono uppercase tracking-[0.12em] text-white/35">
                 Projects ({matchedProjects.length})
               </div>
               <div className="space-y-1 mt-1">
@@ -260,7 +260,7 @@ export const CommandPalette: React.FC = () => {
                   <button
                     key={p.id}
                     onClick={() => navigateTo(`/projects/${p.id}`)}
-                    className="w-full flex items-center justify-between p-2.5 rounded-lg bg-slate-900/40 hover:bg-slate-800 border border-slate-800/80 text-left transition-colors group"
+                    className="w-full flex items-center justify-between p-2.5 rounded-xl bg-transparent hover:bg-white/[0.06] border border-transparent hover:border-white/[0.08] text-left transition-all duration-150 group"
                   >
                     <div className="flex items-center gap-3">
                       <FolderGit2 className="w-4 h-4 text-indigo-400" />
@@ -269,7 +269,7 @@ export const CommandPalette: React.FC = () => {
                         <p className="text-[10px] text-slate-400">{p.organization} • {p.environment}</p>
                       </div>
                     </div>
-                    <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-brand-cyan" />
+                    <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#ff6363] group-hover:translate-x-0.5 transition-transform" />
                   </button>
                 ))}
               </div>
@@ -286,11 +286,11 @@ export const CommandPalette: React.FC = () => {
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between px-4 py-2 bg-[#0a0e16] border-t border-slate-800/80 text-[11px] text-slate-400 font-mono">
+        <div className="flex items-center justify-between px-4 py-2 bg-white/[0.02] border-t border-white/[0.07] text-[11px] text-slate-400 font-mono">
           <span>Navigate with arrows or click to open</span>
           <div className="flex items-center gap-1">
             <span>Select</span>
-            <kbd className="px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">
+            <kbd className="kbd">
               <CornerDownLeft className="w-2.5 h-2.5 inline" />
             </kbd>
           </div>
