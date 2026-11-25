@@ -275,8 +275,10 @@ export const TopNav: React.FC = () => {
     <>
       <header className="fixed inset-x-0 top-3 z-40 px-3 sm:px-4">
         <div className={cn('nav-card nav-shell mx-auto max-w-[1200px]', scrolled && 'is-scrolled')}>
-          {/* Row 1: navigation */}
-          <nav aria-label="Primary" className="h-[56px] flex items-center justify-between gap-2 pl-4 pr-2">
+          {/* Row 1: navigation. Sits above Row 2 so the category/account dropdowns
+              (absolutely positioned here) overlay the Row-2 controls instead of the
+              "New Analysis Run" button stealing hover/clicks from the open menu. */}
+          <nav aria-label="Primary" className="relative z-20 h-[56px] flex items-center justify-between gap-2 pl-4 pr-2">
             {/* Logo */}
             <Link href="/dashboard" className="flex items-center gap-2.5 shrink-0" aria-label="VulnScope, Security Overview">
               <LogoMark size={24} />
@@ -389,8 +391,9 @@ export const TopNav: React.FC = () => {
             </div>
           </nav>
 
-          {/* Row 2: the workspace bar (breadcrumb, search, run, score, FYP demo) */}
-          <div className="h-[48px] flex items-center gap-3 pl-4 pr-2 border-t border-white/[0.06]">
+          {/* Row 2: the workspace bar (breadcrumb, search, run, score, FYP demo).
+              Kept below Row 1 so open dropdowns from Row 1 render on top of it. */}
+          <div className="relative z-10 h-[48px] flex items-center gap-3 pl-4 pr-2 border-t border-white/[0.06]">
             {/* Breadcrumb */}
             <div className="flex items-center gap-1.5 text-[13px] min-w-0 shrink">
               <span className="hidden sm:inline text-white/40 shrink-0">VulnScope</span>
