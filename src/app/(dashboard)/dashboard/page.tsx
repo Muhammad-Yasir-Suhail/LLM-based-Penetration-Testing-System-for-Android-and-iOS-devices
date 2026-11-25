@@ -15,7 +15,6 @@ import {
   Layers,
   Sparkles,
   ChevronRight,
-  Zap,
   CheckCircle2,
   FileText
 } from 'lucide-react';
@@ -33,7 +32,6 @@ import {
   Bar
 } from 'recharts';
 import { useAppState } from '@/context/AppStateContext';
-import { PipelineBanner } from '@/components/shell/PipelineBanner';
 import { ViewTabs } from '@/components/ui/ViewTabs';
 import { getScoreGrade, formatSeverityColor } from '@/lib/utils';
 
@@ -477,35 +475,6 @@ export default function DashboardPage() {
                     ))}
                   </div>
                 </div>
-          </>
-          ) },
-          { id: 'pipeline', label: 'Pipeline', content: (
-          <>
-        <>
-                {/* Live Agent Engine Quick Callout */}
-                <div className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs tabular-nums panel">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg text-slate-400 bg-white/[0.04]">
-                      <Zap className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <span className="font-medium text-white block">Autonomous Security Core Active</span>
-                      <span className="text-slate-400 text-[11px]">
-                        Ingest authorized APKs, evaluate binary manifests, scan Dalvik bytecode for secrets, and view verified audit traces.
-                      </span>
-                    </div>
-                  </div>
-                  <Link
-                    href="/analysis/run"
-                    className="btn-app btn-app-secondary shrink-0"
-                  >
-                    Execute Analysis
-                  </Link>
-                </div>
-
-                {/* VulnScope Lifecycle Banner */}
-                <PipelineBanner activeStep="correlate" />
-        </>
           </>
           ) },
         ]}

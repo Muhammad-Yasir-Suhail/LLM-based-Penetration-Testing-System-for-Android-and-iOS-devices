@@ -27,7 +27,6 @@ import {
 } from 'recharts';
 import { useAppState } from '@/context/AppStateContext';
 import { getScoreGrade } from '@/lib/utils';
-import { PipelineBanner } from '@/components/shell/PipelineBanner';
 
 const masvsComplianceData = [
   { category: 'Storage', score: 72, pass: 14, fail: 4 },
@@ -62,8 +61,6 @@ export default function SecurityPosturePage() {
           <span className="text-slate-300">Workspace Score: <span className="font-mono text-white">{workspaceScore.score}/100</span> ({scoreMeta.label})</span>
         </span>
       </div>
-
-      <PipelineBanner activeStep="prioritize" compact />
 
       {/* OWASP MASVS Category Compliance Matrix */}
       <section className="surface-flat" aria-labelledby="masvs-heading">

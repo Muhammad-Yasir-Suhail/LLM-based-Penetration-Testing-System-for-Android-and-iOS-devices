@@ -22,7 +22,6 @@ import {
 } from 'lucide-react';
 import { useAppState } from '@/context/AppStateContext';
 import { CorrelatedIssue, EngineType } from '@/types';
-import { PipelineBanner } from '@/components/shell/PipelineBanner';
 
 export default function CorrelationPage() {
   const { correlatedIssues, engines } = useAppState();
@@ -72,9 +71,6 @@ export default function CorrelationPage() {
           <span>Deduplication Rate: <strong>68% Noise Reduced</strong></span>
         </div>
       </div>
-
-      {/* Pipeline Banner */}
-      <PipelineBanner activeStep="correlate" compact />
 
       {/* Correlated Issues Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">

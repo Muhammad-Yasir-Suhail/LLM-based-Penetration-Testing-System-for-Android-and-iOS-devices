@@ -23,7 +23,7 @@ export const DemoModeModal: React.FC = () => {
             </div>
             <div>
               <span className="text-[11px] font-medium px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
-                VulnScope Mid Evaluation 01
+                VulnScope Platform
               </span>
               <h3 className="text-base font-semibold tracking-tight text-white mt-1.5">Platform Architecture & Operational Status</h3>
             </div>

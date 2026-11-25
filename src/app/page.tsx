@@ -115,7 +115,6 @@ export default function LoginPage() {
             <span className="brand__sub">Agentic Mobile Security Framework</span>
           </Link>
           <div className="nav__meta">
-            <span className="nav__stage">FYP Core, Mid Evaluation 01</span>
             <Link href="/analysis/run" className="btn btn--small">
               <Activity aria-hidden="true" />
               <span>Launch Live Agent</span>
@@ -360,7 +359,6 @@ export default function LoginPage() {
           </div>
           <div className="footer__text">
             <p>AI-Assisted Mobile Application Security Testing.</p>
-            <p>Final Year Project (FYP-2 Mid Evaluation 01), BS Software Engineering.</p>
           </div>
           <ul className="footer__list">
             <li>OWASP MASVS Aligned</li>
