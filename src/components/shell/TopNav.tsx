@@ -23,7 +23,6 @@ import {
   ChevronRight,
   Search,
   Bell,
-  HelpCircle,
   LogOut,
   Menu,
   X,
@@ -434,16 +433,6 @@ export const TopNav: React.FC = () => {
                 <span className="text-white/45">Score</span>
                 <span className="font-mono text-white">{workspaceScore.score}/100</span>
               </span>
-
-              <button
-                type="button"
-                onClick={() => setDemoModalOpen(true)}
-                className="flex items-center gap-1.5 h-8 px-2.5 rounded-md border border-white/[0.08] text-white/70 hover:text-white hover:border-white/[0.16] text-[12px] transition-colors"
-                title="FYP Demo"
-              >
-                <HelpCircle className="w-3.5 h-3.5" aria-hidden="true" />
-                <span className="hidden sm:inline">FYP Demo</span>
-              </button>
 
               <Link href="/analysis/run" className="btn-app btn-app-primary hidden sm:inline-flex !min-h-[32px]">
                 <Activity className="w-3.5 h-3.5" aria-hidden="true" />
