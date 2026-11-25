@@ -43,7 +43,7 @@ export default function SettingsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-[28px] sm:text-[36px] leading-[1.1] font-medium tracking-[-0.03em] text-gradient-silver font-sans">
+          <h1 className="text-[28px] sm:text-[36px] leading-[1.1] font-medium text-white font-sans">
             Workspace Settings
           </h1>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
@@ -53,7 +53,7 @@ export default function SettingsPage() {
 
         <button
           onClick={handleSave}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#e6e6e6] hover:bg-white text-[#2f3031] text-xs font-mono font-semibold shadow-rc-button hover:shadow-[0_0_0_2px_rgba(0,0,0,0.5),0_0_24px_2px_rgba(255,255,255,0.28),inset_0_1px_0.4px_#fff] transition-all duration-200"
+          className="btn-app btn-app-primary"
         >
           <Save className="w-4 h-4" />
           <span>{saved ? 'Saved!' : 'Save Changes'}</span>
@@ -63,7 +63,7 @@ export default function SettingsPage() {
       {/* Tabs Layout */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
         {/* Left Nav */}
-        <div className="md:col-span-3 space-y-1 font-mono text-xs">
+        <div className="md:col-span-3 space-y-1 tabular-nums text-xs">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -71,9 +71,9 @@ export default function SettingsPage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl transition-all text-left ${
+                className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl transition text-left ${
                   isActive
-                    ? 'bg-brand-cyan/15 text-brand-cyan border border-brand-cyan/30 font-bold'
+                    ? 'bg-brand-cyan/15 text-brand-cyan border border-brand-cyan/30 font-medium'
                     : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
                 }`}
               >
@@ -85,10 +85,10 @@ export default function SettingsPage() {
         </div>
 
         {/* Right Tab Content */}
-        <div className="md:col-span-9 p-6 rounded-3xl bg-[#0e0f11] border border-slate-800/80 shadow-xl space-y-6 text-xs font-mono">
+        <div className="md:col-span-9 p-6 space-y-6 text-xs tabular-nums card">
           {activeTab === 'general' && (
             <div className="space-y-4">
-              <h3 className="text-sm font-bold text-white uppercase">General Platform Preferences</h3>
+              <h3 className="text-sm font-medium text-white">General Platform Preferences</h3>
               
               <div className="space-y-3">
                 <div>
@@ -111,7 +111,7 @@ export default function SettingsPage() {
 
                 <div className="pt-4 border-t border-slate-800 flex items-center justify-between">
                   <div>
-                    <h4 className="font-bold text-white">Reset Prototype State</h4>
+                    <h4 className="font-medium text-white">Reset Prototype State</h4>
                     <p className="text-[11px] text-slate-400">Restore all mock projects, apps, and findings to initial defaults.</p>
                   </div>
                   <button
@@ -119,7 +119,7 @@ export default function SettingsPage() {
                       resetToDefaultData();
                       alert('Prototype state reset to default mock dataset.');
                     }}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-500/10 text-rose-300 border border-rose-500/30 hover:bg-rose-500/20 transition-colors"
+                    className="btn-app btn-app-secondary"
                   >
                     <RotateCcw className="w-3.5 h-3.5" />
                     <span>Reset Data</span>
@@ -131,7 +131,7 @@ export default function SettingsPage() {
 
           {activeTab === 'workspace' && (
             <div className="space-y-4">
-              <h3 className="text-sm font-bold text-white uppercase">Workspace Configuration</h3>
+              <h3 className="text-sm font-medium text-white">Workspace Configuration</h3>
               <div>
                 <label className="block text-slate-400 mb-1">ACTIVE WORKSPACE NAME</label>
                 <input
@@ -146,7 +146,7 @@ export default function SettingsPage() {
 
           {activeTab === 'security' && (
             <div className="space-y-4">
-              <h3 className="text-sm font-bold text-white uppercase">Security Policies & Guardrails</h3>
+              <h3 className="text-sm font-medium text-white">Security Policies & Guardrails</h3>
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-slate-300">
                   <input type="checkbox" defaultChecked className="rounded bg-slate-900 border-slate-700 text-brand-cyan" />
@@ -166,11 +166,11 @@ export default function SettingsPage() {
 
           {activeTab === 'ai' && (
             <div className="space-y-4">
-              <h3 className="text-sm font-bold text-white uppercase">AI Security Copilot Engine</h3>
+              <h3 className="text-sm font-medium text-white">AI Security Copilot Engine</h3>
               <p className="text-slate-300">
                 VulnScope Copilot uses deterministic context synthesis to explain vulnerabilities and suggest code patches without external API keys.
               </p>
-              <div className="p-3 rounded-xl bg-purple-500/10 border border-purple-500/30 text-purple-300">
+              <div className="p-3 text-purple-300 panel">
                 AI Copilot is operational in Local Simulation Mode.
               </div>
             </div>
@@ -178,7 +178,7 @@ export default function SettingsPage() {
 
           {activeTab === 'integrations' && (
             <div className="space-y-4">
-              <h3 className="text-sm font-bold text-white uppercase">Security Tool Integrations</h3>
+              <h3 className="text-sm font-medium text-white">Security Tool Integrations</h3>
               <p className="text-slate-300">
                 Connected tools (MobSF, JADX, Apktool, Frida, Burp Suite) communicate via simulated orchestrator bus.
               </p>
@@ -187,8 +187,8 @@ export default function SettingsPage() {
 
           {activeTab === 'api' && (
             <div className="space-y-4">
-              <h3 className="text-sm font-bold text-white uppercase">VulnScope REST API Keys</h3>
-              <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 flex justify-between items-center">
+              <h3 className="text-sm font-medium text-white">VulnScope REST API Keys</h3>
+              <div className="p-3 flex justify-between items-center panel">
                 <span className="text-slate-400">CI/CD Pipeline Key</span>
                 <span className="text-emerald-400">vs_live_84f938a1928374619b</span>
               </div>

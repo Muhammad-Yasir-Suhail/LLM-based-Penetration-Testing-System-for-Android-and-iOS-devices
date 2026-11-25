@@ -44,7 +44,7 @@ export const OnboardingModal: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 animate-in fade-in duration-200">
       <div
         className="w-full max-w-xl max-h-[92vh] overflow-y-auto rounded-2xl glass-panel-glow"
         onClick={(e) => e.stopPropagation()}
@@ -52,7 +52,7 @@ export const OnboardingModal: React.FC = () => {
         {/* Progress Bar */}
         <div className="h-[2px] bg-white/[0.06] flex">
           <div
-            className="light-bar transition-all duration-500 ease-rc"
+            className="light-bar transition duration-500 ease-rc"
             style={{ width: `${(step / 4) * 100}%` }}
           />
         </div>
@@ -60,17 +60,17 @@ export const OnboardingModal: React.FC = () => {
         {/* Header */}
         <div className="p-6 border-b border-white/[0.07] flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="keycap p-2 text-[#ff6363]">
+            <div className="keycap p-2 text-signal">
               <Shield className="w-5 h-5" />
             </div>
             <div>
-              <span className="text-[10px] uppercase font-mono tracking-[0.12em] text-white/45">
-                Workspace Setup • Step {step} of 4
+              <span className="text-[11px] text-white/45">
+                Workspace Setup, Step {step} of 4
               </span>
-              <h2 className="text-base font-bold text-white">VulnScope Initialization</h2>
+              <h2 className="text-base font-medium text-white">VulnScope Initialization</h2>
             </div>
           </div>
-          <span className="text-xs font-mono text-slate-400">
+          <span className="text-xs tabular-nums text-slate-400">
             {step === 1 && 'Workspace'}
             {step === 2 && 'Platforms'}
             {step === 3 && 'Objectives'}
@@ -84,14 +84,14 @@ export const OnboardingModal: React.FC = () => {
           {step === 1 && (
             <div className="space-y-4">
               <div>
-                <h3 className="text-sm font-bold text-slate-100">Name your security workspace</h3>
+                <h3 className="text-sm font-medium text-slate-100">Name your security workspace</h3>
                 <p className="text-xs text-slate-400 mt-1">
                   VulnScope will isolate mobile applications, analysis history, and vulnerability correlation within this workspace.
                 </p>
               </div>
 
               <div>
-                <label className="block text-xs font-mono font-semibold text-slate-300 mb-1.5">
+                <label className="block text-xs tabular-nums font-semibold text-slate-300 mb-1.5">
                   WORKSPACE NAME
                 </label>
                 <input
@@ -103,7 +103,7 @@ export const OnboardingModal: React.FC = () => {
                 />
               </div>
 
-              <div className="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center gap-3">
+              <div className="p-3.5 flex items-center gap-3 panel">
                 <Layers className="w-4 h-4 text-brand-cyan shrink-0" />
                 <p className="text-[11px] text-slate-400">
                   Pre-configured with enterprise policies and OWASP MASVS v2.0 benchmark mappings.
@@ -116,7 +116,7 @@ export const OnboardingModal: React.FC = () => {
           {step === 2 && (
             <div className="space-y-4">
               <div>
-                <h3 className="text-sm font-bold text-slate-100">Select target mobile platforms</h3>
+                <h3 className="text-sm font-medium text-slate-100">Select target mobile platforms</h3>
                 <p className="text-xs text-slate-400 mt-1">
                   Choose the ecosystems VulnScope will analyze and correlate in this workspace.
                 </p>
@@ -131,15 +131,15 @@ export const OnboardingModal: React.FC = () => {
                   <button
                     key={opt.id}
                     onClick={() => setTargetPlatform(opt.id as any)}
-                    className={`p-3.5 rounded-xl border text-left transition-all ${
+                    className={`p-3.5 rounded-xl border text-left transition ${
                       targetPlatform === opt.id
-                        ? 'bg-white/[0.06] border-white/30 text-white shadow-[0_0_30px_-10px_rgba(255,99,99,0.5)] -translate-y-0.5'
+                        ? 'bg-white/[0.06] border-white/30 text-white -translate-y-0.5'
                         : 'bg-slate-900/50 border-slate-800 text-slate-400 hover:border-slate-700'
                     }`}
                   >
-                    <opt.icon className={`w-5 h-5 mb-2 ${targetPlatform === opt.id ? 'text-[#ff6363]' : 'text-slate-400'}`} />
-                    <p className="text-xs font-bold">{opt.label}</p>
-                    <p className="text-[10px] text-slate-400 mt-0.5">{opt.desc}</p>
+                    <opt.icon className={`w-5 h-5 mb-2 ${targetPlatform === opt.id ? 'text-signal' : 'text-slate-400'}`} />
+                    <p className="text-xs font-medium">{opt.label}</p>
+                    <p className="text-[11px] text-slate-400 mt-0.5">{opt.desc}</p>
                   </button>
                 ))}
               </div>
@@ -150,7 +150,7 @@ export const OnboardingModal: React.FC = () => {
           {step === 3 && (
             <div className="space-y-4">
               <div>
-                <h3 className="text-sm font-bold text-slate-100">Configure security objectives</h3>
+                <h3 className="text-sm font-medium text-slate-100">Configure security objectives</h3>
                 <p className="text-xs text-slate-400 mt-1">
                   VulnScope will optimize correlation rules and scoring weights based on these priorities.
                 </p>
@@ -170,14 +170,14 @@ export const OnboardingModal: React.FC = () => {
                     <button
                       key={obj}
                       onClick={() => toggleObjective(obj)}
-                      className={`flex items-center justify-between p-3 rounded-xl border text-left transition-all text-xs font-medium ${
+                      className={`flex items-center justify-between p-3 rounded-xl border text-left transition text-xs font-medium ${
                         isSelected
                           ? 'bg-white/[0.06] border-white/25 text-white'
                           : 'bg-slate-900/50 border-slate-800 text-slate-400 hover:border-slate-700'
                       }`}
                     >
                       <span>{obj}</span>
-                      <CheckCircle2 className={`w-4 h-4 ${isSelected ? 'text-[#ff6363]' : 'text-slate-600'}`} />
+                      <CheckCircle2 className={`w-4 h-4 ${isSelected ? 'text-signal' : 'text-slate-600'}`} />
                     </button>
                   );
                 })}
@@ -188,18 +188,18 @@ export const OnboardingModal: React.FC = () => {
           {/* Step 4: Finish */}
           {step === 4 && (
             <div className="text-center py-4 space-y-4">
-              <div className="w-14 h-14 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center mx-auto shadow-lg shadow-emerald-950/40">
-                <Sparkles className="w-7 h-7 animate-pulse" />
+              <div className="w-14 h-14 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center mx-auto shadow-lg">
+                <Sparkles className="w-7 h-7" />
               </div>
 
               <div>
-                <h3 className="text-lg font-bold text-white">Workspace Ready</h3>
+                <h3 className="text-lg font-medium text-white">Workspace Ready</h3>
                 <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
                   <span className="text-brand-cyan font-semibold">{wsName}</span> has been configured with cross-platform analyzers, AI Copilot, and 8 active demo projects.
                 </p>
               </div>
 
-              <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 text-left font-mono text-[11px] space-y-1 text-slate-300">
+              <div className="p-3 text-left tabular-nums text-[11px] space-y-1 text-slate-300 panel">
                 <p>✓ Multi-engine correlation active (MobSF, JADX, Apktool, Frida)</p>
                 <p>✓ OWASP MASVS v2.0 rule definitions loaded</p>
                 <p>✓ Attack surface topology engine initialized</p>
@@ -213,7 +213,7 @@ export const OnboardingModal: React.FC = () => {
           {step > 1 ? (
             <button
               onClick={() => setStep(step - 1)}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-mono text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs tabular-nums text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors"
             >
               <ArrowLeft className="w-3.5 h-3.5" /> Back
             </button>
@@ -224,14 +224,14 @@ export const OnboardingModal: React.FC = () => {
           {step < 4 ? (
             <button
               onClick={() => setStep(step + 1)}
-              className="rc-btn rc-btn-secondary !h-9"
+              className="btn-app btn-app-secondary"
             >
               Next <ArrowRight className="w-3.5 h-3.5" />
             </button>
           ) : (
             <button
               onClick={handleFinish}
-              className="rc-btn rc-btn-primary"
+              className="btn-app btn-app-primary"
             >
               Launch Dashboard <ArrowRight className="w-4 h-4" />
             </button>

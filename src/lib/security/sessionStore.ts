@@ -1,9 +1,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { AnalysisSession } from '@/types/agent';
+import { getWritableBaseDir } from './uploadConfig';
 
+// Locally this is the project folder; on Vercel (read-only filesystem) it is the temp directory.
 const STORAGE_DIR = path.resolve(
-  process.cwd(),
+  getWritableBaseDir(),
   process.env.VULNSCOPE_STORAGE_DIR || process.env.VULNCOPE_STORAGE_DIR || '.vulnscope',
   'sessions'
 );

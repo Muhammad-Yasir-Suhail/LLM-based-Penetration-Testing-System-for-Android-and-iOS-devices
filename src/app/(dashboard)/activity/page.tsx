@@ -32,7 +32,7 @@ export default function ActivityPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-[28px] sm:text-[36px] leading-[1.1] font-medium tracking-[-0.03em] text-gradient-silver font-sans">
+          <h1 className="text-[28px] sm:text-[36px] leading-[1.1] font-medium text-white font-sans">
             Activity & Audit Trail
           </h1>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
@@ -40,25 +40,25 @@ export default function ActivityPage() {
           </p>
         </div>
 
-        <span className="text-xs font-mono px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-slate-400">
+        <span className="text-xs tabular-nums px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-slate-400">
           {activityEvents.length} Events Logged
         </span>
       </div>
 
       {/* Toolbar */}
-      <div className="p-4 rounded-2xl bg-[#0e0f11] border border-slate-800/80 shadow-lg flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs font-mono">
+      <div className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs tabular-nums card">
         <div className="relative flex-1 max-w-md">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 motion-reduce:transform-none" />
           <input
             type="text"
-            placeholder="Search activity events..."
+            placeholder="Search activity events…"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-9 pr-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-brand-cyan"
           />
         </div>
 
-        <div className="flex items-center gap-1 bg-slate-900 p-1 rounded-xl border border-slate-800 overflow-x-auto">
+        <div className="flex items-center gap-1 p-1 overflow-x-auto panel">
           {[
             { id: 'all', label: 'All Events' },
             { id: 'analysis_complete', label: 'Scans' },
@@ -71,7 +71,7 @@ export default function ActivityPage() {
               onClick={() => setFilterType(t.id)}
               className={`px-3 py-1 rounded-lg transition-colors whitespace-nowrap ${
                 filterType === t.id
-                  ? 'bg-brand-cyan/20 text-brand-cyan font-bold'
+                  ? 'bg-brand-cyan/20 text-brand-cyan font-medium'
                   : 'text-slate-400 hover:text-slate-200'
               }`}
             >
@@ -82,31 +82,31 @@ export default function ActivityPage() {
       </div>
 
       {/* Activity Timeline List */}
-      <div className="p-6 rounded-3xl bg-[#0e0f11] border border-slate-800/80 shadow-xl space-y-4">
+      <div className="p-6 space-y-4 card">
         <div className="space-y-4 relative before:absolute before:inset-0 before:left-4 before:w-0.5 before:bg-slate-800">
           {filteredEvents.map((evt) => (
             <div key={evt.id} className="relative pl-10">
               {/* Timeline Dot */}
-              <div className="absolute left-2.5 top-4 -translate-x-1/2 w-3.5 h-3.5 rounded-full bg-brand-cyan border-4 border-[#07080a] shadow-md" />
+              <div className="absolute left-2.5 top-4 -translate-x-1/2 w-3.5 h-3.5 rounded-full bg-brand-cyan border-4 border-ink shadow-md motion-reduce:transform-none" />
 
-              <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/80 shadow-sm space-y-2">
+              <div className="p-4 space-y-2 card">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                   <div className="flex items-center gap-2">
-                    <h3 className="text-xs font-bold text-slate-100 font-mono">{evt.title}</h3>
+                    <h3 className="text-xs font-medium text-slate-100 tabular-nums">{evt.title}</h3>
                     {evt.metadata?.severity && (
-                      <span className="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold uppercase bg-rose-500/15 text-rose-400 border border-rose-500/30">
+                      <span className="px-1.5 py-0.2 rounded text-[11px] font-medium bg-rose-500/15 text-rose-400 border border-rose-500/30">
                         {evt.metadata.severity}
                       </span>
                     )}
                   </div>
-                  <span className="text-[10px] font-mono text-slate-400">{evt.timestamp}</span>
+                  <span className="text-[11px] tabular-nums text-slate-400">{evt.timestamp}</span>
                 </div>
 
                 <p className="text-xs text-slate-300 leading-relaxed">
                   {evt.description}
                 </p>
 
-                <div className="flex items-center gap-2 pt-1 text-[11px] font-mono text-slate-400 border-t border-slate-800/60">
+                <div className="flex items-center gap-2 pt-1 text-[11px] tabular-nums text-slate-400 border-t border-slate-800/60">
                   <img
                     src={evt.user.avatar}
                     alt={evt.user.name}

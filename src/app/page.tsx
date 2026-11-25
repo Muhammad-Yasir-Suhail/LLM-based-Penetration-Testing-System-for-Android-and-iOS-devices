@@ -1,50 +1,45 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
-  Shield,
-  Lock,
-  ArrowRight,
-  Sparkles,
-  Smartphone,
-  CheckCircle2,
-  KeyRound,
-  Fingerprint,
-  Zap,
-  Globe,
-  Terminal,
   Activity,
-  Layers,
-  Cpu,
-  ScanSearch,
+  ArrowRight,
   FileSearch,
+  ScanSearch,
+  Workflow,
+  ListChecks,
   Binary,
   ShieldCheck,
   Gauge,
   OctagonX,
-  Workflow,
-  ListChecks,
 } from 'lucide-react';
 import { useAppState } from '@/context/AppStateContext';
-import { LogoMark, Wordmark } from '@/components/shell/Logo';
-import { Reveal, Spotlight, Magnetic, WordReveal, TypedLines } from '@/components/ui/Motion';
-import { cn } from '@/lib/utils';
+import { LogoMark } from '@/components/shell/Logo';
+import './landing.css';
 
-/* The eight stages of the VulnScope autonomous decision loop, rendered as keycaps. */
+/* The eight stages of the VulnScope autonomous decision loop. */
 const LOOP_STAGES = [
-  { n: '01', label: 'INTAKE VALIDATE', icon: FileSearch, tone: 'text-emerald-400' },
-  { n: '02', label: 'OBSERVE MANIFEST', icon: ScanSearch, tone: 'text-cyan-400' },
-  { n: '03', label: 'ADAPTIVE PLAN', icon: Workflow, tone: 'text-indigo-400' },
-  { n: '04', label: 'ALLOWLIST EXEC', icon: ListChecks, tone: 'text-purple-400' },
-  { n: '05', label: 'SCAN BYTECODE', icon: Binary, tone: 'text-amber-400' },
-  { n: '06', label: 'VERIFY EVIDENCE', icon: ShieldCheck, tone: 'text-rose-400' },
-  { n: '07', label: 'RATING & AUDIT', icon: Gauge, tone: 'text-teal-400' },
-  { n: '08', label: 'SAFE STOP', icon: OctagonX, tone: 'text-slate-400' },
+  { n: '01', label: 'Intake validate', icon: FileSearch },
+  { n: '02', label: 'Observe manifest', icon: ScanSearch },
+  { n: '03', label: 'Adaptive plan', icon: Workflow },
+  { n: '04', label: 'Allowlist exec', icon: ListChecks },
+  { n: '05', label: 'Scan bytecode', icon: Binary },
+  { n: '06', label: 'Verify evidence', icon: ShieldCheck },
+  { n: '07', label: 'Rating & audit', icon: Gauge },
+  { n: '08', label: 'Safe stop', icon: OctagonX },
 ];
 
-const ARC_KEYS = [Shield, Lock, Fingerprint, KeyRound, Smartphone, Cpu, Globe, Layers, Zap];
+/* What the controller does, each move mapped to the stages that carry it out. */
+const MOVES = [
+  { text: 'Plans allowlisted tool actions', stages: [2, 3] },
+  { text: 'Observes verified static & bytecode outputs', stages: [1, 4] },
+  { text: 'Adapts subsequent decisions', stages: [2, 7] },
+  { text: 'Compiles traceable, evidence-backed security findings', stages: [5, 6] },
+];
+
+const STEP_MS = 1800;
 
 export default function LoginPage() {
   const router = useRouter();
@@ -53,25 +48,48 @@ export default function LoginPage() {
   const [password, setPassword] = useState('••••••••••••');
   const [isLoading, setIsLoading] = useState(false);
 
-  // Animated decision-loop "key presses"
+  // Decision-loop instrument: steps through the stages while visible, pauses on hover, focus or the Pause button.
   const [activeStage, setActiveStage] = useState(0);
+  const [held, setHeld] = useState(false);
   const [pressed, setPressed] = useState<number | null>(null);
-  const [paused, setPaused] = useState(false);
+  const [hover, setHover] = useState(false);
+  const [focus, setFocus] = useState(false);
+  const [seen, setSeen] = useState(false);
+  const [reduced, setReduced] = useState(false);
+  const loopRef = useRef<HTMLDivElement>(null);
+  const running = seen && !hover && !focus && !held && !reduced;
 
   useEffect(() => {
-    if (paused) return;
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduce) return;
-    const id = setInterval(() => {
-      setActiveStage((s) => {
-        const next = (s + 1) % LOOP_STAGES.length;
-        setPressed(next);
-        setTimeout(() => setPressed(null), 180);
-        return next;
-      });
-    }, 1400);
+    document.documentElement.classList.add('js');
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setReduced(mq.matches);
+
+    // One reveal, below the hero only.
+    const io = new IntersectionObserver(
+      (es) => es.forEach((e) => {
+        if (e.isIntersecting) {
+          e.target.classList.add('is-in');
+          io.unobserve(e.target);
+        }
+      }),
+      { rootMargin: '0px 0px -10% 0px' }
+    );
+    document.querySelectorAll('.lp [data-reveal]').forEach((el) => io.observe(el));
+
+    const el = loopRef.current;
+    const seenIo = el ? new IntersectionObserver(([e]) => setSeen(e.isIntersecting)) : null;
+    if (el && seenIo) seenIo.observe(el);
+    return () => {
+      io.disconnect();
+      seenIo?.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!running) return;
+    const id = setInterval(() => setActiveStage((s) => (s + 1) % LOOP_STAGES.length), STEP_MS);
     return () => clearInterval(id);
-  }, [paused]);
+  }, [running]);
 
   const handleEnterPlatform = () => {
     setIsLoading(true);
@@ -87,350 +105,268 @@ export default function LoginPage() {
   const stage = LOOP_STAGES[activeStage];
 
   return (
-    <div className="relative min-h-screen bg-[#07080a] text-white overflow-x-clip bg-noise">
-      {/* Ambient under-glow (keyboard light) */}
-      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-[900px] bg-[radial-gradient(50%_45%_at_50%_42%,rgba(255,99,99,0.16),transparent_70%)]" />
-      <div aria-hidden className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.025)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.025)_1px,transparent_1px)] bg-[size:56px_56px] [mask-image:radial-gradient(ellipse_70%_50%_at_50%_0%,#000,transparent)]" />
-
-      {/* ------------------------------------------------------------------ */}
-      {/* Floating navbar                                                   */}
-      {/* ------------------------------------------------------------------ */}
-      <header className="sticky top-3 z-40 px-3 sm:px-4">
-        <div className="mx-auto max-w-6xl flex items-center justify-between gap-3 h-14 pl-3 pr-2 sm:pl-4 rounded-2xl bg-[#0c0d0f]/75 backdrop-blur-xl backdrop-saturate-150 border border-white/[0.08] shadow-[0_1px_0_0_rgba(255,255,255,0.05)_inset,0_20px_40px_-20px_rgba(0,0,0,0.9)] animate-in">
-          <Link href="/" className="group flex items-center gap-2.5 min-w-0">
-            <LogoMark size={28} className="transition-transform duration-300 ease-rc group-hover:rotate-[8deg] group-hover:scale-105" />
-            <div className="flex flex-col leading-tight min-w-0">
-              <div className="flex items-center gap-2">
-                <Wordmark />
-                <span className="hidden sm:inline text-[9px] uppercase font-mono tracking-wider px-1.5 py-[1px] rounded-md bg-white/[0.06] text-white/60 border border-white/10">
-                  FYP Core
-                </span>
-              </div>
-              <span className="hidden sm:block text-[10px] text-white/40 font-mono truncate">
-                Agentic Mobile Security Framework
-              </span>
-            </div>
+    <div className="lp">
+      {/* Nav: slab */}
+      <header className="nav">
+        <div className="container nav__inner">
+          <Link href="/" className="brand" aria-label="VulnScope home">
+            <LogoMark size={28} />
+            <span className="brand__name">VulnScope</span>
+            <span className="brand__sub">Agentic Mobile Security Framework</span>
           </Link>
-
-          <div className="flex items-center gap-2">
-            <span className="hidden md:inline-flex text-[11px] font-mono h-7 items-center px-2.5 rounded-full bg-white/[0.04] text-white/55 border border-white/[0.08]">
-              Mid Evaluation 01
-            </span>
-            <Link href="/analysis/run" className="rc-btn rc-btn-secondary !h-9 !px-3 !text-[13px]">
-              <Activity className="w-3.5 h-3.5 text-[#ff6363]" />
-              <span className="hidden sm:inline">Launch Live Agent</span>
-              <span className="sm:hidden">Live Agent</span>
+          <div className="nav__meta">
+            <span className="nav__stage">FYP Core, Mid Evaluation 01</span>
+            <Link href="/analysis/run" className="btn btn--small">
+              <Activity aria-hidden="true" />
+              <span>Launch Live Agent</span>
             </Link>
           </div>
         </div>
       </header>
 
-      <main className="relative z-10">
-        {/* ------------------------------------------------------------------ */}
-        {/* Hero                                                               */}
-        {/* ------------------------------------------------------------------ */}
-        <section className="mx-auto max-w-6xl px-4 sm:px-6 pt-16 sm:pt-24 text-center">
-          <Reveal>
-            <div className="inline-flex items-center gap-2 h-8 px-3 rounded-full bg-white/[0.04] border border-white/[0.08] text-white/70 text-xs">
-              <Sparkles className="w-3.5 h-3.5 text-[#ff6363]" />
-              <span>AI-Assisted Mobile Application Security Testing</span>
-            </div>
-          </Reveal>
-
-          <Reveal delay={80}>
-            <h1 className="mt-6 mx-auto max-w-4xl text-[34px] leading-[1.05] sm:text-[52px] lg:text-[64px] font-medium tracking-[-0.035em]">
-              <span className="text-gradient-silver">Evidence-Grounded </span>
-              <span className="text-white">Agentic Security Analysis</span>
-              <span className="text-white/40"> for Mobile Applications.</span>
-            </h1>
-          </Reveal>
-
-          <Reveal delay={160}>
-            <p className="mt-6 mx-auto max-w-2xl text-base sm:text-lg leading-relaxed text-white/60">
-              VulnScope is an autonomous security testing framework for authorized Android applications.
-            </p>
-          </Reveal>
-
-          {/* Quick Benchmark Cards */}
-          <Reveal delay={240}>
-            <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-3">
-              <Magnetic>
-                <button onClick={handleLaunchPipeline} className="rc-btn rc-btn-primary group">
-                  <Activity className="w-4 h-4" />
-                  <span>Launch Live Agentic Analysis Pipeline</span>
-                  <ArrowRight className="w-4 h-4 transition-transform duration-300 ease-rc group-hover:translate-x-0.5" />
+      <main>
+        {/* Hero: Stage, the decision loop beside the head */}
+        <section className="hero">
+          <div className="container hero__grid">
+            <div className="hero__text">
+              <h1>
+                Evidence-grounded agentic security analysis for mobile applications.
+              </h1>
+              <p className="lead">
+                VulnScope is an autonomous security testing framework for authorized Android applications.
+              </p>
+              <div className="hero__actions">
+                <button type="button" onClick={handleLaunchPipeline} className="btn btn--primary">
+                  Launch Live Agentic Analysis Pipeline
                 </button>
-              </Magnetic>
-              <Magnetic>
-                <button onClick={handleEnterPlatform} className="rc-btn rc-btn-secondary">
-                  <span>Explore Dashboard & Workspaces</span>
+                <button type="button" onClick={handleEnterPlatform} className="btn">
+                  Explore Dashboard & Workspaces
                 </button>
-              </Magnetic>
+              </div>
             </div>
-          </Reveal>
-        </section>
 
-        {/* ------------------------------------------------------------------ */}
-        {/* Keyboard: Core Workflow Lifecycle (VulnScope decision loop)        */}
-        {/* ------------------------------------------------------------------ */}
-        <section className="mx-auto max-w-5xl px-4 sm:px-6 mt-16 sm:mt-20">
-          <Reveal variant="scale" delay={120}>
             <div
-              className="relative"
-              onMouseEnter={() => setPaused(true)}
-              onMouseLeave={() => setPaused(false)}
+              ref={loopRef}
+              className="panel"
+              data-loop
+              onPointerEnter={() => setHover(true)}
+              onPointerLeave={() => setHover(false)}
+              onFocus={() => setFocus(true)}
+              onBlur={(e) => {
+                if (!e.currentTarget.contains(e.relatedTarget as Node)) setFocus(false);
+              }}
             >
-              {/* under-glow */}
-              <div aria-hidden className="absolute -inset-x-10 -bottom-10 h-40 bg-[#ff6363]/20 blur-[80px] rounded-full" />
-
-              {/* chassis */}
-              <div className="relative rounded-[28px] p-[1px] bg-gradient-to-b from-white/[0.16] via-white/[0.05] to-white/[0.02]">
-                <div className="relative overflow-hidden rounded-[27px] bg-[linear-gradient(180deg,#151619,#0b0c0e)] p-4 sm:p-6 shadow-[0_1px_0_0_rgba(255,255,255,0.08)_inset,0_50px_100px_-40px_rgba(0,0,0,1)]">
-                  <div className="scan-beam" aria-hidden />
-
-                  {/* chassis header */}
-                  <div className="flex items-center justify-between gap-3 mb-4 sm:mb-5">
-                    <span className="flex items-center gap-2 text-[13px] font-medium text-white">
-                      <span className="keycap w-7 h-7 flex items-center justify-center !rounded-lg">
-                        <Terminal className="w-3.5 h-3.5 text-[#ff6363]" />
-                      </span>
-                      VulnScope Autonomous Decision Loop
-                    </span>
-                    <span className="flex items-center gap-2">
-                      <span className="hidden sm:flex flex-col gap-[3px]" aria-hidden>
-                        {LOOP_STAGES.slice(0, 4).map((_, i) => (
-                          <span key={i} className={cn('led', i <= activeStage % 4 && 'on')} />
-                        ))}
-                      </span>
-                      <span className="text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.12em] text-emerald-400">
-                        Auditable Trace
-                      </span>
-                    </span>
-                  </div>
-
-                  {/* keys */}
-                  <div className="relative grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
-                    {LOOP_STAGES.map((s, i) => {
-                      const Icon = s.icon;
-                      const lit = i === activeStage;
-                      const done = i < activeStage;
-                      return (
-                        <button
-                          key={s.n}
-                          type="button"
-                          onClick={() => {
-                            setActiveStage(i);
-                            setPressed(i);
-                            setTimeout(() => setPressed(null), 180);
-                          }}
-                          className={cn(
-                            'keycap press text-left h-[84px] sm:h-[96px] p-3 flex flex-col justify-between',
-                            lit && 'is-lit',
-                            pressed === i && 'is-pressed'
-                          )}
-                          aria-pressed={lit}
-                        >
-                          <span className="relative z-[1] flex items-center justify-between">
-                            <span className={cn('text-[10px] font-mono transition-colors', lit ? 'text-[#ff8a8a]' : 'text-white/30')}>{s.n}</span>
-                            <Icon className={cn('w-4 h-4 transition-all duration-300', lit ? `${s.tone} scale-110` : done ? 'text-white/50' : 'text-white/25')} />
-                          </span>
-                          <span className={cn('relative z-[1] text-[10px] sm:text-[11px] font-mono font-semibold tracking-wide transition-colors', lit ? s.tone : 'text-white/55')}>
-                            {s.n}. {s.label}
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  {/* status strip */}
-                  <div className="mt-4 sm:mt-5 flex items-center gap-3 rounded-xl bg-black/40 border border-white/[0.06] px-3 py-2.5 font-mono text-[11px]">
-                    <span className="relative flex h-2 w-2 shrink-0">
-                      <span className="absolute inline-flex h-full w-full rounded-full bg-[#ff6363] ring-ping" />
-                      <span className="relative inline-flex h-2 w-2 rounded-full bg-[#ff6363]" />
-                    </span>
-                    <span className="text-white/40 hidden sm:inline">agent.step</span>
-                    <span key={activeStage} className={cn('truncate animate-in', stage.tone)}>
-                      {stage.n}. {stage.label}
-                    </span>
-                    <span className="ml-auto text-white/30 shrink-0">{activeStage + 1}/{LOOP_STAGES.length}</span>
-                  </div>
-                </div>
+              <div className="panel__head">
+                <h2 className="panel__title">VulnScope Autonomous Decision Loop</h2>
+                <span className="panel__note">Auditable Trace</span>
               </div>
 
-              {/* RGB light bar */}
-              <div className="mx-auto mt-6 w-2/3 light-bar" aria-hidden />
-            </div>
-          </Reveal>
-        </section>
-
-        {/* ------------------------------------------------------------------ */}
-        {/* Word reveal — full value proposition                               */}
-        {/* ------------------------------------------------------------------ */}
-        <section className="mx-auto max-w-4xl px-4 sm:px-6 py-28 sm:py-40 text-center">
-          <WordReveal
-            className="text-2xl sm:text-4xl lg:text-[44px] leading-[1.2] font-medium tracking-[-0.025em]"
-            text="An LLM-assisted controller plans allowlisted tool actions, observes verified static & bytecode outputs, adapts subsequent decisions, and compiles traceable, evidence-backed security findings."
-          />
-        </section>
-
-        {/* ------------------------------------------------------------------ */}
-        {/* Arc of keycaps + three pillars                                      */}
-        {/* ------------------------------------------------------------------ */}
-        <section className="mx-auto max-w-6xl px-4 sm:px-6">
-          <div className="relative h-[150px] sm:h-[210px] overflow-hidden" aria-hidden>
-            {ARC_KEYS.map((Icon, i) => {
-              const n = ARC_KEYS.length - 1;
-              const angle = -70 + (140 / n) * i; // degrees across the arc
-              return (
-                <div
-                  key={i}
-                  className="absolute left-1/2 top-full"
-                  style={{
-                    transform: `translate(-50%, -50%) rotate(${angle}deg) translateY(calc(-1 * var(--arc-r))) rotate(${-angle * 0.6}deg)`,
-                  }}
-                >
-                  <Reveal variant="scale" delay={i * 70}>
-                    <div
-                      className="keycap w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center float-y"
-                      style={{ animationDelay: `${i * 0.35}s` }}
+              <div className="bed" role="group" aria-label="Decision loop stages">
+                {LOOP_STAGES.map((s, i) => {
+                  const Icon = s.icon;
+                  return (
+                    <button
+                      key={s.n}
+                      type="button"
+                      className={`key${i < activeStage ? ' is-done' : ''}${pressed === i ? ' is-pressed' : ''}`}
+                      aria-pressed={i === activeStage}
+                      onClick={() => { setActiveStage(i); setPressed(i); setTimeout(() => setPressed(null), 180); }}
                     >
-                      <Icon className="relative z-[1] w-5 h-5 sm:w-6 sm:h-6 text-white/70" strokeWidth={1.6} />
-                    </div>
-                  </Reveal>
-                </div>
-              );
-            })}
-            <style>{`:root{--arc-r:130px}@media(min-width:640px){:root{--arc-r:190px}}`}</style>
-          </div>
+                      <span className="key__top">
+                        <span className="key__n">{s.n}</span>
+                        <Icon aria-hidden="true" />
+                      </span>
+                      <span>{s.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
 
-          <div className="relative border-t border-white/[0.06] pt-14 grid gap-4 sm:grid-cols-3">
-            {[
-              { icon: Shield, title: 'OWASP MASVS Aligned' },
-              { icon: CheckCircle2, title: 'Evidence-Backed Verification' },
-              { icon: Lock, title: 'Allowlisted Tool Registry' },
-            ].map((f, i) => (
-              <Reveal key={f.title} delay={i * 90}>
-                <Spotlight className="rc-card rc-card-hover h-full p-6">
-                  <div className="keycap w-10 h-10 flex items-center justify-center mb-8">
-                    <f.icon className="relative z-[1] w-[18px] h-[18px] text-[#ff6363]" />
-                  </div>
-                  <h3 className="text-lg font-medium tracking-tight text-white">{f.title}</h3>
-                </Spotlight>
-              </Reveal>
-            ))}
+              <div className="readout">
+                <div
+                  className="readout__track"
+                  role="progressbar"
+                  aria-label="Loop progress"
+                  aria-valuemin={1}
+                  aria-valuemax={LOOP_STAGES.length}
+                  aria-valuenow={activeStage + 1}
+                >
+                  <span className="readout__fill" style={{ ['--p' as string]: (activeStage + 1) / LOOP_STAGES.length }} />
+                </div>
+                <span className="readout__label" aria-live="polite">
+                  {stage.n} {stage.label}
+                </span>
+                <span className="readout__count num">
+                  {activeStage + 1}/{LOOP_STAGES.length}
+                </span>
+                {!reduced && (
+                  <button type="button" className="btn btn--small" data-loop-toggle onClick={() => setHeld((h) => !h)}>
+                    {held ? 'Play' : 'Pause'}
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
         </section>
 
-        {/* ------------------------------------------------------------------ */}
-        {/* Workspace access — terminal + spec sheet                            */}
-        {/* ------------------------------------------------------------------ */}
-        <section className="mx-auto max-w-6xl px-4 sm:px-6 py-24 sm:py-32 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-          {/* Live terminal */}
-          <Reveal variant="left">
-            <div className="relative rounded-2xl overflow-hidden border border-white/[0.08] bg-[#0a0b0d] shadow-[0_40px_80px_-40px_rgba(0,0,0,1)]">
-              <div className="flex items-center gap-2 px-4 h-10 border-b border-white/[0.06] bg-white/[0.02]">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
-                <span className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
-                <span className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
-                <span className="ml-3 text-[11px] font-mono text-white/35">vulnscope — agent trace</span>
+        {/* Showcase: the real workspace */}
+        <section className="section section--first">
+          <div className="container">
+            <div className="head" data-reveal>
+              <h2>Enter VulnScope Platform</h2>
+              <p className="lead">
+                Access the live agent execution loop, interactive attack-surface graphs, and findings manager.
+              </p>
+            </div>
+
+            <figure className="shot shot--main" data-slot="product-overview" data-kind="product" data-alt="The Security Overview screen of the running workspace" data-reveal>
+              <img
+                src="/screens/screen-dashboard-desktop.png"
+                width={2880}
+                height={1800}
+                alt="VulnScope Security Overview: application count, critical and high findings, security score and the agentic pipeline"
+                loading="lazy"
+              />
+            </figure>
+            <p className="caption">Security Overview</p>
+
+            <div className="shots">
+              <div data-reveal style={{ ['--i' as string]: 1 }}>
+                <figure className="shot shot--pair" data-slot="product-run" data-kind="product" data-alt="The Agentic Security Analysis Pipeline screen">
+                  <img
+                    src="/screens/screen-analysis-run-desktop.png"
+                    width={2880}
+                    height={1800}
+                    alt="Agentic Security Analysis Pipeline with the authorized benchmark APKs ready to run"
+                    loading="lazy"
+                  />
+                </figure>
+                <p className="caption">Agentic Security Analysis Pipeline</p>
               </div>
-              <div className="relative p-5 min-h-[280px]">
-                <div className="scan-beam opacity-60" aria-hidden />
-                <TypedLines
-                  className="relative font-mono text-[11px] sm:text-[12px] leading-6 whitespace-pre-wrap break-words"
-                  lines={[
-                    { text: '$ vulnscope run --target app.apk --mode bounded', className: 'text-white' },
-                    { text: '[01] INTAKE VALIDATE   sha256 ✓  zip ✓', className: 'text-emerald-400' },
-                    { text: '[02] OBSERVE MANIFEST  AndroidManifest.xml parsed', className: 'text-cyan-400' },
-                    { text: '[03] ADAPTIVE PLAN     next → dex.secret_scan', className: 'text-indigo-400' },
-                    { text: '[04] ALLOWLIST EXEC    tool registry: permitted', className: 'text-purple-400' },
-                    { text: '[05] SCAN BYTECODE     classes.dex analysed', className: 'text-amber-400' },
-                    { text: '[06] VERIFY EVIDENCE   findings grounded ✓', className: 'text-rose-400' },
-                    { text: '[07] RATING & AUDIT    trace written', className: 'text-teal-400' },
-                    { text: '[08] SAFE STOP         9/9 Passing', className: 'text-white/60' },
-                  ]}
-                />
+              <div data-reveal style={{ ['--i' as string]: 2 }}>
+                <figure className="shot shot--pair" data-slot="product-findings" data-kind="product" data-alt="The Security Findings screen">
+                  <img
+                    src="/screens/screen-findings-desktop.png"
+                    width={2880}
+                    height={1800}
+                    alt="Security Findings with severity counts and the findings list"
+                    loading="lazy"
+                  />
+                </figure>
+                <p className="caption">Security Findings</p>
               </div>
             </div>
-          </Reveal>
+          </div>
+        </section>
 
-          {/* Right Column: Instant Access Card */}
-          <Reveal variant="right" delay={100}>
-            <div className="space-y-6">
-              <div className="space-y-3">
-                <span className="eyebrow text-[#ff8a8a]">Evaluation Workspace</span>
-                <h2 className="text-3xl sm:text-[40px] leading-[1.1] font-medium tracking-[-0.03em] text-white">
-                  Enter VulnScope Platform
-                </h2>
-                <p className="text-base text-white/60 leading-relaxed max-w-md">
-                  Access the live agent execution loop, interactive attack-surface graphs, and findings manager.
-                </p>
-              </div>
+        {/* Rows: each move of the controller, mapped to its stages */}
+        <section className="section--l section">
+          <div className="container rows-wrap">
+            <h2>An LLM-assisted controller</h2>
+            <ol className="rows">
+              {MOVES.map((m, i) => (
+                <li key={m.text} className="row" data-reveal style={{ ['--i' as string]: i }}>
+                  <h3>{m.text}</h3>
+                  <div className="row__stages">
+                    {m.stages.map((si) => (
+                      <span key={si} className="stage-tag">
+                        <b>{LOOP_STAGES[si].n}</b>
+                        {LOOP_STAGES[si].label}
+                      </span>
+                    ))}
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
 
+        {/* Code: the trace */}
+        <section className="section--l section">
+          <div className="container trace-wrap">
+            <div className="head-col" data-reveal>
+              <h2>Auditable trace</h2>
+              <p className="lead">
+                Restricted tool registry, observation-driven adaptive decision loop, bounded execution boundaries, and auditable action trace.
+              </p>
+            </div>
+            <figure className="trace" data-reveal style={{ ['--i' as string]: 1 }}>
+              <pre>
+                <code>
+                  <span className="t-cmd">$ vulnscope run --target app.apk --mode bounded</span>{'\n'}
+                  <span className="t-step">[01]</span> intake validate    sha256 <span className="t-ok">ok</span>  zip <span className="t-ok">ok</span>{'\n'}
+                  <span className="t-step">[02]</span> observe manifest   AndroidManifest.xml parsed{'\n'}
+                  <span className="t-step">[03]</span> adaptive plan      next: dex.secret_scan{'\n'}
+                  <span className="t-step">[04]</span> allowlist exec     tool registry: permitted{'\n'}
+                  <span className="t-step">[05]</span> scan bytecode      classes.dex analysed{'\n'}
+                  <span className="t-step">[06]</span> verify evidence    findings grounded <span className="t-ok">ok</span>{'\n'}
+                  <span className="t-step">[07]</span> rating & audit     trace written{'\n'}
+                  <span className="t-step">[08]</span> safe stop
+                </code>
+              </pre>
+              <figcaption>agent-trace.log, a sample run</figcaption>
+            </figure>
+          </div>
+        </section>
+
+        {/* Close: the evaluation workspace */}
+        <section className="close">
+          <div className="container close__grid">
+            <div className="close__text" data-reveal>
+              <h2>Evaluation workspace</h2>
               <div>
-                <div className="spec-row">
-                  <span className="text-white/45">Real Security Core:</span>
-                  <span className="text-emerald-400 font-semibold">ACTIVE (Verified)</span>
-                </div>
-                <div className="spec-row">
-                  <span className="text-white/45">Agentic Loop:</span>
-                  <span className="text-emerald-400 font-semibold">Allowlist Registry</span>
-                </div>
-                <div className="spec-row">
-                  <span className="text-white/45">Target Platform:</span>
-                  <span className="text-white">Android APK (Static/DEX)</span>
-                </div>
-                <div className="spec-row">
-                  <span className="text-white/45">Evaluation Tests:</span>
-                  <span className="text-emerald-400 font-semibold">9/9 Passing</span>
-                </div>
-              </div>
-
-              <Magnetic strength={0.15} className="w-full sm:w-auto">
                 <button
+                  type="button"
                   onClick={handleEnterPlatform}
                   disabled={isLoading}
-                  className="rc-btn rc-btn-red group w-full sm:w-auto !h-11 !px-6"
+                  aria-busy={isLoading}
+                  className="btn"
                 >
                   <span>{isLoading ? 'Entering…' : 'Enter Workspace'}</span>
-                  <ArrowRight className="w-4 h-4 transition-transform duration-300 ease-rc group-hover:translate-x-1" />
+                  <ArrowRight aria-hidden="true" />
                 </button>
-              </Magnetic>
-            </div>
-          </Reveal>
-        </section>
-
-        {/* ------------------------------------------------------------------ */}
-        {/* Marquee                                                             */}
-        {/* ------------------------------------------------------------------ */}
-        <section className="border-y border-white/[0.06] py-5 marquee-mask overflow-hidden" aria-hidden>
-          <div className="marquee gap-10 pr-10">
-            {[0, 1].map((dup) => (
-              <div key={dup} className="flex items-center gap-10 shrink-0">
-                {[...LOOP_STAGES.map((s) => s.label), 'OWASP MASVS Aligned', 'Evidence-Backed Verification', 'Allowlisted Tool Registry'].map((t, i) => (
-                  <span key={`${dup}-${i}`} className="flex items-center gap-10 font-mono text-xs uppercase tracking-[0.14em] text-white/30 whitespace-nowrap">
-                    {t}
-                    <span className="w-1 h-1 rounded-full bg-[#ff6363]/60" />
-                  </span>
-                ))}
               </div>
-            ))}
+            </div>
+            <table className="close__table" data-reveal style={{ ['--i' as string]: 1 }}>
+              <tbody>
+                <tr>
+                  <th scope="row">Real Security Core</th>
+                  <td className="is-pass">Active (verified)</td>
+                </tr>
+                <tr>
+                  <th scope="row">Agentic Loop</th>
+                  <td>Allowlist Registry</td>
+                </tr>
+                <tr>
+                  <th scope="row">Target Platform</th>
+                  <td>Android APK (Static/DEX)</td>
+                </tr>
+                <tr>
+                  <th scope="row">Evaluation Tests</th>
+                  <td className="is-pass num">9/9 Passing</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-white/40">
-        <div className="flex items-center gap-2.5 text-center md:text-left">
-          <LogoMark size={18} />
-          <span>VulnScope • Final Year Project (FYP-2 Mid Evaluation 01) • BS Software Engineering</span>
-        </div>
-        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 font-mono text-[11px]">
-          <span>OWASP MASVS Aligned</span>
-          <span className="text-white/20">•</span>
-          <span>Evidence-Backed Verification</span>
-          <span className="text-white/20">•</span>
-          <span>Allowlisted Tool Registry</span>
+      {/* Footer: colophon block */}
+      <footer className="footer">
+        <div className="container footer__grid">
+          <div className="footer__brand">
+            <LogoMark size={22} />
+            <span className="brand__name">VulnScope</span>
+          </div>
+          <div className="footer__text">
+            <p>AI-Assisted Mobile Application Security Testing.</p>
+            <p>Final Year Project (FYP-2 Mid Evaluation 01), BS Software Engineering.</p>
+          </div>
+          <ul className="footer__list">
+            <li>OWASP MASVS Aligned</li>
+            <li>Evidence-Backed Verification</li>
+            <li>Allowlisted Tool Registry</li>
+          </ul>
         </div>
       </footer>
     </div>

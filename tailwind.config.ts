@@ -1,10 +1,34 @@
 import type { Config } from "tailwindcss";
 
 /**
- * VulnScope design tokens — inspired by raycast.com/keyboard.
- * Neutral near-black surfaces, white/alpha text hierarchy, a single
- * "red-team" glow accent, and semantic severity colours left intact.
+ * VulnScope colour system: ONE palette, derived from the background (#0a0a0b).
+ * Every colour family Tailwind offers (slate, rose, amber, emerald, sky, ...)
+ * resolves to the same neutral ramp. Meaning comes from lightness, not hue:
+ * critical sits brightest, high a step down, everything else quieter.
  */
+const ramp: Record<number, string> = {
+  50: "#fafafa",
+  100: "#f4f4f5",
+  200: "#e4e4e7",
+  300: "#d4d4d8",
+  400: "#a1a1aa",
+  500: "#71717a",
+  600: "#52525b",
+  700: "#3f3f46",
+  800: "#27272a",
+  900: "#18181b",
+  950: "#09090b",
+};
+const steps = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
+
+/** The same ramp, shifted `lighter` steps toward white (for emphasis families). */
+const shade = (lighter = 0) =>
+  Object.fromEntries(
+    steps.map((s, i) => [s, ramp[steps[Math.max(0, i - lighter)]]])
+  ) as Record<number, string>;
+
+const neutral = shade(0);
+
 const config: Config = {
   darkMode: ["class"],
   content: [
@@ -15,58 +39,75 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Neutral (Raycast-style) greys replace the blue-tinted slate scale app-wide.
-        slate: {
-          50: "#fafafa",
-          100: "#f2f2f3",
-          200: "#e3e3e6",
-          300: "#c4c5c9",
-          400: "#9a9ba1",
-          500: "#6d6e74",
-          600: "#4a4b50",
-          700: "#2c2d31",
-          800: "#1d1e21",
-          900: "#141517",
-          950: "#0a0b0c",
-        },
-        background: "#07080a",
+        white: ramp[50],
+        black: ramp[950],
+
+        // The one neutral ramp, under every family name the screens use.
+        slate: neutral,
+        gray: neutral,
+        zinc: neutral,
+        neutral: neutral,
+        stone: neutral,
+        // Emphasis by lightness: critical brightest, high next.
+        rose: shade(2),
+        red: shade(2),
+        pink: shade(2),
+        fuchsia: shade(1),
+        amber: shade(1),
+        orange: shade(1),
+        yellow: shade(1),
+        // Everything else: the plain ramp.
+        emerald: neutral,
+        green: neutral,
+        teal: neutral,
+        lime: neutral,
+        sky: neutral,
+        blue: neutral,
+        cyan: neutral,
+        indigo: neutral,
+        violet: neutral,
+        purple: neutral,
+
+        background: "#0a0a0b",
+        canvas: "#0a0a0b",
+        elevated: { DEFAULT: "#111113", 2: "#18181b" },
+        keycap: { DEFAULT: "#e4e4e7", ink: "#18181b" },
+        signal: { DEFAULT: "#fafafa", soft: "#d4d4d8", ink: "#09090b" },
         ink: {
-          DEFAULT: "#07080a",
-          900: "#0a0b0d",
-          800: "#0c0d0f",
-          700: "#111214",
-          600: "#17181b",
+          DEFAULT: "#0a0a0b",
+          900: "#0a0a0b",
+          800: "#0f0f11",
+          700: "#111113",
+          600: "#18181b",
         },
         surface: {
-          50: "#1a1b1e",
-          100: "#151618",
-          200: "#111214",
-          300: "#0c0d0f",
-          DEFAULT: "#0e0f11",
-          card: "#0e0f11",
-          border: "rgba(255,255,255,0.08)",
-          hover: "#16171a",
+          50: "#27272a",
+          100: "#18181b",
+          200: "#141416",
+          300: "#111113",
+          DEFAULT: "#111113",
+          card: "#111113",
+          border: "rgba(250,250,250,0.08)",
+          hover: "#18181b",
         },
         brand: {
-          50: "#fff1f1",
-          100: "#ffdede",
-          400: "#ff8a8a",
-          500: "#ff6363",
-          600: "#e5484d",
-          // "cyan" / "indigo" keep their names for compatibility; they are now
-          // Raycast's crisp white-to-silver accent used for active UI states.
-          cyan: "#f5f5f6",
+          50: "#fafafa",
+          100: "#f4f4f5",
+          400: "#d4d4d8",
+          500: "#a1a1aa",
+          600: "#71717a",
+          cyan: "#f4f4f5",
           indigo: "#a1a1aa",
-          accent: "#ff6363",
-          red: "#ff6363",
+          accent: "#fafafa",
+          red: "#fafafa",
         },
         severity: {
-          critical: { DEFAULT: "#f43f5e", bg: "rgba(244, 63, 94, 0.12)", border: "rgba(244, 63, 94, 0.35)", glow: "rgba(244, 63, 94, 0.25)", text: "#fb7185" },
-          high: { DEFAULT: "#f97316", bg: "rgba(249, 115, 22, 0.12)", border: "rgba(249, 115, 22, 0.35)", glow: "rgba(249, 115, 22, 0.25)", text: "#fb923c" },
-          medium: { DEFAULT: "#eab308", bg: "rgba(234, 179, 8, 0.12)", border: "rgba(234, 179, 8, 0.35)", glow: "rgba(234, 179, 8, 0.25)", text: "#fde047" },
-          low: { DEFAULT: "#38bdf8", bg: "rgba(56, 189, 248, 0.12)", border: "rgba(56, 189, 248, 0.35)", glow: "rgba(56, 189, 248, 0.25)", text: "#7dd3fc" },
-          info: { DEFAULT: "#94a3b8", bg: "rgba(148, 163, 184, 0.12)", border: "rgba(148, 163, 184, 0.35)", glow: "rgba(148, 163, 184, 0.25)", text: "#cbd5e1" },
-          safe: { DEFAULT: "#10b981", bg: "rgba(16, 185, 129, 0.12)", border: "rgba(16, 185, 129, 0.35)", glow: "rgba(16, 185, 129, 0.25)", text: "#34d399" },
+          critical: { DEFAULT: "#fafafa", bg: "rgba(250,250,250,0.10)", border: "rgba(250,250,250,0.30)", glow: "rgba(250,250,250,0.10)", text: "#fafafa" },
+          high: { DEFAULT: "#d4d4d8", bg: "rgba(212,212,216,0.08)", border: "rgba(212,212,216,0.25)", glow: "rgba(212,212,216,0.08)", text: "#d4d4d8" },
+          medium: { DEFAULT: "#a1a1aa", bg: "rgba(161,161,170,0.08)", border: "rgba(161,161,170,0.22)", glow: "rgba(161,161,170,0.08)", text: "#a1a1aa" },
+          low: { DEFAULT: "#71717a", bg: "rgba(113,113,122,0.08)", border: "rgba(113,113,122,0.22)", glow: "rgba(113,113,122,0.08)", text: "#a1a1aa" },
+          info: { DEFAULT: "#52525b", bg: "rgba(82,82,91,0.10)", border: "rgba(82,82,91,0.25)", glow: "rgba(82,82,91,0.10)", text: "#71717a" },
+          safe: { DEFAULT: "#a1a1aa", bg: "rgba(161,161,170,0.08)", border: "rgba(161,161,170,0.22)", glow: "rgba(161,161,170,0.08)", text: "#a1a1aa" },
         },
       },
       fontFamily: {
@@ -75,12 +116,18 @@ const config: Config = {
       },
       borderRadius: {
         key: "10px",
+        lg: "6px",
+        xl: "6px",
+        "2xl": "6px",
+        "3xl": "8px",
       },
       boxShadow: {
-        glow: "0 0 12px 2px rgba(255, 99, 99, 0.45)",
-        key: "0 0 0 1px rgba(0,0,0,0.6), 0 1px 0 0 rgba(255,255,255,0.06) inset, 0 -2px 0 0 rgba(0,0,0,0.5) inset, 0 6px 14px -6px rgba(0,0,0,0.8)",
-        "rc-button": "0 0 0 2px rgba(0,0,0,0.5), 0 0 14px 0 rgba(255,255,255,0.19), 0 -1px 0.4px 0 rgba(0,0,0,0.2) inset, 0 1px 0.4px 0 #fff inset",
-        card: "0 1px 0 0 rgba(255,255,255,0.04) inset, 0 20px 40px -24px rgba(0,0,0,0.9)",
+        key: "inset 0 1px 0 oklch(100% 0 0 / 0.06), 0 1px 2px oklch(8% 0.004 260 / 0.5)",
+        "rc-button": "inset 0 1px 0 oklch(100% 0 0 / 0.7), 0 1px 2px oklch(8% 0.004 260 / 0.5)",
+        "rc-button-hover": "inset 0 1px 0 oklch(100% 0 0 / 0.8), 0 2px 6px oklch(8% 0.004 260 / 0.5)",
+        "nav-active": "inset 0 1px 0 oklch(100% 0 0 / 0.06), 0 0 0 1px oklch(100% 0 0 / 0.06)",
+        drawer: "0 24px 48px -16px oklch(8% 0.004 260 / 0.85)",
+        card: "0 1px 2px oklch(8% 0.004 260 / 0.5)",
       },
       transitionTimingFunction: {
         rc: "cubic-bezier(0.22, 1, 0.36, 1)",

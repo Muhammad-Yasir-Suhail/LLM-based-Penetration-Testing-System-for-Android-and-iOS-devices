@@ -1,7 +1,27 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { getWritableBaseDir } from './uploadConfig';
 
-export const UPLOAD_DIR = path.resolve(process.cwd(), 'storage', 'uploads');
+// Locally this is <project>/storage/uploads; on Vercel (read-only filesystem) it lives in the temp directory.
+export const UPLOAD_DIR = path.resolve(getWritableBaseDir(), 'storage', 'uploads');
+
+/**
+ * Permanent home for every uploaded APK, kept complete and unmodified for later processing.
+ * Separate from UPLOAD_DIR so the 24-hour retention pruning never touches it.
+ */
+export const APK_ARCHIVE_DIR = path.resolve(getWritableBaseDir(), 'storage', 'apks');
+
+export function ensureApkArchiveDir(): void {
+  if (!fs.existsSync(APK_ARCHIVE_DIR)) {
+    fs.mkdirSync(APK_ARCHIVE_DIR, { recursive: true });
+  }
+}
+
+/** File name for an archived APK: <sha256>_<original name, sanitised>. */
+export function archivedApkName(sha256: string, originalName: string): string {
+  const clean = path.basename(originalName || 'target.apk').replace(/[^a-zA-Z0-9._-]/g, '_').slice(-120) || 'target.apk';
+  return `${sha256}_${clean}`;
+}
 
 /**
  * Default retention window: 24 hours.

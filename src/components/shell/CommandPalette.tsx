@@ -86,9 +86,9 @@ export const CommandPalette: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-[12vh] px-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-150" onClick={() => setSearchModalOpen(false)}>
+    <div className="fixed inset-0 z-50 flex items-start justify-center pt-[12vh] px-4 bg-black/60 animate-in fade-in duration-150" onClick={() => setSearchModalOpen(false)}>
       <div
-        className="w-full max-w-2xl rounded-2xl overflow-hidden glass-panel-glow"
+        className="w-full max-w-2xl overflow-hidden card"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search Header */}
@@ -97,7 +97,7 @@ export const CommandPalette: React.FC = () => {
           <input
             ref={inputRef}
             type="text"
-            placeholder="Type a command, search findings, applications, CVEs, or reports..."
+            placeholder="Type a command, search findings, applications, CVEs, or reports…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="flex-1 bg-transparent text-[15px] text-white placeholder-white/35 focus:outline-none font-sans"
@@ -120,59 +120,59 @@ export const CommandPalette: React.FC = () => {
           {/* Quick Actions if query is empty */}
           {!q && (
             <div>
-              <div className="px-3 py-1 text-[10px] font-mono uppercase tracking-[0.12em] text-white/35">
+              <div className="px-3 py-1 text-[11px] text-white/35">
                 Quick Navigation
               </div>
               <div className="grid grid-cols-2 gap-1.5 mt-1">
                 <button
                   onClick={() => navigateTo('/attack-surface')}
-                  className="flex items-center gap-2.5 p-2.5 rounded-xl bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.06] hover:border-white/[0.12] text-left transition-all duration-200 hover:-translate-y-px"
+                  className="flex items-center gap-2.5 p-2.5 rounded-xl bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.06] hover:border-white/[0.12] text-left transition duration-200 hover:-translate-y-px motion-reduce:transform-none"
                 >
-                  <div className="p-1.5 rounded-md bg-sky-500/10 text-sky-400">
+                  <div className="p-1.5 rounded-md text-slate-400 bg-white/[0.04]">
                     <Smartphone className="w-4 h-4" />
                   </div>
                   <div>
                     <p className="text-xs font-semibold text-slate-200">Attack Surface</p>
-                    <p className="text-[10px] text-slate-400">Interactive topology graph</p>
+                    <p className="text-[11px] text-slate-400">Interactive topology graph</p>
                   </div>
                 </button>
 
                 <button
                   onClick={() => navigateTo('/correlation')}
-                  className="flex items-center gap-2.5 p-2.5 rounded-xl bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.06] hover:border-white/[0.12] text-left transition-all duration-200 hover:-translate-y-px"
+                  className="flex items-center gap-2.5 p-2.5 rounded-xl bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.06] hover:border-white/[0.12] text-left transition duration-200 hover:-translate-y-px motion-reduce:transform-none"
                 >
-                  <div className="p-1.5 rounded-md bg-indigo-500/10 text-indigo-400">
+                  <div className="p-1.5 rounded-md text-slate-400 bg-white/[0.04]">
                     <AlertTriangle className="w-4 h-4" />
                   </div>
                   <div>
                     <p className="text-xs font-semibold text-slate-200">Finding Correlation</p>
-                    <p className="text-[10px] text-slate-400">Multi-engine deduplication</p>
+                    <p className="text-[11px] text-slate-400">Multi-engine deduplication</p>
                   </div>
                 </button>
 
                 <button
                   onClick={() => navigateTo('/copilot')}
-                  className="flex items-center gap-2.5 p-2.5 rounded-xl bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.06] hover:border-white/[0.12] text-left transition-all duration-200 hover:-translate-y-px"
+                  className="flex items-center gap-2.5 p-2.5 rounded-xl bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.06] hover:border-white/[0.12] text-left transition duration-200 hover:-translate-y-px motion-reduce:transform-none"
                 >
-                  <div className="p-1.5 rounded-md bg-purple-500/10 text-purple-400">
+                  <div className="p-1.5 rounded-md text-slate-400 bg-white/[0.04]">
                     <Bot className="w-4 h-4" />
                   </div>
                   <div>
                     <p className="text-xs font-semibold text-slate-200">Security Copilot</p>
-                    <p className="text-[10px] text-slate-400">Ask AI security assistant</p>
+                    <p className="text-[11px] text-slate-400">Ask AI security assistant</p>
                   </div>
                 </button>
 
                 <button
                   onClick={() => navigateTo('/analysis/run')}
-                  className="flex items-center gap-2.5 p-2.5 rounded-xl bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.06] hover:border-white/[0.12] text-left transition-all duration-200 hover:-translate-y-px"
+                  className="flex items-center gap-2.5 p-2.5 rounded-xl bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.06] hover:border-white/[0.12] text-left transition duration-200 hover:-translate-y-px motion-reduce:transform-none"
                 >
-                  <div className="p-1.5 rounded-md bg-brand-cyan/10 text-brand-cyan">
+                  <div className="p-1.5 rounded-md text-brand-cyan bg-white/[0.04]">
                     <Command className="w-4 h-4" />
                   </div>
                   <div>
                     <p className="text-xs font-semibold text-slate-200">Run Simulated Scan</p>
-                    <p className="text-[10px] text-slate-400">10-stage execution pipeline</p>
+                    <p className="text-[11px] text-slate-400">10-stage execution pipeline</p>
                   </div>
                 </button>
               </div>
@@ -182,7 +182,7 @@ export const CommandPalette: React.FC = () => {
           {/* Security Findings Matches */}
           {matchedFindings.length > 0 && (
             <div>
-              <div className="px-3 py-1 text-[10px] font-mono uppercase tracking-[0.12em] text-white/35">
+              <div className="px-3 py-1 text-[11px] text-white/35">
                 Security Findings ({matchedFindings.length})
               </div>
               <div className="space-y-1 mt-1">
@@ -192,22 +192,22 @@ export const CommandPalette: React.FC = () => {
                     <button
                       key={f.id}
                       onClick={() => navigateTo(`/findings/${f.id}`)}
-                      className="w-full flex items-center justify-between p-2.5 rounded-xl bg-transparent hover:bg-white/[0.06] border border-transparent hover:border-white/[0.08] text-left transition-all duration-150 group"
+                      className="w-full flex items-center justify-between p-2.5 rounded-xl bg-transparent hover:bg-white/[0.06] border border-transparent hover:border-white/[0.08] text-left transition duration-150 group"
                     >
                       <div className="flex items-center gap-3 overflow-hidden">
-                        <span className={`px-1.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase border ${sColor.badge}`}>
+                        <span className={`px-1.5 py-0.5 rounded text-[11px] font-medium border ${sColor.badge}`}>
                           {f.severity}
                         </span>
                         <div className="truncate">
                           <p className="text-xs font-medium text-slate-200 group-hover:text-white truncate">
                             {f.findingNumber}: {f.title}
                           </p>
-                          <p className="text-[10px] font-mono text-slate-400">
-                            {f.applicationName} • {f.cwe}
+                          <p className="text-[11px] tabular-nums text-slate-400">
+                            {f.applicationName}, {f.cwe}
                           </p>
                         </div>
                       </div>
-                      <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#ff6363] group-hover:translate-x-0.5 transition-transform shrink-0" />
+                      <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-signal group-hover:translate-x-0.5 transition-transform shrink-0 motion-reduce:transform-none" />
                     </button>
                   );
                 })}
@@ -218,7 +218,7 @@ export const CommandPalette: React.FC = () => {
           {/* Applications Matches */}
           {matchedApps.length > 0 && (
             <div>
-              <div className="px-3 py-1 text-[10px] font-mono uppercase tracking-[0.12em] text-white/35">
+              <div className="px-3 py-1 text-[11px] text-white/35">
                 Applications ({matchedApps.length})
               </div>
               <div className="space-y-1 mt-1">
@@ -226,22 +226,22 @@ export const CommandPalette: React.FC = () => {
                   <button
                     key={app.id}
                     onClick={() => navigateTo(`/applications/${app.id}`)}
-                    className="w-full flex items-center justify-between p-2.5 rounded-xl bg-transparent hover:bg-white/[0.06] border border-transparent hover:border-white/[0.08] text-left transition-all duration-150 group"
+                    className="w-full flex items-center justify-between p-2.5 rounded-xl bg-transparent hover:bg-white/[0.06] border border-transparent hover:border-white/[0.08] text-left transition duration-150 group"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-7 h-7 rounded bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-xs font-mono">
+                      <div className="w-7 h-7 rounded bg-blue-500/20 text-blue-400 flex items-center justify-center font-medium text-xs tabular-nums">
                         {app.platform === 'Android' ? 'APK' : 'IPA'}
                       </div>
                       <div>
                         <p className="text-xs font-semibold text-slate-200 group-hover:text-white">
-                          {app.name} <span className="text-[10px] text-slate-400 font-mono">v{app.currentVersion}</span>
+                          {app.name} <span className="text-[11px] text-slate-400 tabular-nums">v{app.currentVersion}</span>
                         </p>
-                        <p className="text-[10px] font-mono text-slate-400">{app.packageName}</p>
+                        <p className="text-[11px] tabular-nums text-slate-400">{app.packageName}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-mono text-emerald-400">{app.securityScore}/100</span>
-                      <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#ff6363] group-hover:translate-x-0.5 transition-transform" />
+                      <span className="text-xs tabular-nums text-emerald-400">{app.securityScore}/100</span>
+                      <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-signal group-hover:translate-x-0.5 transition-transform motion-reduce:transform-none" />
                     </div>
                   </button>
                 ))}
@@ -252,7 +252,7 @@ export const CommandPalette: React.FC = () => {
           {/* Projects Matches */}
           {matchedProjects.length > 0 && (
             <div>
-              <div className="px-3 py-1 text-[10px] font-mono uppercase tracking-[0.12em] text-white/35">
+              <div className="px-3 py-1 text-[11px] text-white/35">
                 Projects ({matchedProjects.length})
               </div>
               <div className="space-y-1 mt-1">
@@ -260,16 +260,16 @@ export const CommandPalette: React.FC = () => {
                   <button
                     key={p.id}
                     onClick={() => navigateTo(`/projects/${p.id}`)}
-                    className="w-full flex items-center justify-between p-2.5 rounded-xl bg-transparent hover:bg-white/[0.06] border border-transparent hover:border-white/[0.08] text-left transition-all duration-150 group"
+                    className="w-full flex items-center justify-between p-2.5 rounded-xl bg-transparent hover:bg-white/[0.06] border border-transparent hover:border-white/[0.08] text-left transition duration-150 group"
                   >
                     <div className="flex items-center gap-3">
-                      <FolderGit2 className="w-4 h-4 text-indigo-400" />
+                      <FolderGit2 className="w-4 h-4 text-slate-500" />
                       <div>
                         <p className="text-xs font-semibold text-slate-200 group-hover:text-white">{p.name}</p>
-                        <p className="text-[10px] text-slate-400">{p.organization} • {p.environment}</p>
+                        <p className="text-[11px] text-slate-400">{p.organization}, {p.environment}</p>
                       </div>
                     </div>
-                    <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#ff6363] group-hover:translate-x-0.5 transition-transform" />
+                    <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-signal group-hover:translate-x-0.5 transition-transform motion-reduce:transform-none" />
                   </button>
                 ))}
               </div>
@@ -286,7 +286,7 @@ export const CommandPalette: React.FC = () => {
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between px-4 py-2 bg-white/[0.02] border-t border-white/[0.07] text-[11px] text-slate-400 font-mono">
+        <div className="flex items-center justify-between px-4 py-2 bg-white/[0.02] border-t border-white/[0.07] text-[11px] text-slate-400 tabular-nums">
           <span>Navigate with arrows or click to open</span>
           <div className="flex items-center gap-1">
             <span>Select</span>

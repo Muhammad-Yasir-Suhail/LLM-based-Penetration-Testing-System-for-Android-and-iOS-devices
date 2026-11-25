@@ -12,6 +12,8 @@ import { ManifestAnalysisResult } from './manifestAnalyzer';
 import { DexAnalysisResult } from './dexAnalyzer';
 
 export interface ControllerOptions {
+  /** Already-validated APK (from the streaming path for large files); skips in-memory validation. */
+  validationResult?: ApkValidationResult;
   sessionId?: string;
   maxSteps?: number;
   fileName?: string;
@@ -37,7 +39,8 @@ export class AgentController {
     const fileName = options?.fileName || 'target.apk';
 
     // Initial APK intake validation
-    const validationResult: ApkValidationResult = validateApkBuffer(apkBuffer, fileName);
+    const validationResult: ApkValidationResult =
+      options?.validationResult ?? validateApkBuffer(apkBuffer, fileName);
 
     const targetApk: ApkMetadata = validationResult.isValid
       ? validationResult.metadata

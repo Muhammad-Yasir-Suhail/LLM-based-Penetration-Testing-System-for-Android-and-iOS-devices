@@ -75,7 +75,31 @@ export interface ApkMetadata {
   uploadedAt: string;
 }
 
+/**
+ * Where the complete, unmodified APK for a session is kept.
+ * Every upload is stored in full (all entries, byte for byte) for later processing,
+ * independent of what the current analysis pipeline reads.
+ */
+export interface StoredApk {
+  /** 'vercel-blob': durable Blob storage. 'local': the server's disk (durable locally, temporary on Vercel). */
+  location: 'vercel-blob' | 'local';
+  durable: boolean;
+  /** Blob URL (location 'vercel-blob') */
+  url?: string;
+  /** Blob pathname inside the store, or file name on disk */
+  pathname: string;
+  /** Absolute path on the server's disk (location 'local') */
+  path?: string;
+  access?: 'public' | 'private';
+  originalFileName: string;
+  sizeBytes: number;
+  sha256: string;
+  storedAt: string;
+}
+
 export interface AnalysisSession {
+  /** The complete uploaded APK, kept for later processing (absent for built-in benchmarks). */
+  storedApk?: StoredApk;
   sessionId: string;
   status: SessionStatus;
   agentMode: AgentMode;

@@ -5,7 +5,8 @@ import { ApkMetadata } from '@/types/agent';
 export interface ValidationSuccess {
   isValid: true;
   metadata: ApkMetadata;
-  zip: AdmZip;
+  /** Present for in-memory validation; omitted by the streaming (large APK) path. */
+  zip?: AdmZip;
   manifestBuffer: Buffer;
   dexBuffer?: Buffer;
 }

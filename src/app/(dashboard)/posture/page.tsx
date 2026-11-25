@@ -49,7 +49,7 @@ export default function SecurityPosturePage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-[28px] sm:text-[36px] leading-[1.1] font-medium tracking-[-0.03em] text-gradient-silver font-sans">
+          <h1 className="text-[28px] sm:text-[36px] leading-[1.1] font-medium text-white font-sans">
             Security Posture Analytics
           </h1>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
@@ -57,91 +57,122 @@ export default function SecurityPosturePage() {
           </p>
         </div>
 
-        <span className={`px-3 py-1.5 rounded-full text-xs font-mono font-bold border ${scoreMeta.bg} ${scoreMeta.color}`}>
-          Workspace Score: {workspaceScore.score}/100 ({scoreMeta.label})
+        <span className={`inline-flex items-center gap-2 text-[13px] tabular-nums ${scoreMeta.color}`}>
+          <span className="h-1.5 w-1.5 rounded-full bg-current" aria-hidden="true" />
+          <span className="text-slate-300">Workspace Score: <span className="font-mono text-white">{workspaceScore.score}/100</span> ({scoreMeta.label})</span>
         </span>
       </div>
 
       <PipelineBanner activeStep="prioritize" compact />
 
-      {/* OWASP MASVS Category Compliance Grid */}
-      <div className="p-6 rounded-3xl bg-[#0e0f11] border border-slate-800/80 shadow-xl space-y-4">
-        <div className="flex items-center justify-between">
+      {/* OWASP MASVS Category Compliance Matrix */}
+      <section className="surface-flat" aria-labelledby="masvs-heading">
+        <header className="flex flex-wrap items-end justify-between gap-3 px-4 sm:px-5 py-3.5 border-b border-white/[0.06]">
           <div>
-            <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400">
-              OWASP Mobile Standard Benchmark
-            </span>
-            <h3 className="text-base font-bold text-white">MASVS v2.0 Domain Compliance</h3>
+            <span className="block text-[11px] text-slate-500">OWASP Mobile Standard Benchmark</span>
+            <h3 id="masvs-heading" className="text-[15px] font-medium text-white mt-0.5">MASVS v2.0 Domain Compliance</h3>
           </div>
-          <span className="text-xs font-mono text-emerald-400">8 Domains Evaluated</span>
-        </div>
+          <span className="text-[12px] tabular-nums text-slate-400">
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400 mr-2 align-middle" aria-hidden="true" />
+            8 Domains Evaluated
+          </span>
+        </header>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 font-mono text-xs">
-          {masvsComplianceData.map((item, idx) => (
-            <div key={idx} className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="font-bold text-slate-200">MASVS-{item.category.toUpperCase()}</span>
-                <span className={`font-bold ${item.score >= 80 ? 'text-emerald-400' : 'text-amber-400'}`}>
-                  {item.score}%
-                </span>
-              </div>
-              <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
-                <div
-                  className={`h-full ${item.score >= 80 ? 'bg-emerald-400' : 'bg-amber-400'}`}
-                  style={{ width: `${item.score}%` }}
-                />
-              </div>
-              <div className="flex items-center justify-between text-[10px] text-slate-400 pt-1">
-                <span>{item.pass} Passed</span>
-                <span className="text-rose-400">{item.fail} Failed</span>
-              </div>
-            </div>
+        <div className="grid lg:grid-cols-2 lg:divide-x divide-white/[0.06]">
+          {[masvsComplianceData.slice(0, 4), masvsComplianceData.slice(4)].map((half, h) => (
+            <table key={h} className="w-full text-[13px] tabular-nums">
+              <thead className={h === 1 ? 'hidden lg:table-header-group' : undefined}>
+                <tr className="text-[11px] text-slate-500 text-left border-b border-white/[0.06]">
+                  <th scope="col" className="font-normal px-4 sm:px-5 py-2">Domain</th>
+                  <th scope="col" className="font-normal px-2 py-2 w-[34%]">Coverage</th>
+                  <th scope="col" className="font-normal px-2 py-2 text-right">Score</th>
+                  <th scope="col" className="font-normal px-2 py-2 text-right">Passed</th>
+                  <th scope="col" className="font-normal pl-2 pr-4 sm:pr-5 py-2 text-right">Failed</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/[0.05]">
+                {half.map((item, idx) => {
+                  const good = item.score >= 80;
+                  return (
+                    <tr
+                      key={item.category}
+                      className="row-in row-hover"
+                      style={{ animationDelay: `${(h * 4 + idx) * 30}ms` }}
+                    >
+                      <th scope="row" className="font-normal text-left px-4 sm:px-5 py-3 font-mono text-[12px] text-slate-200 whitespace-nowrap">
+                        MASVS-{item.category.toUpperCase()}
+                      </th>
+                      <td className="px-2 py-3">
+                        <span className="meter" aria-hidden="true">
+                          <span className={good ? 'meter__fill bg-emerald-400' : 'meter__fill bg-amber-400'} style={{ transform: `scaleX(${item.score / 100})` }} />
+                        </span>
+                      </td>
+                      <td className={`px-2 py-3 text-right font-mono ${good ? 'text-emerald-400' : 'text-amber-400'}`}>{item.score}%</td>
+                      <td className="px-2 py-3 text-right font-mono text-slate-400 whitespace-nowrap">{item.pass} Passed</td>
+                      <td className="pl-2 pr-4 sm:pr-5 py-3 text-right font-mono text-rose-400 whitespace-nowrap">{item.fail} Failed</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           ))}
         </div>
-      </div>
+      </section>
 
       {/* Application Risk Matrix */}
-      <div className="p-6 rounded-3xl bg-[#0e0f11] border border-slate-800/80 shadow-xl space-y-4">
-        <div className="flex items-center justify-between">
+      <section className="surface-flat" aria-labelledby="risk-heading">
+        <header className="flex flex-wrap items-end justify-between gap-3 px-4 sm:px-5 py-3.5 border-b border-white/[0.06]">
           <div>
-            <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400">
-              Cross-Application Matrix
-            </span>
-            <h3 className="text-base font-bold text-white">Applications at Risk</h3>
+            <span className="block text-[11px] text-slate-500">Cross-Application Matrix</span>
+            <h3 id="risk-heading" className="text-[15px] font-medium text-white mt-0.5">Applications at Risk</h3>
           </div>
-          <Link href="/applications" className="text-xs font-mono text-brand-cyan hover:underline">
+          <Link href="/applications" className="text-[12px] text-slate-400 hover:text-white transition-colors duration-150">
             View All Applications
           </Link>
-        </div>
+        </header>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {applications.slice(0, 6).map((app) => {
-            const appScoreMeta = getScoreGrade(app.securityScore);
-            return (
-              <Link
-                key={app.id}
-                href={`/applications/${app.id}`}
-                className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800 hover:border-slate-700 flex items-center justify-between gap-3 group transition-all"
-              >
-                <div className="flex items-center gap-3 overflow-hidden">
-                  <div className="w-8 h-8 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-xs font-mono shrink-0">
-                    {app.platform === 'Android' ? 'APK' : 'IPA'}
-                  </div>
-                  <div className="truncate">
-                    <p className="text-xs font-bold text-slate-200 group-hover:text-brand-cyan truncate">
-                      {app.name}
-                    </p>
-                    <p className="text-[10px] font-mono text-slate-400">{app.platform} • v{app.currentVersion}</p>
-                  </div>
-                </div>
-                <span className={`px-2 py-0.5 rounded-full font-mono text-[11px] font-bold border shrink-0 ${appScoreMeta.bg} ${appScoreMeta.color}`}>
-                  {app.securityScore}/100
-                </span>
-              </Link>
-            );
-          })}
+        <div role="table" aria-labelledby="risk-heading">
+          <div role="row" className="grid grid-cols-[minmax(0,1fr)_auto_24px] gap-4 px-4 sm:px-5 py-2 text-[11px] text-slate-500 border-b border-white/[0.06]">
+            <span role="columnheader">Application</span>
+            <span role="columnheader" className="text-right">Risk score</span>
+            <span role="columnheader" className="sr-only">Open</span>
+          </div>
+          <div className="divide-y divide-white/[0.05]">
+            {applications.slice(0, 6).map((app, idx) => {
+              const appScoreMeta = getScoreGrade(app.securityScore);
+              return (
+                <Link
+                  key={app.id}
+                  href={`/applications/${app.id}`}
+                  role="row"
+                  className="row-in row-hover group grid grid-cols-[minmax(0,1fr)_auto_24px] items-center gap-4 px-4 sm:px-5 py-3"
+                  style={{ animationDelay: `${idx * 30}ms` }}
+                >
+                  <span role="cell" className="flex items-center gap-3 min-w-0">
+                    <span className="shrink-0 inline-flex items-center justify-center h-6 w-9 rounded-[4px] bg-elevated-2 ring-1 ring-white/[0.08] font-mono text-[10px] tracking-tight text-slate-300">
+                      {app.platform === 'Android' ? 'APK' : 'IPA'}
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block text-[13px] text-slate-100 truncate group-hover:text-white transition-colors duration-150">{app.name}</span>
+                      <span className="block text-[11px] tabular-nums text-slate-500 truncate">{app.platform}, v{app.currentVersion}</span>
+                    </span>
+                  </span>
+                  <span role="cell" className={`flex items-center justify-end gap-2 font-mono text-[13px] tabular-nums ${appScoreMeta.color}`}>
+                    <span className="h-1.5 w-1.5 rounded-full bg-current" aria-hidden="true" />
+                    <span className="text-slate-200">{app.securityScore}<span className="text-slate-500">/100</span></span>
+                  </span>
+                  <span role="cell" className="flex justify-end">
+                    <ChevronRight
+                      className="w-4 h-4 text-slate-500 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-focus-visible:opacity-100 transition duration-150 motion-reduce:transform-none"
+                      aria-hidden="true"
+                    />
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

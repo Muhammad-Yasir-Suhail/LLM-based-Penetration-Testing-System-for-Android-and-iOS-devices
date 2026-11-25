@@ -87,34 +87,34 @@ export default function ApplicationDetailPage() {
       {/* Back button */}
       <Link
         href="/applications"
-        className="inline-flex items-center gap-1.5 text-xs font-mono text-slate-400 hover:text-white transition-colors"
+        className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors"
       >
         <ArrowLeft className="w-3.5 h-3.5" />
         <span>Back to Applications</span>
       </Link>
 
       {/* Main Application Header Card */}
-      <div className="p-6 rounded-3xl bg-[#0e0f11] border border-slate-800/80 shadow-xl space-y-6">
+      <div className="p-6 space-y-6 card">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="flex items-start gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-900 flex items-center justify-center font-mono font-extrabold text-sm text-white shadow-xl shrink-0">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center tabular-nums font-semibold text-sm text-white shadow-xl shrink-0">
               {application.platform === 'Android' ? 'APK' : 'IPA'}
             </div>
             <div>
               <div className="flex flex-wrap items-center gap-2.5">
-                <h1 className="text-2xl sm:text-[30px] leading-tight font-medium tracking-[-0.025em] text-white">{application.name}</h1>
-                <span className="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-xs font-mono text-slate-300">
+                <h1 className="text-2xl sm:text-[30px] leading-tight font-medium text-white">{application.name}</h1>
+                <span className="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-xs tabular-nums text-slate-300">
                   v{application.currentVersion} (#{application.currentBuild})
                 </span>
-                <span className="px-2 py-0.5 rounded bg-sky-500/10 text-sky-400 border border-sky-500/30 text-xs font-mono">
+                <span className="px-2 py-0.5 rounded bg-sky-500/10 text-sky-400 border border-sky-500/30 text-xs tabular-nums">
                   {application.platform}
                 </span>
-                <span className={`px-2.5 py-0.5 rounded-full text-xs font-mono font-bold border ${scoreMeta.bg} ${scoreMeta.color}`}>
+                <span className={`px-2.5 py-0.5 rounded-full text-xs tabular-nums font-medium border ${scoreMeta.bg} ${scoreMeta.color}`}>
                   Score {application.securityScore}/100 ({scoreMeta.label})
                 </span>
               </div>
-              <p className="text-xs font-mono text-slate-400 mt-1">
-                Package: <span className="text-slate-200">{application.packageName}</span> • Last analyzed: <span className="text-slate-200">{application.lastAnalyzed}</span>
+              <p className="text-xs tabular-nums text-slate-400 mt-1">
+                Package: <span className="text-slate-200">{application.packageName}</span>, Last analyzed: <span className="text-slate-200">{application.lastAnalyzed}</span>
               </p>
             </div>
           </div>
@@ -123,24 +123,24 @@ export default function ApplicationDetailPage() {
           <div className="flex flex-wrap items-center gap-2.5">
             <Link
               href="/analysis/run"
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#e6e6e6] hover:bg-white text-[#2f3031] text-xs font-mono font-semibold shadow-rc-button hover:shadow-[0_0_0_2px_rgba(0,0,0,0.5),0_0_24px_2px_rgba(255,255,255,0.28),inset_0_1px_0.4px_#fff] transition-all duration-200"
+              className="btn-app btn-app-primary"
             >
-              <Activity className="w-4 h-4 animate-pulse" />
+              <Activity className="w-4 h-4" />
               <span>Run Analysis</span>
             </Link>
 
             <button
               onClick={handleGenerateReport}
               disabled={isGeneratingReport}
-              className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs font-mono font-semibold transition-all"
+              className="btn-app btn-app-secondary"
             >
-              <FileText className="w-4 h-4 text-emerald-400" />
-              <span>{isGeneratingReport ? 'Generating...' : 'Generate Report'}</span>
+              <FileText className="w-4 h-4 text-slate-500" />
+              <span>{isGeneratingReport ? 'Generating…' : 'Generate Report'}</span>
             </button>
 
             <Link
               href="/copilot"
-              className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-purple-500/15 hover:bg-purple-500/25 text-purple-300 border border-purple-500/40 text-xs font-mono font-bold transition-all"
+              className="btn-app btn-app-secondary"
             >
               <Bot className="w-4 h-4" />
               <span>Ask AI</span>
@@ -161,16 +161,16 @@ export default function ApplicationDetailPage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl transition ${
                   isActive
-                    ? 'bg-brand-cyan/20 text-brand-cyan border border-brand-cyan/40 font-bold'
+                    ? 'bg-brand-cyan/20 text-brand-cyan border border-brand-cyan/40 font-medium'
                     : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
                 <span>{tab.label}</span>
                 {tab.count !== undefined && (
-                  <span className="px-1.5 py-0.2 rounded bg-slate-800 text-[10px] text-slate-300">
+                  <span className="px-1.5 py-0.2 rounded bg-slate-800 text-[11px] text-slate-300">
                     {tab.count}
                   </span>
                 )}
@@ -184,15 +184,15 @@ export default function ApplicationDetailPage() {
       {activeTab === 'history' && (
         <div className="space-y-6">
           {/* Version Score Trend Chart */}
-          <div className="p-6 rounded-3xl bg-[#0e0f11] border border-slate-800/80 shadow-xl space-y-4">
+          <div className="p-6 space-y-4 card">
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400">
+                <span className="text-[11px] text-slate-400">
                   Version-over-Version Posture Trend
                 </span>
-                <h3 className="text-base font-bold text-white">Security Score & Vulnerability Trajectory</h3>
+                <h3 className="text-base font-medium text-white">Security Score & Vulnerability Trajectory</h3>
               </div>
-              <div className="flex items-center gap-4 text-xs font-mono">
+              <div className="flex items-center gap-4 text-xs tabular-nums">
                 <span className="flex items-center gap-1.5 text-slate-400">
                   <span className="w-2.5 h-2.5 rounded-full bg-brand-cyan inline-block" /> Security Score
                 </span>
@@ -207,17 +207,17 @@ export default function ApplicationDetailPage() {
                 <AreaChart data={historyTrendData}>
                   <defs>
                     <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#38bdf8" stopOpacity={0.4} />
-                      <stop offset="95%" stopColor="#38bdf8" stopOpacity={0} />
+                      <stop offset="5%" stopColor="#71717a" stopOpacity={0.4} />
+                      <stop offset="95%" stopColor="#71717a" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <XAxis dataKey="version" stroke="#64748b" fontSize={11} tickLine={false} />
-                  <YAxis stroke="#64748b" fontSize={11} tickLine={false} />
+                  <XAxis dataKey="version" stroke="#52525b" fontSize={11} tickLine={false} />
+                  <YAxis stroke="#52525b" fontSize={11} tickLine={false} />
                   <Tooltip
-                    contentStyle={{ backgroundColor: '#0e0f11', borderColor: '#334155', borderRadius: '12px', fontSize: '12px' }}
+                    contentStyle={{ backgroundColor: 'var(--surface-2)', borderColor: 'var(--line-strong)', borderRadius: '12px', fontSize: '12px' }}
                   />
-                  <Area type="monotone" dataKey="score" stroke="#38bdf8" fillOpacity={1} fill="url(#colorScore)" strokeWidth={2.5} />
-                  <Line type="monotone" dataKey="critical" stroke="#f43f5e" strokeWidth={2} />
+                  <Area type="monotone" dataKey="score" stroke="#71717a" fillOpacity={1} fill="url(#colorScore)" strokeWidth={2.5} />
+                  <Line type="monotone" dataKey="critical" stroke="#fafafa" strokeWidth={2} />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
@@ -225,7 +225,7 @@ export default function ApplicationDetailPage() {
 
           {/* Chronological Version Timeline Cards */}
           <div className="space-y-4">
-            <h3 className="text-sm font-bold font-mono text-slate-200 uppercase tracking-wider">
+            <h3 className="text-sm font-medium text-slate-200">
               Chronological Release Builds & Security Events
             </h3>
 
@@ -235,18 +235,18 @@ export default function ApplicationDetailPage() {
                 return (
                   <div key={idx} className="relative pl-10">
                     {/* Timeline Node Dot */}
-                    <div className="absolute left-2.5 top-5 -translate-x-1/2 w-3.5 h-3.5 rounded-full bg-brand-cyan border-4 border-[#07080a] shadow-md" />
+                    <div className="absolute left-2.5 top-5 -translate-x-1/2 w-3.5 h-3.5 rounded-full bg-brand-cyan border-4 border-ink shadow-md motion-reduce:transform-none" />
 
-                    <div className="p-5 rounded-3xl bg-[#0e0f11] border border-slate-800/80 shadow-lg space-y-3">
+                    <div className="p-5 space-y-3 card">
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                         <div className="flex items-center gap-3">
-                          <span className="text-base font-bold text-white font-mono">{ver.version}</span>
-                          <span className="text-xs font-mono text-slate-400">Build #{ver.buildNumber}</span>
-                          <span className={`px-2.5 py-0.5 rounded-full text-xs font-mono font-bold border ${vScoreMeta.bg} ${vScoreMeta.color}`}>
+                          <span className="text-base font-medium text-white tabular-nums">{ver.version}</span>
+                          <span className="text-xs tabular-nums text-slate-400">Build #{ver.buildNumber}</span>
+                          <span className={`px-2.5 py-0.5 rounded-full text-xs tabular-nums font-medium border ${vScoreMeta.bg} ${vScoreMeta.color}`}>
                             Score {ver.securityScore}/100
                           </span>
                         </div>
-                        <span className="text-xs font-mono text-slate-400">{ver.scanDate} • {ver.fileSize}</span>
+                        <span className="text-xs tabular-nums text-slate-400">{ver.scanDate}, {ver.fileSize}</span>
                       </div>
 
                       <p className="text-xs text-slate-300">
@@ -261,17 +261,11 @@ export default function ApplicationDetailPage() {
                           return (
                             <div
                               key={eIdx}
-                              className={`p-2.5 rounded-xl border text-xs font-mono flex items-start gap-2.5 ${
-                                isVulnIntro
-                                  ? 'bg-rose-500/10 border-rose-500/30 text-rose-300'
-                                  : isVulnResolved
-                                  ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
-                                  : 'bg-slate-900 border-slate-800 text-slate-300'
-                              }`}
+                              className={`p-2.5 rounded-xl border text-xs tabular-nums flex items-start gap-2.5 ${ isVulnIntro ? 'bg-rose-500/10 border-rose-500/30 text-rose-300' : isVulnResolved ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300' : 'bg-slate-900 border-slate-800 text-slate-300' }`}
                             >
                               <span className="w-2 h-2 rounded-full mt-1.5 shrink-0 bg-current" />
                               <div>
-                                <span className="font-bold">{evt.label}:</span>{' '}
+                                <span className="font-medium">{evt.label}:</span>{' '}
                                 <span className="text-slate-400">{evt.description}</span>
                               </div>
                             </div>
@@ -279,7 +273,7 @@ export default function ApplicationDetailPage() {
                         })}
                       </div>
 
-                      <div className="flex items-center justify-between text-xs font-mono text-slate-400 pt-1">
+                      <div className="flex items-center justify-between text-xs tabular-nums text-slate-400 pt-1">
                         <span>Total Findings: {ver.totalFindings} ({ver.criticalFindings} Critical, {ver.highFindings} High)</span>
                         <Link href="/static-analysis" className="text-brand-cyan hover:underline flex items-center gap-1">
                           <span>Inspect Code State</span>
@@ -298,7 +292,7 @@ export default function ApplicationDetailPage() {
       {/* Tab: Findings List */}
       {activeTab === 'findings' && (
         <div className="space-y-3">
-          <div className="flex items-center justify-between px-2 text-xs font-mono text-slate-400">
+          <div className="flex items-center justify-between px-2 text-xs tabular-nums text-slate-400">
             <span>FINDINGS DETECTED IN THIS APPLICATION ({appFindings.length})</span>
             <Link href="/findings" className="text-brand-cyan hover:underline">
               Open Full Vulnerability Manager
@@ -312,23 +306,23 @@ export default function ApplicationDetailPage() {
                 <Link
                   key={finding.id}
                   href={`/findings/${finding.id}`}
-                  className="p-4 rounded-2xl bg-[#0e0f11] border border-slate-800 hover:border-slate-700 shadow-md flex items-center justify-between gap-4 group transition-all"
+                  className="p-4 rounded-2xl bg-surface-card border border-slate-800 hover:border-slate-700 shadow-md flex items-center justify-between gap-4 group transition"
                 >
                   <div className="flex items-center gap-3.5 overflow-hidden">
-                    <span className={`px-2 py-1 rounded text-xs font-mono font-bold uppercase border shrink-0 ${sColor.badge}`}>
+                    <span className={`px-2 py-1 rounded text-xs font-medium border shrink-0 ${sColor.badge}`}>
                       {finding.severity}
                     </span>
                     <div className="truncate">
                       <p className="text-sm font-semibold text-slate-100 group-hover:text-brand-cyan transition-colors truncate">
                         {finding.findingNumber}: {finding.title}
                       </p>
-                      <p className="text-xs font-mono text-slate-400 truncate mt-0.5">
-                        {finding.affectedComponent} • {finding.cwe} • CVSS {finding.cvss}
+                      <p className="text-xs tabular-nums text-slate-400 truncate mt-0.5">
+                        {finding.affectedComponent}, {finding.cwe}, CVSS {finding.cvss}
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3 shrink-0">
-                    <span className="text-xs font-mono text-slate-400">{finding.status}</span>
+                    <span className="text-xs tabular-nums text-slate-400">{finding.status}</span>
                     <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-brand-cyan" />
                   </div>
                 </Link>
@@ -340,23 +334,23 @@ export default function ApplicationDetailPage() {
 
       {/* Tab: Metadata */}
       {activeTab === 'metadata' && (
-        <div className="p-6 rounded-3xl bg-[#0e0f11] border border-slate-800 shadow-xl space-y-4 text-xs font-mono">
-          <h3 className="text-sm font-bold text-white uppercase">Package Fingerprint & Security Metadata</h3>
+        <div className="p-6 space-y-4 text-xs tabular-nums card">
+          <h3 className="text-sm font-medium text-white">Package Fingerprint & Security Metadata</h3>
 
           <div className="space-y-2">
-            <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 flex justify-between">
+            <div className="p-3 flex justify-between panel">
               <span className="text-slate-400">Package Identifier</span>
-              <span className="text-slate-100 font-bold">{application.packageName}</span>
+              <span className="text-slate-100 font-medium">{application.packageName}</span>
             </div>
-            <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 flex justify-between">
+            <div className="p-3 flex justify-between panel">
               <span className="text-slate-400">SHA-256 Checksum</span>
               <span className="text-slate-300 truncate max-w-md">{application.sha256}</span>
             </div>
-            <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 flex justify-between">
+            <div className="p-3 flex justify-between panel">
               <span className="text-slate-400">Build Size</span>
               <span className="text-slate-200">{application.fileSize}</span>
             </div>
-            <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 flex justify-between">
+            <div className="p-3 flex justify-between panel">
               <span className="text-slate-400">Target SDK / Min SDK</span>
               <span className="text-slate-200">{application.targetSdk} (Min: {application.minSdk})</span>
             </div>

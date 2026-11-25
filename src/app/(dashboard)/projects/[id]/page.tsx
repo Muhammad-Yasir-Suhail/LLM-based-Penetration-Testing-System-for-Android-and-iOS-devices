@@ -35,28 +35,28 @@ export default function ProjectDetailPage() {
       {/* Back button */}
       <Link
         href="/projects"
-        className="inline-flex items-center gap-1.5 text-xs font-mono text-slate-400 hover:text-white transition-colors"
+        className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors"
       >
         <ArrowLeft className="w-3.5 h-3.5" />
         <span>Back to Projects</span>
       </Link>
 
       {/* Project Banner Header */}
-      <div className="p-6 rounded-3xl bg-[#0e0f11] border border-slate-800/80 shadow-xl space-y-4">
+      <div className="p-6 space-y-4 card">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3.5">
-            <div className="p-3 rounded-2xl bg-indigo-500/20 text-indigo-400 border border-indigo-500/40">
+            <div className="p-3 text-indigo-400 card">
               <FolderGit2 className="w-6 h-6" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-2xl sm:text-[30px] leading-tight font-medium tracking-[-0.025em] text-white">{project.name}</h1>
-                <span className={`px-2.5 py-0.5 rounded-full text-xs font-mono font-bold border ${scoreMeta.bg} ${scoreMeta.color}`}>
+                <h1 className="text-2xl sm:text-[30px] leading-tight font-medium text-white">{project.name}</h1>
+                <span className={`px-2.5 py-0.5 rounded-full text-xs tabular-nums font-medium border ${scoreMeta.bg} ${scoreMeta.color}`}>
                   Score {project.securityScore}/100 ({scoreMeta.label})
                 </span>
               </div>
-              <p className="text-xs text-slate-400 mt-1 font-mono">
-                {project.organization} • {project.environment} Environment • Lead: {project.leadEngineer}
+              <p className="text-xs text-slate-400 mt-1 tabular-nums">
+                {project.organization}, {project.environment} Environment, Lead: {project.leadEngineer}
               </p>
             </div>
           </div>
@@ -64,7 +64,7 @@ export default function ProjectDetailPage() {
           <div className="flex items-center gap-2.5">
             <Link
               href="/analysis/run"
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#e6e6e6] hover:bg-white text-[#2f3031] text-xs font-mono font-semibold shadow-rc-button hover:shadow-[0_0_0_2px_rgba(0,0,0,0.5),0_0_24px_2px_rgba(255,255,255,0.28),inset_0_1px_0.4px_#fff] transition-all duration-200"
+              className="btn-app btn-app-primary"
             >
               <Activity className="w-4 h-4" />
               <span>Scan Project Builds</span>
@@ -80,12 +80,12 @@ export default function ProjectDetailPage() {
       {/* Applications in Project */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-bold text-slate-100 font-mono uppercase tracking-wider">
+          <h3 className="text-sm font-medium text-slate-100">
             Target Applications ({projectApps.length})
           </h3>
           <Link
             href="/applications"
-            className="text-xs font-mono text-brand-cyan hover:underline"
+            className="text-xs text-brand-cyan hover:underline"
           >
             View Applications Inventory
           </Link>
@@ -98,43 +98,43 @@ export default function ProjectDetailPage() {
               <Link
                 key={app.id}
                 href={`/applications/${app.id}`}
-                className="p-5 rounded-3xl bg-[#0e0f11] border border-slate-800/80 hover:border-slate-700 shadow-xl transition-all flex flex-col justify-between group space-y-4"
+                className="p-5 rounded-3xl bg-surface-card border border-slate-800/80 hover:border-slate-700 shadow-xl transition flex flex-col justify-between group space-y-4"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-900 flex items-center justify-center font-mono font-bold text-xs text-white shadow-md">
+                    <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center tabular-nums font-medium text-xs text-white shadow-md">
                       {app.platform === 'Android' ? 'APK' : 'IPA'}
                     </div>
                     <div>
-                      <h4 className="text-sm font-bold text-white group-hover:text-brand-cyan transition-colors">
+                      <h4 className="text-sm font-medium text-white group-hover:text-brand-cyan transition-colors">
                         {app.name}
                       </h4>
-                      <p className="text-[11px] font-mono text-slate-400">
-                        {app.packageName} • v{app.currentVersion}
+                      <p className="text-[11px] tabular-nums text-slate-400">
+                        {app.packageName}, v{app.currentVersion}
                       </p>
                     </div>
                   </div>
-                  <span className={`px-2.5 py-0.5 rounded-full text-xs font-mono font-bold border ${appScoreMeta.bg} ${appScoreMeta.color}`}>
+                  <span className={`px-2.5 py-0.5 rounded-full text-xs tabular-nums font-medium border ${appScoreMeta.bg} ${appScoreMeta.color}`}>
                     {app.securityScore}/100
                   </span>
                 </div>
 
-                <div className="grid grid-cols-3 gap-2 pt-2 border-t border-slate-800 text-center font-mono text-xs">
-                  <div className="p-2 rounded-xl bg-rose-500/10 border border-rose-500/20">
-                    <span className="text-[10px] text-rose-400 block">Critical</span>
-                    <span className="font-bold text-white">{app.findingsCount.critical}</span>
+                <div className="grid grid-cols-3 gap-2 pt-2 border-t border-slate-800 text-center tabular-nums text-xs">
+                  <div className="p-2 panel">
+                    <span className="text-[11px] text-rose-400 block">Critical</span>
+                    <span className="font-medium text-white">{app.findingsCount.critical}</span>
                   </div>
-                  <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/20">
-                    <span className="text-[10px] text-amber-400 block">High</span>
-                    <span className="font-bold text-white">{app.findingsCount.high}</span>
+                  <div className="p-2 panel">
+                    <span className="text-[11px] text-amber-400 block">High</span>
+                    <span className="font-medium text-white">{app.findingsCount.high}</span>
                   </div>
-                  <div className="p-2 rounded-xl bg-yellow-500/10 border border-yellow-500/20">
-                    <span className="text-[10px] text-yellow-400 block">Medium</span>
-                    <span className="font-bold text-white">{app.findingsCount.medium}</span>
+                  <div className="p-2 panel">
+                    <span className="text-[11px] text-yellow-400 block">Medium</span>
+                    <span className="font-medium text-white">{app.findingsCount.medium}</span>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between text-xs font-mono text-brand-cyan group-hover:translate-x-1 transition-transform">
+                <div className="flex items-center justify-between text-xs tabular-nums text-brand-cyan group-hover:translate-x-1 transition-transform motion-reduce:transform-none">
                   <span>Open Security Dashboard</span>
                   <ChevronRight className="w-4 h-4" />
                 </div>

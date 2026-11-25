@@ -33,7 +33,7 @@ export default function ApplicationsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-[28px] sm:text-[36px] leading-[1.1] font-medium tracking-[-0.03em] text-gradient-silver font-sans">
+          <h1 className="text-[28px] sm:text-[36px] leading-[1.1] font-medium text-white font-sans">
             Applications Inventory
           </h1>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
@@ -43,36 +43,34 @@ export default function ApplicationsPage() {
 
         <Link
           href="/analysis/run"
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#e6e6e6] hover:bg-white text-[#2f3031] text-xs font-mono font-semibold shadow-rc-button hover:shadow-[0_0_0_2px_rgba(0,0,0,0.5),0_0_24px_2px_rgba(255,255,255,0.28),inset_0_1px_0.4px_#fff] transition-all duration-200"
+          className="btn-app btn-app-primary"
         >
           <Activity className="w-4 h-4" />
           <span>Launch Analysis Pipeline</span>
         </Link>
       </div>
 
-      {/* Toolbar */}
-      <div className="p-4 rounded-2xl bg-[#0e0f11] border border-slate-800/80 shadow-lg flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      {/* Toolbar: search and platform filter, no box around them */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="relative flex-1 max-w-md">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             type="text"
-            placeholder="Search by app name or package id (e.g. com.acme.banking)..."
+            placeholder="Search by app name or package id (e.g. com.acme.banking)…"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-brand-cyan"
+            className="field w-full pl-9 pr-3 h-9 text-[13px]"
           />
         </div>
 
-        <div className="flex items-center gap-1 bg-slate-900 p-1 rounded-xl border border-slate-800 text-xs font-mono">
+        <div className="segmented" role="tablist" aria-label="Platform">
           {['All', 'Android', 'iOS'].map((p) => (
             <button
               key={p}
+              role="tab"
+              aria-selected={platformFilter === p}
               onClick={() => setPlatformFilter(p as any)}
-              className={`px-3 py-1 rounded-lg transition-colors ${
-                platformFilter === p
-                  ? 'bg-brand-cyan/20 text-brand-cyan font-bold'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
+              className="segmented__item"
             >
               {p}
             </button>
@@ -80,85 +78,84 @@ export default function ApplicationsPage() {
         </div>
       </div>
 
-      {/* Applications Table / Cards */}
-      <div className="rounded-3xl bg-[#0e0f11] border border-slate-800/80 shadow-xl overflow-hidden">
+      {/* Applications table */}
+      <div className="surface-flat">
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full text-left border-collapse min-w-[860px]">
             <thead>
-              <tr className="border-b border-slate-800 bg-slate-900/50 text-[11px] font-mono text-slate-400 uppercase">
-                <th className="py-3.5 px-4 font-semibold">Application</th>
-                <th className="py-3.5 px-4 font-semibold">Platform</th>
-                <th className="py-3.5 px-4 font-semibold">Version</th>
-                <th className="py-3.5 px-4 font-semibold">Last Analyzed</th>
-                <th className="py-3.5 px-4 font-semibold">Security Score</th>
-                <th className="py-3.5 px-4 font-semibold text-center">Vulnerabilities (C/H/M)</th>
-                <th className="py-3.5 px-4 font-semibold text-right">Actions</th>
+              <tr className="border-b border-white/[0.06] text-[11px] text-slate-500">
+                <th className="py-2.5 px-4 font-normal">Application</th>
+                <th className="py-2.5 px-3 font-normal">Platform</th>
+                <th className="py-2.5 px-3 font-normal">Version</th>
+                <th className="py-2.5 px-3 font-normal">Last Analyzed</th>
+                <th className="py-2.5 px-3 font-normal text-right">Security Score</th>
+                <th className="py-2.5 px-3 font-normal text-right" colSpan={3}>
+                  Vulnerabilities <span className="font-mono">(C/H/M)</span>
+                </th>
+                <th className="py-2.5 px-4 font-normal text-right">
+                  <span className="sr-only">Actions</span>
+                </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60 text-xs font-mono">
-              {filteredApps.map((app) => {
+            <tbody className="divide-y divide-white/[0.05] text-[13px] tabular-nums">
+              {filteredApps.map((app, idx) => {
                 const scoreMeta = getScoreGrade(app.securityScore);
+                const counts = [
+                  { n: app.findingsCount.critical, label: 'Crit', tone: 'text-rose-400' },
+                  { n: app.findingsCount.high, label: 'High', tone: 'text-amber-400' },
+                  { n: app.findingsCount.medium, label: 'Med', tone: 'text-yellow-400' },
+                ];
                 return (
                   <tr
                     key={app.id}
-                    className="hover:bg-slate-800/40 transition-colors group cursor-pointer"
+                    className="row-in row-hover group cursor-pointer"
+                    style={{ animationDelay: `${Math.min(idx, 10) * 30}ms` }}
                   >
-                    <td className="py-4 px-4">
-                      <Link href={`/applications/${app.id}`} className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-900 flex items-center justify-center font-bold text-xs text-white shrink-0">
+                    <td className="py-3 px-4">
+                      <Link href={`/applications/${app.id}`} className="flex items-center gap-3 min-w-0">
+                        <span className="shrink-0 inline-flex items-center justify-center h-6 w-9 rounded-[4px] bg-elevated-2 ring-1 ring-white/[0.08] font-mono text-[10px] text-slate-300">
                           {app.platform === 'Android' ? 'APK' : 'IPA'}
-                        </div>
-                        <div>
-                          <p className="font-bold text-slate-100 group-hover:text-brand-cyan transition-colors">
-                            {app.name}
-                          </p>
-                          <p className="text-[10px] text-slate-400">{app.packageName}</p>
-                        </div>
+                        </span>
+                        <span className="min-w-0">
+                          <span className="block text-slate-100 group-hover:text-white transition-colors duration-150 truncate">{app.name}</span>
+                          <span className="block text-[11px] font-mono text-slate-500 truncate">{app.packageName}</span>
+                        </span>
                       </Link>
                     </td>
 
-                    <td className="py-4 px-4 text-slate-300">
-                      <span className="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-[10px]">
-                        {app.platform}
+                    <td className="py-3 px-3 text-slate-400 whitespace-nowrap">{app.platform}</td>
+
+                    <td className="py-3 px-3 whitespace-nowrap">
+                      <span className="text-slate-200 font-mono">v{app.currentVersion}</span>
+                      <span className="block text-[11px] text-slate-500 font-mono">#{app.currentBuild}</span>
+                    </td>
+
+                    <td className="py-3 px-3 text-slate-400 whitespace-nowrap">{app.lastAnalyzed}</td>
+
+                    <td className="py-3 px-3 text-right whitespace-nowrap">
+                      <span className={`inline-flex items-center gap-2 font-mono ${scoreMeta.color}`}>
+                        <span className="h-1.5 w-1.5 rounded-full bg-current" aria-hidden="true" />
+                        <span className="text-slate-100">
+                          {app.securityScore}
+                          <span className="text-slate-500"> / 100</span>
+                        </span>
                       </span>
                     </td>
 
-                    <td className="py-4 px-4 text-slate-300">
-                      <span>v{app.currentVersion}</span>
-                      <span className="text-[10px] text-slate-400 block font-mono">#{app.currentBuild}</span>
-                    </td>
+                    {counts.map((c) => (
+                      <td key={c.label} className="py-3 px-2 text-right whitespace-nowrap w-[64px]">
+                        <span className={`font-mono ${c.n > 0 ? c.tone : 'text-slate-600'}`}>{c.n}</span>
+                        <span className="ml-1 text-[11px] text-slate-500">{c.label}</span>
+                      </td>
+                    ))}
 
-                    <td className="py-4 px-4 text-slate-400 text-[11px]">
-                      {app.lastAnalyzed}
-                    </td>
-
-                    <td className="py-4 px-4">
-                      <span className={`px-2.5 py-1 rounded-full font-bold border text-[11px] ${scoreMeta.bg} ${scoreMeta.color}`}>
-                        {app.securityScore} / 100
-                      </span>
-                    </td>
-
-                    <td className="py-4 px-4">
-                      <div className="flex items-center justify-center gap-1.5 text-[11px]">
-                        <span className="px-1.5 py-0.2 rounded bg-rose-500/15 text-rose-400 border border-rose-500/30 font-bold">
-                          {app.findingsCount.critical} Crit
-                        </span>
-                        <span className="px-1.5 py-0.2 rounded bg-amber-500/15 text-amber-400 border border-amber-500/30 font-bold">
-                          {app.findingsCount.high} High
-                        </span>
-                        <span className="px-1.5 py-0.2 rounded bg-yellow-500/15 text-yellow-400 border border-yellow-500/30 font-bold">
-                          {app.findingsCount.medium} Med
-                        </span>
-                      </div>
-                    </td>
-
-                    <td className="py-4 px-4 text-right">
+                    <td className="py-3 px-4 text-right whitespace-nowrap">
                       <Link
                         href={`/applications/${app.id}`}
-                        className="inline-flex items-center gap-1 text-brand-cyan hover:underline text-xs font-semibold"
+                        className="inline-flex items-center gap-1 text-[12px] text-slate-500 group-hover:text-white transition-colors duration-150"
                       >
                         <span>Details</span>
-                        <ChevronRight className="w-3.5 h-3.5" />
+                        <ChevronRight className="w-3.5 h-3.5 transition-transform duration-150 group-hover:translate-x-0.5 motion-reduce:transform-none" />
                       </Link>
                     </td>
                   </tr>

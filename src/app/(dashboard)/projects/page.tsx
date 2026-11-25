@@ -119,7 +119,7 @@ export default function ProjectsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-[28px] sm:text-[36px] leading-[1.1] font-medium tracking-[-0.03em] text-gradient-silver font-sans">
+          <h1 className="text-[28px] sm:text-[36px] leading-[1.1] font-medium text-white font-sans">
             Projects
           </h1>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
@@ -132,7 +132,7 @@ export default function ProjectsPage() {
             setIsModalOpen(true);
             setModalStep(1);
           }}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#e6e6e6] hover:bg-white text-[#2f3031] text-xs font-mono font-semibold shadow-rc-button hover:shadow-[0_0_0_2px_rgba(0,0,0,0.5),0_0_24px_2px_rgba(255,255,255,0.28),inset_0_1px_0.4px_#fff] transition-all duration-200"
+          className="btn-app btn-app-primary"
         >
           <Plus className="w-4 h-4" />
           <span>New Project</span>
@@ -140,13 +140,13 @@ export default function ProjectsPage() {
       </div>
 
       {/* Filters & Search Toolbar */}
-      <div className="p-4 rounded-2xl bg-[#0e0f11] border border-slate-800/80 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 card">
         {/* Search */}
         <div className="relative flex-1 max-w-md">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 motion-reduce:transform-none" />
           <input
             type="text"
-            placeholder="Search projects by name, org, or platform..."
+            placeholder="Search projects by name, org, or platform…"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-9 pr-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-brand-cyan"
@@ -154,16 +154,16 @@ export default function ProjectsPage() {
         </div>
 
         {/* Filters */}
-        <div className="flex flex-wrap items-center gap-2.5 text-xs font-mono">
+        <div className="flex flex-wrap items-center gap-2.5 text-xs tabular-nums">
           {/* Platform Filter */}
-          <div className="flex items-center gap-1 bg-slate-900 p-1 rounded-xl border border-slate-800">
+          <div className="flex items-center gap-1 p-1 panel">
             {['All', 'Android', 'iOS'].map((p) => (
               <button
                 key={p}
                 onClick={() => setPlatformFilter(p as any)}
                 className={`px-2.5 py-1 rounded-lg transition-colors ${
                   platformFilter === p
-                    ? 'bg-brand-cyan/20 text-brand-cyan font-bold'
+                    ? 'bg-brand-cyan/20 text-brand-cyan font-medium'
                     : 'text-slate-400 hover:text-slate-200'
                 }`}
               >
@@ -176,7 +176,7 @@ export default function ProjectsPage() {
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
-            className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 text-xs font-mono focus:outline-none focus:border-brand-cyan"
+            className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 text-xs tabular-nums focus:outline-none focus:border-brand-cyan"
           >
             <option value="score">Sort by Score</option>
             <option value="name">Sort by Name</option>
@@ -193,19 +193,19 @@ export default function ProjectsPage() {
             <Link
               key={project.id}
               href={`/projects/${project.id}`}
-              className="p-5 rounded-3xl bg-[#0e0f11] border border-slate-800/80 hover:border-slate-700 shadow-xl transition-all flex flex-col justify-between group space-y-4 hover:shadow-2xl"
+              className="p-5 rounded-3xl bg-surface-card border border-slate-800/80 hover:border-slate-700 shadow-xl transition flex flex-col justify-between group space-y-4 hover:shadow-2xl"
             >
               <div>
                 <div className="flex items-start justify-between gap-2 mb-3">
-                  <div className="p-2 rounded-xl bg-indigo-500/15 text-indigo-400 border border-indigo-500/30">
+                  <div className="p-2 text-indigo-400 panel">
                     <FolderGit2 className="w-5 h-5" />
                   </div>
-                  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold border ${scoreMeta.bg} ${scoreMeta.color}`}>
+                  <span className={`px-2.5 py-0.5 rounded-full text-[11px] tabular-nums font-medium border ${scoreMeta.bg} ${scoreMeta.color}`}>
                     Score {project.securityScore}
                   </span>
                 </div>
 
-                <h3 className="text-base font-bold text-white group-hover:text-brand-cyan transition-colors">
+                <h3 className="text-base font-medium text-white group-hover:text-brand-cyan transition-colors">
                   {project.name}
                 </h3>
                 <p className="text-xs text-slate-400 line-clamp-2 mt-1">
@@ -213,14 +213,14 @@ export default function ProjectsPage() {
                 </p>
               </div>
 
-              <div className="space-y-2.5 pt-3 border-t border-slate-800/60 text-xs font-mono">
+              <div className="space-y-2.5 pt-3 border-t border-slate-800/60 text-xs tabular-nums">
                 <div className="flex items-center justify-between text-slate-400">
                   <span>Platform</span>
                   <span className="text-slate-200">{project.platforms.join(' + ')}</span>
                 </div>
                 <div className="flex items-center justify-between text-slate-400">
                   <span>Open Findings</span>
-                  <span className={`font-bold ${project.openFindingsCount > 5 ? 'text-rose-400' : 'text-amber-400'}`}>
+                  <span className={`font-medium ${project.openFindingsCount > 5 ? 'text-rose-400' : 'text-amber-400'}`}>
                     {project.openFindingsCount} Active
                   </span>
                 </div>
@@ -230,7 +230,7 @@ export default function ProjectsPage() {
                 </div>
               </div>
 
-              <div className="pt-2 flex items-center justify-between text-xs font-mono text-brand-cyan group-hover:translate-x-1 transition-transform">
+              <div className="pt-2 flex items-center justify-between text-xs tabular-nums text-brand-cyan group-hover:translate-x-1 transition-transform motion-reduce:transform-none">
                 <span>View Project</span>
                 <ChevronRight className="w-4 h-4" />
               </div>
@@ -241,22 +241,22 @@ export default function ProjectsPage() {
 
       {/* "+ New Project" Multi-Step Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 animate-in fade-in duration-200">
           <div
-            className="w-full max-w-xl bg-[#0e0f11] border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden glass-panel-glow"
+            className="w-full max-w-xl overflow-hidden card"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
             <div className="p-5 border-b border-slate-800 bg-slate-900/60 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-xl bg-brand-500/20 text-brand-cyan border border-brand-cyan/40">
+                <div className="p-2 text-brand-cyan panel">
                   <FolderGit2 className="w-5 h-5" />
                 </div>
                 <div>
-                  <span className="text-[10px] font-mono font-bold text-brand-cyan uppercase">
+                  <span className="text-[11px] font-medium text-brand-cyan">
                     STEP {modalStep} OF 3
                   </span>
-                  <h3 className="text-base font-bold text-white">Create Security Project</h3>
+                  <h3 className="text-base font-medium text-white">Create Security Project</h3>
                 </div>
               </div>
               <button
@@ -272,7 +272,7 @@ export default function ProjectsPage() {
               {modalStep === 1 && (
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-xs font-mono text-slate-300 mb-1">PROJECT NAME *</label>
+                    <label className="block text-xs tabular-nums text-slate-300 mb-1">PROJECT NAME *</label>
                     <input
                       type="text"
                       value={newProjectName}
@@ -285,7 +285,7 @@ export default function ProjectsPage() {
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-xs font-mono text-slate-300 mb-1">ORGANIZATION</label>
+                      <label className="block text-xs tabular-nums text-slate-300 mb-1">ORGANIZATION</label>
                       <input
                         type="text"
                         value={newOrg}
@@ -294,7 +294,7 @@ export default function ProjectsPage() {
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-mono text-slate-300 mb-1">ENVIRONMENT</label>
+                      <label className="block text-xs tabular-nums text-slate-300 mb-1">ENVIRONMENT</label>
                       <select
                         value={newEnv}
                         onChange={(e) => setNewEnv(e.target.value as any)}
@@ -308,12 +308,12 @@ export default function ProjectsPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-mono text-slate-300 mb-1">DESCRIPTION</label>
+                    <label className="block text-xs tabular-nums text-slate-300 mb-1">DESCRIPTION</label>
                     <textarea
                       value={newDesc}
                       onChange={(e) => setNewDesc(e.target.value)}
                       rows={2}
-                      placeholder="Security objectives and release scope..."
+                      placeholder="Security objectives and release scope…"
                       className="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs text-slate-100 focus:outline-none focus:border-brand-cyan"
                     />
                   </div>
@@ -322,7 +322,7 @@ export default function ProjectsPage() {
 
               {modalStep === 2 && (
                 <div className="space-y-4">
-                  <h4 className="text-xs font-mono font-bold text-slate-300 uppercase">Target Platform Architecture</h4>
+                  <h4 className="text-xs font-medium text-slate-300">Target Platform Architecture</h4>
                   <div className="grid grid-cols-3 gap-3">
                     {[
                       { id: 'Android', label: 'Android', desc: 'APK / AAB', icon: Smartphone },
@@ -333,15 +333,15 @@ export default function ProjectsPage() {
                         key={opt.id}
                         type="button"
                         onClick={() => setSelectedPlatforms(opt.id === 'Cross-Platform' ? ['Android', 'iOS'] : [opt.id as any])}
-                        className={`p-3.5 rounded-xl border text-left transition-all ${
+                        className={`p-3.5 rounded-xl border text-left transition ${
                           (opt.id === 'Cross-Platform' && selectedPlatforms.length === 2) || (selectedPlatforms.length === 1 && selectedPlatforms.includes(opt.id as any))
                             ? 'bg-brand-cyan/20 border-brand-cyan text-white shadow-lg'
                             : 'bg-slate-900 border-slate-800 text-slate-400'
                         }`}
                       >
                         <opt.icon className="w-5 h-5 mb-1 text-brand-cyan" />
-                        <p className="text-xs font-bold">{opt.label}</p>
-                        <p className="text-[10px] text-slate-400">{opt.desc}</p>
+                        <p className="text-xs font-medium">{opt.label}</p>
+                        <p className="text-[11px] text-slate-400">{opt.desc}</p>
                       </button>
                     ))}
                   </div>
@@ -350,14 +350,14 @@ export default function ProjectsPage() {
 
               {modalStep === 3 && (
                 <div className="space-y-4">
-                  <h4 className="text-xs font-mono font-bold text-slate-300 uppercase">
+                  <h4 className="text-xs font-medium text-slate-300">
                     Upload Application Build (APK / AAB / IPA)
                   </h4>
 
                   {/* Drag & Drop Box */}
                   <div
                     onClick={() => handleSimulateUpload('ApexWallet_v1.0.0_release.apk', '42.8 MB')}
-                    className={`p-6 rounded-2xl border-2 border-dashed text-center cursor-pointer transition-all ${
+                    className={`p-6 rounded-2xl border-2 border-dashed text-center cursor-pointer transition ${
                       uploadedFile
                         ? 'border-emerald-500/50 bg-emerald-500/10'
                         : 'border-slate-700 hover:border-brand-cyan bg-slate-900/60 hover:bg-slate-900'
@@ -366,8 +366,8 @@ export default function ProjectsPage() {
                     <UploadCloud className={`w-8 h-8 mx-auto mb-2 ${uploadedFile ? 'text-emerald-400' : 'text-slate-400'}`} />
                     {uploadedFile ? (
                       <div className="space-y-1">
-                        <p className="text-xs font-bold text-emerald-400">Application uploaded successfully.</p>
-                        <p className="text-[11px] font-mono text-slate-300">
+                        <p className="text-xs font-medium text-emerald-400">Application uploaded successfully.</p>
+                        <p className="text-[11px] tabular-nums text-slate-300">
                           {uploadedFile.name} ({uploadedFile.size})
                         </p>
                       </div>
@@ -376,7 +376,7 @@ export default function ProjectsPage() {
                         <p className="text-xs font-semibold text-slate-200">
                           Drag & drop APK / IPA build here, or <span className="text-brand-cyan underline">browse files</span>
                         </p>
-                        <p className="text-[10px] text-slate-400 font-mono">
+                        <p className="text-[11px] text-slate-400 tabular-nums">
                           Supports Android APK (up to 200MB) or iOS IPA (up to 300MB)
                         </p>
                       </div>
@@ -385,14 +385,14 @@ export default function ProjectsPage() {
 
                   {/* Progress Bar */}
                   {isUploading && (
-                    <div className="space-y-1.5 font-mono text-[11px]">
+                    <div className="space-y-1.5 tabular-nums text-[11px]">
                       <div className="flex justify-between text-slate-400">
-                        <span>Uploading & fingerprinting build...</span>
+                        <span>Uploading & fingerprinting build…</span>
                         <span>{uploadProgress}%</span>
                       </div>
                       <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-brand-cyan transition-all duration-200"
+                          className="h-full bg-brand-cyan transition duration-200"
                           style={{ width: `${uploadProgress}%` }}
                         />
                       </div>
@@ -403,12 +403,12 @@ export default function ProjectsPage() {
             </div>
 
             {/* Modal Footer */}
-            <div className="p-4 bg-[#0a0b0d] border-t border-slate-800 flex items-center justify-between">
+            <div className="p-4 bg-ink-900 border-t border-slate-800 flex items-center justify-between">
               {modalStep > 1 ? (
                 <button
                   type="button"
                   onClick={() => setModalStep(modalStep - 1)}
-                  className="px-3 py-1.5 rounded-lg text-xs font-mono text-slate-400 hover:text-white"
+                  className="px-3 py-1.5 rounded-lg text-xs tabular-nums text-slate-400 hover:text-white"
                 >
                   Back
                 </button>
@@ -421,7 +421,7 @@ export default function ProjectsPage() {
                   type="button"
                   disabled={!newProjectName && modalStep === 1}
                   onClick={() => setModalStep(modalStep + 1)}
-                  className="px-4 py-2 rounded-xl bg-brand-cyan/20 text-brand-cyan hover:bg-brand-cyan/30 border border-brand-cyan/40 text-xs font-bold font-mono transition-all disabled:opacity-50"
+                  className="px-4 py-2 rounded-xl bg-brand-cyan/20 text-brand-cyan hover:bg-brand-cyan/30 border border-brand-cyan/40 text-xs font-medium tabular-nums transition disabled:opacity-50"
                 >
                   Next
                 </button>
@@ -429,7 +429,7 @@ export default function ProjectsPage() {
                 <button
                   type="button"
                   onClick={handleCreateProject}
-                  className="px-5 py-2 rounded-xl bg-[#e6e6e6] hover:bg-white text-[#2f3031] text-xs font-mono font-semibold shadow-rc-button transition-all duration-200"
+                  className="btn-app btn-app-primary"
                 >
                   Complete & Register Project
                 </button>

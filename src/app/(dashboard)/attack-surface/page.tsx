@@ -97,10 +97,10 @@ export default function AttackSurfacePage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-[28px] sm:text-[36px] leading-[1.1] font-medium tracking-[-0.03em] text-gradient-silver font-sans">
+            <h1 className="text-[28px] sm:text-[36px] leading-[1.1] font-medium text-white font-sans">
               Attack Surface Explorer
             </h1>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-mono bg-brand-cyan/10 text-brand-cyan border border-brand-cyan/30">
+            <span className="px-2.5 py-0.5 rounded-full text-xs tabular-nums bg-brand-cyan/10 text-brand-cyan border border-brand-cyan/30">
               Interactive Topology Graph
             </span>
           </div>
@@ -111,11 +111,11 @@ export default function AttackSurfacePage() {
 
         {/* Application Selector */}
         <div className="flex items-center gap-3">
-          <label className="text-xs font-mono text-slate-400">Target App:</label>
+          <label className="text-xs tabular-nums text-slate-400">Target App:</label>
           <select
             value={selectedAppId}
             onChange={(e) => setSelectedAppId(e.target.value)}
-            className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-xs font-mono text-slate-200 focus:outline-none focus:border-brand-cyan"
+            className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-xs tabular-nums text-slate-200 focus:outline-none focus:border-brand-cyan"
           >
             {applications.map(app => (
               <option key={app.id} value={app.id}>
@@ -128,60 +128,60 @@ export default function AttackSurfacePage() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3.5">
-        <div className="p-4 rounded-2xl bg-[#0e0f11] border border-brand-cyan/30 shadow-lg">
-          <span className="text-[11px] font-mono uppercase text-slate-400">Attack Surface Score</span>
+        <div className="p-4 card">
+          <span className="text-[11px] text-slate-400">Attack Surface Score</span>
           <div className="flex items-baseline gap-2 mt-1">
-            <span className="text-2xl font-extrabold text-white font-mono">{activeApp.attackSurfaceScore}</span>
-            <span className="text-xs text-slate-400 font-mono">/ 100</span>
+            <span className="text-2xl font-semibold text-white tabular-nums">{activeApp.attackSurfaceScore}</span>
+            <span className="text-xs text-slate-400 tabular-nums">/ 100</span>
           </div>
-          <span className="text-[10px] text-amber-400 font-mono">Moderate Exposure</span>
+          <span className="text-[11px] text-amber-400 tabular-nums">Moderate Exposure</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-[#0e0f11] border border-slate-800 shadow-lg">
-          <span className="text-[11px] font-mono uppercase text-slate-400">Exposed Components</span>
+        <div className="p-4 card">
+          <span className="text-[11px] text-slate-400">Exposed Components</span>
           <div className="flex items-baseline gap-2 mt-1">
-            <span className="text-2xl font-extrabold text-white font-mono">{exposedComponentsCount}</span>
-            <span className="text-xs text-rose-400 font-mono">Public IPC</span>
+            <span className="text-2xl font-semibold text-white tabular-nums">{exposedComponentsCount}</span>
+            <span className="text-xs text-rose-400 tabular-nums">Public IPC</span>
           </div>
-          <span className="text-[10px] text-slate-400 font-mono">Activities, Services, Providers</span>
+          <span className="text-[11px] text-slate-400 tabular-nums">Activities, Services, Providers</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-[#0e0f11] border border-rose-500/30 shadow-lg">
-          <span className="text-[11px] font-mono uppercase text-rose-400 font-bold">High-Risk Nodes</span>
+        <div className="p-4 card">
+          <span className="text-[11px] text-rose-400 font-medium">High-Risk Nodes</span>
           <div className="flex items-baseline gap-2 mt-1">
-            <span className="text-2xl font-extrabold text-rose-400 font-mono">{highRiskCount}</span>
-            <span className="text-xs text-rose-300 font-mono">P0/P1</span>
+            <span className="text-2xl font-semibold text-rose-400 tabular-nums">{highRiskCount}</span>
+            <span className="text-xs text-rose-300 tabular-nums">P0/P1</span>
           </div>
-          <span className="text-[10px] text-slate-400 font-mono">Direct exploit vectors</span>
+          <span className="text-[11px] text-slate-400 tabular-nums">Direct exploit vectors</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-[#0e0f11] border border-slate-800 shadow-lg">
-          <span className="text-[11px] font-mono uppercase text-slate-400">External Endpoints</span>
+        <div className="p-4 card">
+          <span className="text-[11px] text-slate-400">External Endpoints</span>
           <div className="flex items-baseline gap-2 mt-1">
-            <span className="text-2xl font-extrabold text-white font-mono">{externalEndpointsCount}</span>
-            <span className="text-xs text-sky-400 font-mono">Sockets</span>
+            <span className="text-2xl font-semibold text-white tabular-nums">{externalEndpointsCount}</span>
+            <span className="text-xs text-sky-400 tabular-nums">Sockets</span>
           </div>
-          <span className="text-[10px] text-slate-400 font-mono">1 unencrypted HTTP domain</span>
+          <span className="text-[11px] text-slate-400 tabular-nums">1 unencrypted HTTP domain</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-[#0e0f11] border border-slate-800 shadow-lg col-span-2 sm:col-span-1">
-          <span className="text-[11px] font-mono uppercase text-slate-400">Sensitive Permissions</span>
+        <div className="p-4 col-span-2 sm:col-span-1 card">
+          <span className="text-[11px] text-slate-400">Sensitive Permissions</span>
           <div className="flex items-baseline gap-2 mt-1">
-            <span className="text-2xl font-extrabold text-white font-mono">{sensitivePermsCount}</span>
-            <span className="text-xs text-amber-400 font-mono">Runtime</span>
+            <span className="text-2xl font-semibold text-white tabular-nums">{sensitivePermsCount}</span>
+            <span className="text-xs text-amber-400 tabular-nums">Runtime</span>
           </div>
-          <span className="text-[10px] text-slate-400 font-mono">External storage & biometric</span>
+          <span className="text-[11px] text-slate-400 tabular-nums">External storage & biometric</span>
         </div>
       </div>
 
       {/* Main Interactive Split: Graph Topology on Left, Node Inspector on Right */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Topology Graph Visualizer */}
-        <div className="lg:col-span-7 p-6 rounded-3xl bg-[#0e0f11] border border-slate-800/80 shadow-xl space-y-4">
+        <div className="lg:col-span-7 p-6 space-y-4 card">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800">
             <div className="flex items-center gap-2">
               <Network className="w-5 h-5 text-brand-cyan" />
-              <h3 className="text-sm font-bold text-white font-mono">Application Exposure Topology</h3>
+              <h3 className="text-sm font-medium text-white tabular-nums">Application Exposure Topology</h3>
             </div>
 
             {/* Filter Pills */}
@@ -200,7 +200,7 @@ export default function AttackSurfacePage() {
                   onClick={() => setFilterCategory(f.id)}
                   className={`px-2 py-1 rounded-lg transition-colors ${
                     filterCategory === f.id
-                      ? 'bg-brand-cyan/20 text-brand-cyan border border-brand-cyan/40 font-bold'
+                      ? 'bg-brand-cyan/20 text-brand-cyan border border-brand-cyan/40 font-medium'
                       : 'text-slate-400 hover:text-slate-200 bg-slate-900'
                   }`}
                 >
@@ -221,7 +221,7 @@ export default function AttackSurfacePage() {
                 <div
                   key={node.id}
                   onClick={() => setSelectedNodeId(node.id)}
-                  className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
+                  className={`p-3.5 rounded-2xl border cursor-pointer transition ${
                     isSelected
                       ? 'bg-brand-500/15 border-brand-cyan shadow-lg shadow-black/40 ring-1 ring-brand-cyan'
                       : 'bg-slate-900/40 border-slate-800 hover:border-slate-700 hover:bg-slate-800/40'
@@ -232,20 +232,20 @@ export default function AttackSurfacePage() {
                       <div className={`p-1.5 rounded-lg ${isSelected ? 'bg-brand-cyan/20 text-brand-cyan' : 'bg-slate-800 text-slate-400'}`}>
                         <Icon className="w-4 h-4" />
                       </div>
-                      <span className="text-[10px] font-mono text-slate-400 uppercase">{node.type}</span>
+                      <span className="text-[11px] text-slate-400">{node.type}</span>
                     </div>
-                    <span className={`px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase border ${riskBadgeClass}`}>
+                    <span className={`px-2 py-0.5 rounded text-[11px] font-medium border ${riskBadgeClass}`}>
                       {node.risk}
                     </span>
                   </div>
 
-                  <h4 className="text-xs font-bold text-slate-200 truncate">{node.name}</h4>
+                  <h4 className="text-xs font-medium text-slate-200 truncate">{node.name}</h4>
                   <p className="text-[11px] text-slate-400 line-clamp-2 mt-1">{node.details}</p>
 
-                  <div className="flex items-center justify-between mt-3 pt-2 border-t border-slate-800/60 text-[10px] font-mono text-slate-400">
+                  <div className="flex items-center justify-between mt-3 pt-2 border-t border-slate-800/60 text-[11px] tabular-nums text-slate-400">
                     <span className="truncate max-w-[140px] text-slate-400">{node.exposure}</span>
                     {node.relatedFindingsCount > 0 && (
-                      <span className="text-rose-400 font-bold">
+                      <span className="text-rose-400 font-medium">
                         {node.relatedFindingsCount} finding{node.relatedFindingsCount > 1 ? 's' : ''}
                       </span>
                     )}
@@ -255,53 +255,53 @@ export default function AttackSurfacePage() {
             })}
           </div>
 
-          <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-[11px] font-mono text-slate-400 flex items-center justify-between">
+          <div className="p-3 text-[11px] tabular-nums text-slate-400 flex items-center justify-between panel">
             <span>Topology Hierarchy: Application → Components → Permissions → Sockets → Findings</span>
             <span className="text-brand-cyan">Click node to inspect</span>
           </div>
         </div>
 
         {/* Node Inspector Side Panel */}
-        <div className="lg:col-span-5 p-6 rounded-3xl bg-[#0e0f11] border border-slate-800/80 shadow-xl space-y-5">
+        <div className="lg:col-span-5 p-6 space-y-5 card">
           <div className="flex items-start justify-between pb-3 border-b border-slate-800">
             <div>
-              <span className="text-[10px] font-mono uppercase tracking-wider text-brand-cyan font-bold">
+              <span className="text-[11px] text-brand-cyan font-medium">
                 NODE INSPECTOR
               </span>
-              <h3 className="text-base font-bold text-white mt-0.5">{selectedNode.name}</h3>
+              <h3 className="text-base font-medium text-white mt-0.5">{selectedNode.name}</h3>
             </div>
-            <span className={`px-2.5 py-1 rounded-full text-xs font-mono font-bold uppercase border ${getNodeRiskBadge(selectedNode.risk)}`}>
+            <span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${getNodeRiskBadge(selectedNode.risk)}`}>
               {selectedNode.risk} Risk
             </span>
           </div>
 
           {/* Node Metadata Table */}
-          <div className="space-y-2 text-xs font-mono">
-            <div className="flex items-center justify-between p-2 rounded-lg bg-slate-900/60 border border-slate-800">
+          <div className="space-y-2 text-xs tabular-nums">
+            <div className="flex items-center justify-between p-2 rounded-lg bg-white/[0.04]">
               <span className="text-slate-400">Node Type</span>
-              <span className="text-slate-200 font-bold">{selectedNode.type}</span>
+              <span className="text-slate-200 font-medium">{selectedNode.type}</span>
             </div>
-            <div className="flex items-center justify-between p-2 rounded-lg bg-slate-900/60 border border-slate-800">
+            <div className="flex items-center justify-between p-2 rounded-lg bg-white/[0.04]">
               <span className="text-slate-400">Exposure Mode</span>
               <span className="text-amber-400 font-semibold">{selectedNode.exposure}</span>
             </div>
-            <div className="flex items-center justify-between p-2 rounded-lg bg-slate-900/60 border border-slate-800">
+            <div className="flex items-center justify-between p-2 rounded-lg bg-white/[0.04]">
               <span className="text-slate-400">Correlated Findings</span>
-              <span className="text-rose-400 font-bold">{selectedNode.relatedFindingsCount} active</span>
+              <span className="text-rose-400 font-medium">{selectedNode.relatedFindingsCount} active</span>
             </div>
           </div>
 
           {/* Technical Evidence & Details */}
           <div className="space-y-2">
-            <h4 className="text-xs font-mono font-bold text-slate-300 uppercase">Exposure Analysis</h4>
+            <h4 className="text-xs font-medium text-slate-300">Exposure Analysis</h4>
             <p className="text-xs text-slate-300 leading-relaxed bg-slate-900/40 p-3 rounded-xl border border-slate-800">
               {selectedNode.details}
             </p>
           </div>
 
           <div className="space-y-2">
-            <h4 className="text-xs font-mono font-bold text-slate-300 uppercase">Technical Fingerprint Evidence</h4>
-            <div className="p-3 rounded-xl bg-black/60 border border-slate-800 text-[11px] font-mono text-slate-300">
+            <h4 className="text-xs font-medium text-slate-300">Technical Fingerprint Evidence</h4>
+            <div className="p-3 text-[11px] tabular-nums text-slate-300 panel">
               {selectedNode.evidence}
             </div>
           </div>
@@ -309,7 +309,7 @@ export default function AttackSurfacePage() {
           {/* Code Snippet if present */}
           {selectedNode.codeSnippet && (
             <div className="space-y-2">
-              <h4 className="text-xs font-mono font-bold text-slate-300 uppercase">Decompiled Reference</h4>
+              <h4 className="text-xs font-medium text-slate-300">Decompiled Reference</h4>
               <pre className="p-3 rounded-xl bg-black/80 border border-rose-500/30 text-[11px] font-mono text-rose-300 overflow-x-auto">
                 <code>{selectedNode.codeSnippet}</code>
               </pre>
@@ -320,14 +320,14 @@ export default function AttackSurfacePage() {
           <div className="pt-2 flex items-center gap-2">
             <Link
               href="/copilot"
-              className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/40 text-xs font-mono font-bold transition-all"
+              className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/40 text-xs font-medium transition"
             >
               <Bot className="w-3.5 h-3.5" />
               <span>Ask AI About This Node</span>
             </Link>
             <Link
               href="/findings"
-              className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-mono font-semibold transition-all border border-slate-700"
+              className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition border border-slate-700"
             >
               <span>Findings</span>
               <ArrowRight className="w-3.5 h-3.5" />

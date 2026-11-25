@@ -44,7 +44,7 @@ export default function TeamPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-[28px] sm:text-[36px] leading-[1.1] font-medium tracking-[-0.03em] text-gradient-silver font-sans">
+          <h1 className="text-[28px] sm:text-[36px] leading-[1.1] font-medium text-white font-sans">
             Team & Access Control
           </h1>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
@@ -54,7 +54,7 @@ export default function TeamPage() {
 
         <button
           onClick={() => setIsInviteOpen(true)}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#e6e6e6] hover:bg-white text-[#2f3031] text-xs font-mono font-semibold shadow-rc-button hover:shadow-[0_0_0_2px_rgba(0,0,0,0.5),0_0_24px_2px_rgba(255,255,255,0.28),inset_0_1px_0.4px_#fff] transition-all duration-200"
+          className="btn-app btn-app-primary"
         >
           <UserPlus className="w-4 h-4" />
           <span>Invite Member</span>
@@ -62,12 +62,12 @@ export default function TeamPage() {
       </div>
 
       {/* Toolbar */}
-      <div className="p-4 rounded-2xl bg-[#0e0f11] border border-slate-800/80 shadow-lg flex items-center justify-between gap-4 text-xs font-mono">
+      <div className="p-4 flex items-center justify-between gap-4 text-xs tabular-nums card">
         <div className="relative flex-1 max-w-md">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 motion-reduce:transform-none" />
           <input
             type="text"
-            placeholder="Search by name, email, or role..."
+            placeholder="Search by name, email, or role…"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-9 pr-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-brand-cyan"
@@ -80,11 +80,11 @@ export default function TeamPage() {
       </div>
 
       {/* Team Table */}
-      <div className="rounded-3xl bg-[#0e0f11] border border-slate-800/80 shadow-xl overflow-hidden">
+      <div className="overflow-hidden card">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-slate-800 bg-slate-900/50 text-[11px] font-mono text-slate-400 uppercase">
+              <tr className="border-b border-slate-800 bg-slate-900/50 text-[11px] text-slate-400">
                 <th className="py-3.5 px-4 font-semibold">User</th>
                 <th className="py-3.5 px-4 font-semibold">Role</th>
                 <th className="py-3.5 px-4 font-semibold">Status</th>
@@ -93,7 +93,7 @@ export default function TeamPage() {
                 <th className="py-3.5 px-4 font-semibold text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60 text-xs font-mono">
+            <tbody className="divide-y divide-slate-800/60 text-xs tabular-nums">
               {filteredMembers.map((member) => (
                 <tr key={member.id} className="hover:bg-slate-800/40 transition-colors">
                   <td className="py-4 px-4">
@@ -104,22 +104,20 @@ export default function TeamPage() {
                         className="w-8 h-8 rounded-full object-cover border border-slate-700 shrink-0"
                       />
                       <div>
-                        <p className="font-bold text-slate-100">{member.name}</p>
-                        <p className="text-[10px] text-slate-400">{member.email}</p>
+                        <p className="font-medium text-slate-100">{member.name}</p>
+                        <p className="text-[11px] text-slate-400">{member.email}</p>
                       </div>
                     </div>
                   </td>
 
                   <td className="py-4 px-4 text-slate-300">
-                    <span className="px-2.5 py-0.5 rounded-full bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 text-[10px] font-bold">
+                    <span className="px-2.5 py-0.5 rounded-full bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 text-[11px] font-medium">
                       {member.role}
                     </span>
                   </td>
 
                   <td className="py-4 px-4">
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                      member.status === 'Active' ? 'text-emerald-400 bg-emerald-500/10' : 'text-amber-400 bg-amber-500/10'
-                    }`}>
+                    <span className={`px-2 py-0.5 rounded text-[11px] font-medium ${ member.status === 'Active' ? 'text-emerald-400 bg-emerald-500/10' : 'text-amber-400 bg-amber-500/10' }`}>
                       {member.status}
                     </span>
                   </td>
@@ -133,7 +131,7 @@ export default function TeamPage() {
                   </td>
 
                   <td className="py-4 px-4 text-right">
-                    <button className="text-slate-400 hover:text-white text-xs font-mono">
+                    <button className="text-slate-400 hover:text-white text-xs">
                       Edit Role
                     </button>
                   </td>
@@ -146,13 +144,13 @@ export default function TeamPage() {
 
       {/* Invite Member Modal */}
       {isInviteOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 animate-in fade-in duration-200">
           <div
-            className="w-full max-w-md bg-[#0e0f11] border border-slate-700 rounded-2xl shadow-2xl overflow-hidden glass-panel-glow"
+            className="w-full max-w-md overflow-hidden card"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="p-5 border-b border-slate-800 bg-slate-900/60 flex items-center justify-between">
-              <h3 className="text-base font-bold text-white font-mono">Invite Team Member</h3>
+              <h3 className="text-base font-medium text-white tabular-nums">Invite Team Member</h3>
               <button
                 onClick={() => setIsInviteOpen(false)}
                 className="p-1 text-slate-400 hover:text-white"
@@ -161,7 +159,7 @@ export default function TeamPage() {
               </button>
             </div>
 
-            <form onSubmit={handleInviteSubmit} className="p-6 space-y-4 text-xs font-mono">
+            <form onSubmit={handleInviteSubmit} className="p-6 space-y-4 text-xs tabular-nums">
               <div>
                 <label className="block text-slate-400 mb-1">FULL NAME *</label>
                 <input
@@ -210,7 +208,7 @@ export default function TeamPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-brand-cyan to-brand-indigo text-slate-950 font-bold"
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-brand-cyan to-brand-indigo text-slate-950 font-medium"
                 >
                   Send Invitation
                 </button>
