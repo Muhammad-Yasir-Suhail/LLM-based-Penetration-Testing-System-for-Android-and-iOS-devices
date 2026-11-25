@@ -30,8 +30,14 @@
   --color-accent-hover: #fafafa;
   --color-accent-ink: #09090b;
   --color-accent-dim: rgb(250 250 250 / 0.06);
-  --color-focus: #d4d4d8;
+  --color-focus: #ff4d4d;
   --color-pass: #d4d4d8;
+  /* Signal red (palette: #830000 #bc0202 #ff0000) — accents only, faces stay machined grey */
+  --color-signal-deep: #830000;
+  --color-signal: #bc0202;
+  --color-signal-strong: #ff0000;
+  --color-signal-text: #ff5a5a;
+  --color-signal-glow: rgb(188 2 2 / 0.5);
   --metal-hi: #3f3f46;
   --metal-lo: #27272a;
   --edge-light: inset 0 1px 0 rgb(250 250 250 / 0.09);
@@ -116,12 +122,12 @@ html:has(.lp) { scrollbar-color: var(--color-muted) var(--color-paper); }
 .lp .btn:disabled, .lp .btn[aria-disabled="true"] { opacity: 0.55; cursor: not-allowed; transform: none; }
 .lp .btn[aria-busy="true"] { cursor: progress; }
 .lp .btn--primary {
-  background: var(--color-accent);
-  border-color: var(--color-accent);
-  color: var(--color-accent-ink);
-  box-shadow: var(--edge-light-strong), var(--shadow-part);
+  background: var(--color-signal);
+  border-color: var(--color-signal-strong);
+  color: #fff;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.22), 0 10px 24px -12px var(--color-signal-glow);
 }
-.lp .btn--primary:hover { background: var(--color-accent-hover); border-color: var(--color-accent-hover); }
+.lp .btn--primary:hover { background: var(--color-signal-strong); border-color: var(--color-signal-strong); }
 .lp .btn--text { background: none; border-color: transparent; box-shadow: none; padding: 0 var(--space-md); text-decoration: underline; text-decoration-color: var(--color-rule); }
 .lp .btn--text:hover { border-color: transparent; text-decoration-color: var(--color-accent); }
 .lp .btn--small { min-height: 44px; padding: 0 var(--space-md); font-size: var(--text-sm); }
@@ -200,9 +206,9 @@ html:has(.lp) { scrollbar-color: var(--color-muted) var(--color-paper); }
 .lp .key:hover { border-color: var(--color-muted); color: var(--color-ink); }
 .lp .key:active, .lp .key.is-pressed { transform: translateY(2px); }
 .lp .key:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
-.lp .key[aria-pressed="true"] { color: var(--color-ink); border-color: var(--color-accent); transform: translateY(1px); }
+.lp .key[aria-pressed="true"] { color: var(--color-ink); border-color: var(--color-signal); box-shadow: var(--edge-light), var(--shadow-part), inset 0 0 0 1px var(--color-signal-glow); transform: translateY(1px); }
 .lp .key__top { display: flex; align-items: center; justify-content: space-between; color: var(--color-muted); }
-.lp .key[aria-pressed="true"] .key__top { color: var(--color-accent); }
+.lp .key[aria-pressed="true"] .key__top { color: var(--color-signal-text); }
 .lp .key__top svg { width: 16px; height: 16px; }
 .lp .key__n { font: 400 var(--text-sm)/1 var(--font-outlier); font-variant-numeric: tabular-nums; }
 /* the lit index line: the key's slot glows when its stage is running */
@@ -214,7 +220,8 @@ html:has(.lp) { scrollbar-color: var(--color-muted) var(--color-paper); }
   bottom: 6px;
   height: 2px;
   border-radius: 2px;
-  background: var(--color-accent);
+  background: var(--color-signal-strong);
+  box-shadow: 0 0 10px -1px var(--color-signal-glow);
   opacity: 0;
   transition: opacity var(--dur-long) var(--ease-in-out);
 }
@@ -231,7 +238,7 @@ html:has(.lp) { scrollbar-color: var(--color-muted) var(--color-paper); }
 .lp .readout__fill {
   position: absolute;
   inset: 0;
-  background: var(--color-accent);
+  background: linear-gradient(90deg, var(--color-signal-deep), var(--color-signal-strong));
   transform-origin: left;
   transform: scaleX(var(--p, 0.125));
   transition: transform var(--dur-long) var(--ease-in-out);

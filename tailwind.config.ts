@@ -29,6 +29,25 @@ const shade = (lighter = 0) =>
 
 const neutral = shade(0);
 
+/**
+ * Signal red ramp, built from the palette (#830000 #bc0202 #ff0000 on #000000).
+ * Danger / critical / high-risk families resolve here; lighter steps are
+ * brightened so red text and icons stay legible on the near-black surfaces.
+ */
+const redRamp: Record<number, string> = {
+  50: "#fff1f1",
+  100: "#ffdcdc",
+  200: "#ffb3b3",
+  300: "#ff8080",
+  400: "#ff4d4d",
+  500: "#ff0000",
+  600: "#d40303",
+  700: "#bc0202",
+  800: "#950000",
+  900: "#830000",
+  950: "#4a0000",
+};
+
 const config: Config = {
   darkMode: ["class"],
   content: [
@@ -48,11 +67,12 @@ const config: Config = {
         zinc: neutral,
         neutral: neutral,
         stone: neutral,
-        // Emphasis by lightness: critical brightest, high next.
-        rose: shade(2),
-        red: shade(2),
-        pink: shade(2),
-        fuchsia: shade(1),
+        // Danger / critical: the signal red ramp from the palette.
+        rose: redRamp,
+        red: redRamp,
+        pink: redRamp,
+        // Warning-ish families lean on the deep end of the same red (no off-palette hues).
+        fuchsia: redRamp,
         amber: shade(1),
         orange: shade(1),
         yellow: shade(1),
@@ -98,15 +118,16 @@ const config: Config = {
           600: "#71717a",
           cyan: "#f4f4f5",
           indigo: "#a1a1aa",
-          accent: "#fafafa",
-          red: "#fafafa",
+          accent: "#ff2a2a",
+          red: "#ff3b3b",
         },
+        // Severity as a black -> maroon -> crimson -> red heatmap from the palette.
         severity: {
-          critical: { DEFAULT: "#fafafa", bg: "rgba(250,250,250,0.10)", border: "rgba(250,250,250,0.30)", glow: "rgba(250,250,250,0.10)", text: "#fafafa" },
-          high: { DEFAULT: "#d4d4d8", bg: "rgba(212,212,216,0.08)", border: "rgba(212,212,216,0.25)", glow: "rgba(212,212,216,0.08)", text: "#d4d4d8" },
-          medium: { DEFAULT: "#a1a1aa", bg: "rgba(161,161,170,0.08)", border: "rgba(161,161,170,0.22)", glow: "rgba(161,161,170,0.08)", text: "#a1a1aa" },
-          low: { DEFAULT: "#71717a", bg: "rgba(113,113,122,0.08)", border: "rgba(113,113,122,0.22)", glow: "rgba(113,113,122,0.08)", text: "#a1a1aa" },
-          info: { DEFAULT: "#52525b", bg: "rgba(82,82,91,0.10)", border: "rgba(82,82,91,0.25)", glow: "rgba(82,82,91,0.10)", text: "#71717a" },
+          critical: { DEFAULT: "#ff0000", bg: "rgba(255,0,0,0.12)", border: "rgba(255,0,0,0.42)", glow: "rgba(255,0,0,0.28)", text: "#ff5c5c" },
+          high: { DEFAULT: "#ff3b3b", bg: "rgba(188,2,2,0.16)", border: "rgba(188,2,2,0.45)", glow: "rgba(188,2,2,0.28)", text: "#ff6a6a" },
+          medium: { DEFAULT: "#bc0202", bg: "rgba(131,0,0,0.20)", border: "rgba(131,0,0,0.50)", glow: "rgba(131,0,0,0.22)", text: "#ff8f8f" },
+          low: { DEFAULT: "#a1a1aa", bg: "rgba(161,161,170,0.08)", border: "rgba(161,161,170,0.22)", glow: "rgba(161,161,170,0.08)", text: "#a1a1aa" },
+          info: { DEFAULT: "#71717a", bg: "rgba(113,113,122,0.10)", border: "rgba(113,113,122,0.25)", glow: "rgba(113,113,122,0.10)", text: "#a1a1aa" },
           safe: { DEFAULT: "#a1a1aa", bg: "rgba(161,161,170,0.08)", border: "rgba(161,161,170,0.22)", glow: "rgba(161,161,170,0.08)", text: "#a1a1aa" },
         },
       },
